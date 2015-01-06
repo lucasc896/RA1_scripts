@@ -165,11 +165,17 @@ def grab_plots(f_path = "", h_title = "", sele = "OneMuon", njet = "", btag = ""
 if __name__ == "__main__":
     print ">>> Running plot_grabber debugger."
     try:
-        dave = grab_plots(f_path = "/Users/chrislucas/SUSY/AnalysisCode/rootfiles/Root_Files_21Dec_alphaT_0p53_fullHT_fixedCC_fineJetMulti_dPhi_lt0p3_v0/Muon_DY.root",
-                            sele = "OneMuon", h_title = "AlphaT", njet = "eq2j",
-                            btag = "eq0b", ht_bins = ["475_575"])
+        for jet_cat in ["eq2j", "eq3j", "eq4j", "ge5j"]:
+            for b_cat in ["eq0b", "eq1b"]:
+                dave = grab_plots(f_path = "/Users/chrislucas/SUSY/AnalysisCode/rootfiles/Root_Files_21Dec_alphaT_0p53_fullHT_fixedCC_fineJetMulti_dPhi_lt0p3_v0/Muon_DY.root",
+                                    sele = "OneMuon", h_title = "AlphaT", njet = jet_cat,
+                                    btag = b_cat, ht_bins = ["475_575"])
     except:
-        print "Balls up."
+        print "\n\n", "*"*40
+        print "\tBalls up."
+        print "*"*40, "\n"
         raise
     else:
-        print "Hoo mutha fuckin ray!"
+        print "\n\n", "*"*40
+        print "\tHoo mutha fuckin ray!"
+        print "*"*40, "\n"
