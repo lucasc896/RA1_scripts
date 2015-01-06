@@ -150,7 +150,7 @@ def grab_plots(f_path = "", h_title = "", sele = "OneMuon", njet = "", btag = ""
                             ht = d.split("_")[-2] if "1075" != d[-4:] else d.split("_")[-1],
                             njet = jet_string(njet)) )
             if "SMS" not in f_path.split("/")[-1]:
-                h.Scale( sb_corr(f_path.split("/")[-1].split("_")[1]) )
+                h.Scale( sb_corr(f_path.split("/")[-1].split("_")[1][:-5]) )
             h.Scale( lumi(sele) )
         if not h_total:
             h_total = h.Clone()
@@ -165,8 +165,8 @@ def grab_plots(f_path = "", h_title = "", sele = "OneMuon", njet = "", btag = ""
 if __name__ == "__main__":
     print ">>> Running plot_grabber debugger."
     try:
-        dave = grab_plots(f_path = "/Users/chrislucas/SUSY/AnalysisCode/rootfiles/Root_Files_18Nov_alphaT0p53_noSITV_v1/Muon_DY.root",
-                            sele = "OneMuon", h_title = "AlphaT", njet = eq2j",
+        dave = grab_plots(f_path = "/Users/chrislucas/SUSY/AnalysisCode/rootfiles/Root_Files_21Dec_alphaT_0p53_fullHT_fixedCC_fineJetMulti_dPhi_lt0p3_v0/Muon_DY.root",
+                            sele = "OneMuon", h_title = "AlphaT", njet = "eq2j",
                             btag = "eq0b", ht_bins = ["475_575"])
     except:
         print "Balls up."
