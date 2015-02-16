@@ -1,6 +1,34 @@
 import ROOT as r
 from copy import deepcopy
+from array import array
 
+def set_palette(name="", ncontours=100):
+    """Set a color palette from a given RGB list
+    stops, red, green and blue should all be lists of the same length
+    see set_decent_colors for an example"""
+
+    if name == "gray" or name == "grayscale":
+        stops = [0.00, 0.34, 0.61, 0.84, 1.00]
+        red   = [1.00, 0.84, 0.61, 0.34, 0.00]
+        green = [1.00, 0.84, 0.61, 0.34, 0.00]
+        blue  = [1.00, 0.84, 0.61, 0.34, 0.00]
+    # elif name == "whatever":
+        # (define more palettes)
+    else:
+        # default palette, looks cool
+        stops = [0.00, 0.34, 0.61, 0.84, 1.00]
+        red   = [0.50, 0.00, 0.87, 1.00, 0.51]
+        green = [0.00, 0.81, 1.00, 0.20, 0.00]
+        blue  = [0.81, 1.00, 0.12, 0.00, 0.00]
+
+    stops_ = array('d', stops)
+    red_ = array('d', red)
+    green_ = array('d', green)
+    blue_ = array('d', blue)
+
+    npoints = len(stops_)
+    r.TColor.CreateGradientColorTable(npoints, stops_, red_, green_, blue_, ncontours)
+    r.gStyle.SetNumberContours(ncontours)
 
 def get_dirs(htbins = None, sele = "", btag = "", keyword = ""):
     """get the list of dirs to access multi files"""
@@ -142,8 +170,13 @@ def grab_plots(f_path = "", h_title = "", sele = "OneMuon", njet = "", btag = ""
 
     h_total = None
     for d in get_dirs(htbins = ht_bins, sele = sele, btag = btag):
-        # print "%s/%s_%s" % (d, h_title, jet_string(njet))
-        h = f.Get("%s/%s_%s" % (d, h_title, jet_string(njet))).Clone()
+        
+        try:
+            h = f.Get("%s/%s_%s" % (d, h_title, jet_string(njet))).Clone()
+        except ReferenceError:
+            print ">>> Failed to get histogram."
+            print "-    %s/%s_%s" % (d, h_title, jet_string(njet))
+            exit()
         if "Data" not in f_path:
             # apply ht bin trig effs
             h.Scale( trig_eff(sele = sele,
