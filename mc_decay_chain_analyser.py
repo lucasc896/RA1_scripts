@@ -1,18 +1,18 @@
 #!/usr/bin/env python
 import sys
+from pdgIdStore import pdgIdDict
 
 def pdgIdLookup(pdgid = ""):
 
-    pref = "-" if pdgid[0] == "-" else ""
-
-    pdgIdDict = {
-        2212: "p"
-    }
+    anti = True if pdgid[0] == "-" else False
 
     try:
-        return "pref" + pdgIdDict[pdgid]
+        if anti:
+            return "%s%s" %("-", pdgIdDict[pdgid[1:]])
+        else:
+            return pdgIdDict[pdgid]
     except KeyError:
-        return "null"
+        return pdgid
 
 def parseFile(file = None):
 
@@ -20,13 +20,10 @@ def parseFile(file = None):
     tmp = []
     for line in file:
         if "New Event" in line:
-            print "new event line"
             if tmp:
-                print "tmp has content, appending to chains"
                 chains.append(tmp)
                 tmp = []
             else:
-                print "tmp is empty"
                 tmp = []
         else:
             tmp.append( parseLine(line) )
@@ -36,15 +33,51 @@ def parseFile(file = None):
 
 def parseLine(line = ""):
 
-    line = line.strip() #remove crap at either end
-    line = line.split(" ") #split by whitespace
     return_line = []
-    for ent in line:
-        if ent:
-            return_line.append(ent)
+    info_line = False
+    line = line.strip() #remove crap at either end
+    
+    if len(line) == 0:
+        return []
 
-    return line
+    if line[0] in ["*", ">"]:
+        info_line = True
+        line = line.split(" ")
+    else:
+        line = line.split("\t") #split by tabs
+    
+    for n, ent in enumerate(line): #loop, cutting off the final status number
+        if ent: # if it has a value
+            if info_line:
+                return_line.append(ent)
+                continue
 
+            if n == len(line)-1:
+                continue
+
+            if n>0:
+                # if a particle, then convert to particle string name
+                return_line.append( pdgIdLookup(ent) )
+            else:
+                # keep index as a number
+                return_line.append(ent)
+    
+    return return_line
+
+def printChains(chains = []):
+
+    outTxt = ""
+
+    for n, chain in enumerate(chains):
+        outTxt += "\n\n>>> Event %d\n" % (n+1)
+
+        for ent in chain:
+            if len(ent) == 3 and ent[0] not in ["**", ">"]: # is a decay line
+                suff = "*" if "Nu" in ent[1] else ""
+                outTxt += "\n%s:\t%-12s -> %-s\t%s" % (ent[0], ent[2], ent[1], suff)
+            else:
+                outTxt += " " + " ".join(ent) + " GeV"
+    print outTxt
 
 def main():
 
@@ -59,9 +92,7 @@ def main():
     chains_list = parseFile(infile)
     infile.close()
 
-
-
-
+    printChains(chains_list)
 
     pass
 
