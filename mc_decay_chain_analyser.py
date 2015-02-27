@@ -72,11 +72,14 @@ def printChains(chains = []):
         outTxt += "\n\n>>> Event %d\n" % (n+1)
 
         for ent in chain:
-            if len(ent) == 3 and ent[0] not in ["**", ">"]: # is a decay line
-                suff = "*" if "Nu" in ent[1] else ""
-                outTxt += "\n%s:\t%-12s -> %-s\t%s" % (ent[0], ent[2], ent[1], suff)
+            if not ent: continue
+            if len(ent) == 3 and ent[0][0] not in ["*", ">"]: # is a decay line
+                # suff = "*" if "Nu" in ent[1] else ""
+                outTxt += "\n%s:\t%-12s -> %-s" % (ent[0], ent[2], ent[1])
+            elif ent[0][0] == ">":
+                outTxt += "\t" + " ".join(ent)
             else:
-                outTxt += " " + " ".join(ent) + " GeV"
+                outTxt += " " + " ".join(ent) + "\n"
     print outTxt
 
 def main():
