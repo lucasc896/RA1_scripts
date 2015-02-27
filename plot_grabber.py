@@ -154,9 +154,13 @@ def sb_corr(samp = ""):
             "TTbar": 1.18,
             "DiBoson": 1.18,
             "SingleTop": 1.18,
+            "EWK": 1.,
+            "QCD": 1.,
     }
 
     print "> Sb corr (%s): %.2f" % (samp, d[samp])
+    if samp == "EWK":
+        print ">>> Note: EWK root file has no distinct sb corr. Weight = 1."
 
     return d[samp]
 
@@ -175,6 +179,7 @@ def grab_plots(f_path = "", h_title = "", sele = "OneMuon", njet = "", btag = ""
             h = f.Get("%s/%s_%s" % (d, h_title, jet_string(njet))).Clone()
         except ReferenceError:
             print ">>> Failed to get histogram."
+            print "-    %s" % f_path
             print "-    %s/%s_%s" % (d, h_title, jet_string(njet))
             exit()
         if "Data" not in f_path:
