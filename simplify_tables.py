@@ -8,21 +8,32 @@ def output_file():
 
 def harvest_values(line = "", val = [], err = []):
 
+    is_data = True if "data" in line[0] else False
+
+    # if is_data:
+    #     print "hv: data"
+    # else:
+    #     print "hv: mc"
+
     for bin in line[1:]:
-        if bin == "-":
+        if bin[:1] == "-":
             val.append("-")
-            err.append("-")
+            if not is_data: err.append("-")
             continue
         
-
         bin_split = bin.split("  $\\pm$  ")
 
         if "\\\\ \n" in bin_split[-1]:
             bin_split[-1] = bin_split[-1].rstrip("\\\\ \n")
             bin_split[-1] = bin_split[-1].rstrip(" ")
         val.append(bin_split[0])
-        if len(bin_split)>1:
+        
+        if len(bin_split)>1 and not is_data:
             err.append(bin_split[1])
+        
+    if not is_data and len(val) != len(err):
+        print "> harvest_vals: Length error between harvested vals and errs"
+
 
 def remove_whitespace(line = ""):
     outline = []
