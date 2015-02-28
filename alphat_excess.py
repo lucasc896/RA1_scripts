@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import plot_grabber as grabr
 import ROOT as r
 import os
@@ -59,17 +60,8 @@ def harvest_excess_yields(file = None):
             # print ">>> Data harvest:"
             harvest_values(line_split, data)
 
-    # for dval, pval, perr in zip(data, pred, pred_err):
-    #     dval = convert_val(dval)
-    #     pval = convert_val(pval)
-    #     perr = convert_val(perr)
-
-    #     excess.append(dval-pval)
-    #     excess_err.append(perr)
-
-    # now return excess and calculate error
+    # return an event_cat object, which handles excess and err calc
     return event_cat(data, pred, pred_err)
-    # return []
 
 def get_file_key(str = ''):
 
@@ -95,12 +87,10 @@ def get_excess():
                 file_path = dir[0]+"/"+file
                 this_key = get_file_key(file_path)
                 file = open(file_path)
-                event_obj = harvest_excess_yields(file)
-                print event_obj
+                cat_obj = harvest_excess_yields(file)
+                cat_obj._catstring = this_key
+                yields[this_key] = cat_obj
                 file.close()
-                exit()
-
-    # dict_printer(yields)
 
     return yields
 
@@ -153,6 +143,11 @@ def get_qcd():
 def main():
     # get excess yields
     excess = get_excess()
+
+    for cat in excess:
+        cat_excess, cat_excess_err = excess[cat].get_excess()
+
+    make_plot()
 
 if __name__ == "__main__":
     main()
