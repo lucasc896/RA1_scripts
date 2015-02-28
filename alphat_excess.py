@@ -32,6 +32,11 @@ def dict_printer(dicto = {}, indent = 1):
       print dicto[key]
   print "\t"*indent, "}\n"
 
+def convert_val(val = ''):
+    if val == "-":
+        val = 0.
+    val = float(val)
+
 def harvest_excess_yields(file = None):
 
     ht_bins = ["237.5", "300", "350", "425", "525", "625", "725", "825", "925", "1025", "1075"]
@@ -39,6 +44,7 @@ def harvest_excess_yields(file = None):
     pred = []
     pred_err = []
     excess = []
+    excess_err = []
 
     for n, line in enumerate(file.readlines()):
         if n>50: # skip lines beyond first table 
@@ -50,9 +56,17 @@ def harvest_excess_yields(file = None):
         elif line_split[0] == "Hadronic yield from data":
             harvest_values(line_split, data)
 
+    for dval, pval, perr in zip(data, pred, pred_err):
+        convert_val(dval)
+        convert_val(pval)
+        convert_val(perr)
+
+        print dval, type(dval), "hey"
+        excess.append(dval-pval)
+        excess_err.append(perr)
 
     # now return excess and calculate error
-    return excess
+    return excess, excess_err
 
 def get_file_key(str = ''):
 
@@ -76,7 +90,6 @@ def get_excess():
         if dir[-1]:
             for file in dir[-1]:
                 file_path = dir[0]+"/"+file
-                print file_path
                 this_key = get_file_key(file_path)
                 file = open(file_path)
                 yields[this_key] = harvest_excess_yields(file)
