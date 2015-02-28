@@ -21,6 +21,63 @@ from simplify_tables import harvest_values, remove_whitespace
 r.gStyle.SetOptStat(0)
 grabr.set_palette()
 
+class event_cat(object):
+    """data container for event yields"""
+    def __init__(self, data = [], pred = [], pred_err = []):
+        self._data = data
+        self._pred = pred
+        self._pred_err = pred_err
+        self.check_list_consistency()
+        self._nbins = len(self._data)
+        self.check_val_types()
+
+        self._excess = []
+        self._excess_err = []
+        self.calculate_excess()
+
+    def __str__(self):
+        out_str = ""
+        out_str += ">> event_cat object:\n"
+        out_str += "\t> Data:\n"
+        # out_str += "\t\t" + ", ".join(self._data) + "\n"
+        out_str += "\t\t"
+        for n in range(self._nbins):
+            out_str += "%s, " % self._data[n]
+        out_str += "\n\t> Preds:\n"
+        out_str += "\t\t"
+        for n in range(self._nbins):
+            out_str += "%s+/-%s, " % (self._pred[n], self._pred_err[n])
+        print type(self._data[0])
+
+    def check_list_consistency(self):
+        if len(self._data) != len(self._pred):
+            print "data and preds arrays different lengths"
+            print self._data
+            print self._pred
+        if len(self._pred) != len(self._pred_err):
+            print "preds and pred_errs arrays different lengths"
+            print self._pred
+            print self._pred_err
+
+    def check_val_types(self):
+        """check all val types are consistently floats"""
+        
+        def convert_val(val = ''):
+            if val == "-":
+                return 0.
+            return float(val)
+
+        for n in range(self._nbins):
+            self._data[n] = convert_val(self._data[n])
+            self._pred[n] = convert_val(self._pred[n])
+            self._pred_err[n] = convert_val(self._pred_err[n])
+
+    def calculate_excess(self):
+        for d, p, perr in zip(self._data, self._pred, self._pred_err):
+            self._excesss.append(d-p)
+            self._excesss_err.append(perr)
+
+
 def dict_printer(dicto = {}, indent = 1):
 
   print "{ (%d keys)\n" % len(dicto)
@@ -34,8 +91,8 @@ def dict_printer(dicto = {}, indent = 1):
 
 def convert_val(val = ''):
     if val == "-":
-        val = 0.
-    val = float(val)
+        return 0.
+    return float(val)
 
 def harvest_excess_yields(file = None):
 
@@ -52,21 +109,23 @@ def harvest_excess_yields(file = None):
         line_split = line.split("&")
         line_split = remove_whitespace(line_split)
         if line_split[0] == "Total SM prediction":
+            # print ">>> BG harvest:"
             harvest_values(line_split, pred, pred_err)
         elif line_split[0] == "Hadronic yield from data":
+            # print ">>> Data harvest:"
             harvest_values(line_split, data)
 
-    for dval, pval, perr in zip(data, pred, pred_err):
-        convert_val(dval)
-        convert_val(pval)
-        convert_val(perr)
+    # for dval, pval, perr in zip(data, pred, pred_err):
+    #     dval = convert_val(dval)
+    #     pval = convert_val(pval)
+    #     perr = convert_val(perr)
 
-        print dval, type(dval), "hey"
-        excess.append(dval-pval)
-        excess_err.append(perr)
+    #     excess.append(dval-pval)
+    #     excess_err.append(perr)
 
     # now return excess and calculate error
-    return excess, excess_err
+    return event_cat(data, pred, pred_err)
+    # return []
 
 def get_file_key(str = ''):
 
@@ -92,10 +151,12 @@ def get_excess():
                 file_path = dir[0]+"/"+file
                 this_key = get_file_key(file_path)
                 file = open(file_path)
-                yields[this_key] = harvest_excess_yields(file)
+                event_obj = harvest_excess_yields(file)
+                print event_obj
                 file.close()
+                exit()
 
-    dict_printer(yields)    
+    # dict_printer(yields)
 
     return yields
 
