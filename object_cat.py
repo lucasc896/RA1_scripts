@@ -14,15 +14,13 @@ class event_cat(object):
         self.calculate_excess()
 
     def __str__(self):
-        out_str = ""
-        out_str += ">> event_cat object (%s):\n" % self._catstring
-        out_str += "\t> Data:\n"
-        # out_str += "\t\t" + ", ".join(self._data) + "\n"
-        out_str += "\t\t"
+        out_str = ">> event_cat object (%s):\n" % self._catstring
+        
+        out_str += "\t> Data:\n\t\t"
         for n in range(self._nbins):
             out_str += "%s, " % self._data[n]
-        out_str += "\n\t> Preds:\n"
-        out_str += "\t\t"
+        
+        out_str += "\n\t> Preds:\n\t\t"
         for n in range(self._nbins):
             out_str += "%s+/-%s, " % (self._pred[n], self._pred_err[n])
 
@@ -55,3 +53,6 @@ class event_cat(object):
         for d, p, perr in zip(self._data, self._pred, self._pred_err):
             self._excess.append(d-p)
             self._excess_err.append(perr)
+
+    def get_excess(self):
+        return self._excess, self._excess_err
