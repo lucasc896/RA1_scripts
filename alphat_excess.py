@@ -41,7 +41,6 @@ def convert_val(val = ''):
 
 def harvest_excess_yields(file = None):
 
-    ht_bins = ["237.5", "300", "350", "425", "525", "625", "725", "825", "925", "1025", "1075"]
     data = []
     pred = []
     pred_err = []
@@ -85,28 +84,33 @@ def get_excess():
     for dir in os.walk(in_dir):
         # change this for mutliple dirs with diff aT thresholds
         if dir[-1]:
+            alpha_key = dir[0].split("_")[-1]
+            yields[alpha_key] = {}
             for file in dir[-1]:
                 file_path = dir[0]+"/"+file
                 this_key = get_file_key(file_path)
                 file = open(file_path)
                 cat_obj = harvest_excess_yields(file)
                 cat_obj._catstring = this_key
-                yields[this_key] = cat_obj
+                yields[alpha_key][this_key] = cat_obj
                 file.close()
+
+    print ""
+    for key in yields:
+        print key, yields[key]
 
     return yields
 
-def get_qcd():
+def get_qcd(alphat_vals = ["0p507"]):
 
     print ">>> Getting QCD yields."
 
-    HTbins = ["200_275","275_325","325_375","375_475","475_575","575_675","675_775","775_875","875_975","975_1075","1075"]
+    HTbins = ["200_275","275_325","325_375","375_475","475_575","575_675","675_775","775_875","875_975","975_1075","1075"][3:]
     ht_scheme = ["incl", "excl"][1]
     n_j = ["eq2j", "eq3j", "eq4j", "ge5j"]
     n_b = ["eq0b", "eq1b", "eq2b", "eq3b", "ge0b"]
     selec = ["OneMuon", "DiMuon", "Had"][2]
     hist_title = ["AlphaT"][0]
-    my_path = "Root_Files_22Feb_gt0p3_latest_aT_0p507_v0"
 
     if ht_scheme == "incl":
         my_iter = [HTbins]
@@ -118,26 +122,28 @@ def get_qcd():
         
     yields = {}
 
-    for nb, nj in product(n_b, n_j):
-        vals = []
-        errs = []
-        for htbin in my_iter:
-            h_mc = grabr.grab_plots(f_path = "/Users/chrislucas/SUSY/AnalysisCode/rootfiles/%s/Had_QCD.root" % my_path,
-                                    sele = selec, h_title = hist_title, njet = nj, btag = nb, ht_bins = htbin, quiet = True)
-            this_err = r.Double(0.)
-            # check this is giving the correct, weighted vals for QCD MC
-            val = h_mc.IntegralAndError(1, h_mc.GetNbinsX(), this_err)
-            vals.append(val)
-            errs.append(this_err)
-        # print nb, nj
-        # print yields
-        # print errs
-        this_key = "%s_%s" % (nb, nj)
-        this_cat = event_cat(pred = vals, pred_err = errs)
-        this_cat._catstring = this_key
-        yields[this_key] = this_cat
+    for alpha_key in alphat_vals:
+        yields[alpha_key] = {}
+        my_path = "Root_Files_22Feb_gt0p3_latest_aT_%s_v0" % alpha_key
+        for nb, nj in product(n_b, n_j):
+            vals = []
+            errs = []
+            for htbin in my_iter:
+                h_mc = grabr.grab_plots(f_path = "/Users/chrislucas/SUSY/AnalysisCode/rootfiles/%s/Had_QCD.root" % my_path,
+                                        sele = selec, h_title = hist_title, njet = nj, btag = nb, ht_bins = htbin, quiet = True)
+                this_err = r.Double(0.)
+                # check this is giving the correct, weighted vals for QCD MC
+                val = h_mc.IntegralAndError(1, h_mc.GetNbinsX(), this_err)
+                vals.append(val)
+                errs.append(this_err)
+            # print nb, nj
+            # print yields
+            # print errs
+            this_key = "%s_%s" % (nb, nj)
+            this_cat = event_cat(pred = vals, pred_err = errs)
+            this_cat._catstring = this_key
+            yields[alpha_key][this_key] = this_cat
 
-    # dict_printer(yields)
     return yields
 
 def make_plots(excess = {}, qcd = {}):
@@ -147,17 +153,19 @@ def make_plots(excess = {}, qcd = {}):
             continue
         excess_val, excess_err = excess[cat].the_excess()
         qcd_val, qcd_err = excess[cat].the_preds()
+        print cat
         for i in range(len(excess_val)):
             print excess_val[i], qcd_val[i]
 
 def main():
     # get excess yields
     excess = get_excess()
+    
     # get qcd yields
-    qcd = get_qcd()
+    qcd = get_qcd(excess.keys())
 
     # make comparison plots
-    make_plots(excess, qcd)
+    # make_plots(excess, qcd)
 
 if __name__ == "__main__":
     main()
