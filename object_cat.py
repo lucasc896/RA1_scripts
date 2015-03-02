@@ -5,21 +5,25 @@ class event_cat(object):
         self._data = data
         self._pred = pred
         self._pred_err = pred_err
+        if self._data:
+            self._hasData = True
         self.check_list_consistency()
-        self._nbins = len(self._data)
+        self._nbins = len(self._pred)
         self.check_val_types()
 
-        self._excess = []
-        self._excess_err = []
-        self.calculate_excess()
+        if self._hasData:
+            self._excess = []
+            self._excess_err = []
+            self.calculate_excess()
 
     def __str__(self):
         out_str = ">> event_cat object (%s):\n" % self._catstring
         
-        out_str += "\t> Data:\n\t\t"
-        for n in range(self._nbins):
-            out_str += "%s, " % self._data[n]
-        
+        if self._hasData:
+            out_str += "\t> Data:\n\t\t"
+            for n in range(len(self._data)):
+                out_str += "%s, " % self._data[n]
+            
         out_str += "\n\t> Preds:\n\t\t"
         for n in range(self._nbins):
             out_str += "%s+/-%s, " % (self._pred[n], self._pred_err[n])
@@ -27,10 +31,11 @@ class event_cat(object):
         return out_str
 
     def check_list_consistency(self):
-        if len(self._data) != len(self._pred):
-            print "data and preds arrays different lengths"
-            print self._data
-            print self._pred
+        if self._hasData:
+            if len(self._data) != len(self._pred):
+                print "data and preds arrays different lengths"
+                print self._data
+                print self._pred
         if len(self._pred) != len(self._pred_err):
             print "preds and pred_errs arrays different lengths"
             print self._pred
@@ -45,7 +50,8 @@ class event_cat(object):
             return float(val)
 
         for n in range(self._nbins):
-            self._data[n] = convert_val(self._data[n])
+            if self._hasData:
+                self._data[n] = convert_val(self._data[n])
             self._pred[n] = convert_val(self._pred[n])
             self._pred_err[n] = convert_val(self._pred_err[n])
 
