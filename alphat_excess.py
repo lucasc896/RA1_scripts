@@ -8,18 +8,6 @@ from sys import exit
 from simplify_tables import harvest_values, remove_whitespace
 from object_cat import event_cat
 
-# options = argparse.ArgumentParser(description ='Produce RA1 Results')
-
-# # options.add_argument('-c',help= 'Make RA1 Closure Tests, Choose all, 1, 2 or 3 or jetcat',nargs='+', type=str)
-# # options.add_argument('-u',help= 'Make RA1 Tables Uncorrected Yields', nargs='+', type=str)
-# # options.add_argument('-m',help= 'Make RA1 MC Normalisation Tables',action="store_true")
-# # options.add_argument('-r',help= 'Make RA1 Root Files, Choose all, 1, 2 or 3',nargs='+',type=str)
-# # options.add_argument('-n',help= 'Make RA1 Tables, Choose all, 1, 2 or 3',nargs='+',type=str)
-# # options.add_argument('-t',help= 'Make Template fitting',choices = ['had','muon']) 
-# # options.add_argument('-j',help= 'Set jet categories fit to default 2,3,4,>=5', nargs='+',type = str,default=["2","3","4","5"])
-# options.add_argument('-d',help= 'For debug use', action="store_true")
-# opts = options.parse_args()
-
 r.gStyle.SetOptStat(0)
 r.gROOT.SetBatch(1)
 grabr.set_palette()
@@ -159,12 +147,14 @@ def make_plots(excess = {}, qcd = {}):
     for cat in excess[alpha_keys[0]]:
         if cat not in qcd[alpha_keys[0]]: continue
 
-        for iht in range(len(HTbins)):
-            combined_distro = r.TMultiGraph()
-            ex_distro = r.TGraphErrors(len(alpha_keys))
-            qcd_distro = r.TGraphErrors(len(alpha_keys))
-            
+        # skip eq2j cats, as we're looking at lt0p3
+        if "eq2j" in cat: continue
 
+        yvals_ex_incl = []
+        yvals_qcd_incl = []
+
+        for iht in range(len(HTbins)):
+            
             xvals_ex = []
             yvals_ex = []
             xvals_qcd = []
@@ -175,30 +165,60 @@ def make_plots(excess = {}, qcd = {}):
                 # very inefficient...
                 ex_vals, ex_err = excess[a_key][cat].the_excess()
                 qcd_vals, qcd_err = qcd[a_key][cat].the_preds()
-                
-                xvals_ex.append(float(a_key.replace("p", ".")))
-                yvals_ex.append(ex_vals[iht])
-                xvals_qcd.append(float(a_key.replace("p", ".")))
-                yvals_qcd.append(qcd_vals[iht])
-            ex_distro = make_single_plot(xvals_ex, yvals_ex)
-            qcd_distro = make_single_plot(xvals_qcd, yvals_qcd)
 
+                xvals_ex.append( [float(a_key.replace("p", ".")), 0.0005] )
+                yvals_ex.append( [ex_vals[iht], ex_err[iht]] )
+                xvals_qcd.append( [float(a_key.replace("p", ".")), 0.0005] )
+                yvals_qcd.append( [qcd_vals[iht], qcd_err[iht]] )
+
+                # sum the excess inclusive selection
+                if n+1 > len(yvals_ex_incl):
+                    yvals_ex_incl.append( [ex_vals[iht], ex_err[iht]] )
+                else:
+                    yvals_ex_incl[n][0] += ex_vals[iht]
+                    yvals_ex_incl[n][1] += ex_err[iht]
+                # sum the qcd inclusive selection
+                if n+1 > len(yvals_qcd_incl):
+                    yvals_qcd_incl.append( [qcd_vals[iht], qcd_err[iht]] )
+                else:
+                    yvals_qcd_incl[n][0] += qcd_vals[iht]
+                    yvals_qcd_incl[n][1] += qcd_err[iht]
+
+            ex_distro = make_single_plot(xvals_ex, yvals_ex, "Excess")
             ex_distro.SetMarkerColor(r.kBlue)
+            qcd_distro = make_single_plot(xvals_qcd, yvals_qcd, "QCD")
             qcd_distro.SetMarkerColor(r.kRed)
-
+            
             mgraph = make_combined_plot([ex_distro, qcd_distro], cat)
-
+            canv.BuildLegend(0.7, 0.8, 0.89, 0.89)
             canv.Print("out/alphat_excess_%s_%s.pdf" % (cat, HTbins[iht]))
 
-def make_single_plot(xvals = [], yvals = []):
+        # now make inclusive HT selection plot
+        ex_distro = make_single_plot(xvals_ex, yvals_ex_incl, "Excess")
+        ex_distro.SetMarkerColor(r.kBlue)
+        qcd_distro = make_single_plot(xvals_qcd, yvals_qcd_incl, "QCD")
+        qcd_distro.SetMarkerColor(r.kRed)
+        
+        mgraph = make_combined_plot([ex_distro, qcd_distro], cat)
+        canv.BuildLegend(0.7, 0.8, 0.89, 0.89)
+        canv.Print("out/alphat_excess_%s_%s.pdf" % (cat,
+            "incl_%s-%s" % (HTbins[0].split("_")[0], "inf" if HTbins[-1] == "1075" else HTbins[-1])))
+
+def make_single_plot(xvals = [], yvals = [], title = ''):
     gr = r.TGraphErrors(len(xvals))
+    gr.SetTitle(title)
+
     if len(xvals) != len(yvals):
+        print len(xvals), len(yvals)
         exit("Bad length.")
+    
     for i in range(len(xvals)):
-        gr.SetPoint(i, xvals[i], yvals[i])
+        gr.SetPoint(i, xvals[i][0], yvals[i][0])
+        gr.SetPointError(i, xvals[i][1], yvals[i][1])
+    
     return gr
 
-def make_combined_plot(graphs = [], title = []):
+def make_combined_plot(graphs = [], title = ''):
     multi_graph = r.TMultiGraph()
 
     for gr in graphs:
@@ -206,6 +226,8 @@ def make_combined_plot(graphs = [], title = []):
     
     multi_graph.Draw("ap*")
     multi_graph.SetMinimum(0.)
+    multi_graph.GetXaxis().SetTitle("#alpha_{T}")
+    multi_graph.GetYaxis().SetTitle("Events")
     multi_graph.SetTitle(title)
 
     return multi_graph
