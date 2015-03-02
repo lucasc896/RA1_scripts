@@ -2,13 +2,14 @@
 import plot_grabber as grabr
 import ROOT as r
 import os
-# import argparse
+import math as ma
 from itertools import product
 from sys import exit
 from simplify_tables import harvest_values, remove_whitespace
 from object_cat import event_cat
 
-r.gStyle.SetOptStat(0)
+# r.gStyle.SetOptStat(0)
+r.gStyle.SetOptFit()
 r.gROOT.SetBatch(1)
 grabr.set_palette()
 
@@ -136,7 +137,7 @@ def get_qcd(alphat_vals = ["0p507"]):
 def make_plots(excess = {}, qcd = {}):
 
     HTbins = ["200_275","275_325","325_375","375_475","475_575","575_675","675_775","775_875","875_975","975_1075","1075"][3:]
-    canv = r.TCanvas()
+    canv = r.TCanvas("canv", "canv", 600, 500)
 
     # get list of alphat vals to plot
     alpha_keys = []
@@ -155,9 +156,8 @@ def make_plots(excess = {}, qcd = {}):
 
         for iht in range(len(HTbins)):
             
-            xvals_ex = []
+            xvals= []
             yvals_ex = []
-            xvals_qcd = []
             yvals_qcd = []
 
             # loop all the viable alphat values
@@ -166,9 +166,8 @@ def make_plots(excess = {}, qcd = {}):
                 ex_vals, ex_err = excess[a_key][cat].the_excess()
                 qcd_vals, qcd_err = qcd[a_key][cat].the_preds()
 
-                xvals_ex.append( [float(a_key.replace("p", ".")), 0.0005] )
+                xvals.append( [float(a_key.replace("p", ".")), 0.0005] )
                 yvals_ex.append( [ex_vals[iht], ex_err[iht]] )
-                xvals_qcd.append( [float(a_key.replace("p", ".")), 0.0005] )
                 yvals_qcd.append( [qcd_vals[iht], qcd_err[iht]] )
 
                 # sum the excess inclusive selection
@@ -184,25 +183,74 @@ def make_plots(excess = {}, qcd = {}):
                     yvals_qcd_incl[n][0] += qcd_vals[iht]
                     yvals_qcd_incl[n][1] += qcd_err[iht]
 
-            ex_distro = make_single_plot(xvals_ex, yvals_ex, "Excess")
+            ex_distro = make_single_plot(xvals, yvals_ex, "Excess")
             ex_distro.SetMarkerColor(r.kBlue)
-            qcd_distro = make_single_plot(xvals_qcd, yvals_qcd, "QCD")
+            qcd_distro = make_single_plot(xvals, yvals_qcd, "QCD")
             qcd_distro.SetMarkerColor(r.kRed)
-            
+
             mgraph = make_combined_plot([ex_distro, qcd_distro], cat)
             canv.BuildLegend(0.7, 0.8, 0.89, 0.89)
-            canv.Print("out/alphat_excess_%s_%s.pdf" % (cat, HTbins[iht]))
+            # canv.Print("out/alphat_excess_%s_%s.pdf" % (cat, HTbins[iht]))
+
+        fit_func = ["pol1", "expo"][1]
 
         # now make inclusive HT selection plot
-        ex_distro = make_single_plot(xvals_ex, yvals_ex_incl, "Excess")
+        ex_distro = make_single_plot(xvals, yvals_ex_incl, "Excess")
         ex_distro.SetMarkerColor(r.kBlue)
-        qcd_distro = make_single_plot(xvals_qcd, yvals_qcd_incl, "QCD")
+        ex_distro.Fit(fit_func, "q")
+        ex_distro.GetFunction(fit_func).SetLineColor(r.kBlue)
+        ex_distro.Draw("ap*")
+
+        qcd_distro = make_single_plot(xvals, yvals_qcd_incl, "QCD")
         qcd_distro.SetMarkerColor(r.kRed)
-        
-        mgraph = make_combined_plot([ex_distro, qcd_distro], cat)
+        qcd_distro.Fit(fit_func, "q")
+        qcd_distro.Draw("ap*")
+
+        ratio_vals = []
+        for a, b, in zip(yvals_ex_incl, yvals_qcd_incl):
+            try:
+                ratio = a[0]/b[0]
+                ratio_err = ratio * ma.sqrt( ma.pow(a[1]/a[0], 2) + ma.pow(b[1]/b[0], 2) )
+                ratio_vals.append( [ratio, ratio_err] )
+            except ZeroDivisionError:
+                ratio_vals.append( [0, 0.0] )
+        ratio_graph = make_single_plot(xvals, ratio_vals, "%s - Excess/QCD" % cat)
+        ratio_graph.Draw("ap*")
+        ratio_graph.GetXaxis().SetTitle("#alpha_{T}")
+        ratio_graph.GetYaxis().SetTitle("Events")
+        ratio_graph.GetYaxis().SetRangeUser(0., 3.5)
+        ratio_graph.Fit("pol0", "q")
+        canv.Print("out/alphat_excess_%s_%s_ratio.pdf" % (cat,
+            "incl_%s-%s" % (HTbins[0].split("_")[0], "inf" if HTbins[-1] == "1075" else HTbins[-1].split("_")[1])))
+
+        mgraph = make_combined_plot([ex_distro, qcd_distro], "%s - Yields" % cat)
+
         canv.BuildLegend(0.7, 0.8, 0.89, 0.89)
+        canv.SetGridx(1)
+        canv.SetGridy(1)
+        # canv.SetLogy(1)
+
+        r.gPad.Update()
+        stats_ex = ex_distro.GetListOfFunctions().FindObject("stats")
+        stats_ex.SetTextColor(r.kBlue)
+        stats_ex.SetX1NDC(0.75)
+        stats_ex.SetX2NDC(0.89)
+        stats_ex.SetY1NDC(0.7)
+        stats_ex.SetY2NDC(0.79)
+        stats_ex.Draw()
+
+        stats_qcd = qcd_distro.GetListOfFunctions().FindObject("stats")
+        stats_qcd.SetTextColor(r.kRed)
+        stats_qcd.SetX1NDC(0.75)
+        stats_qcd.SetX2NDC(0.89)
+        stats_qcd.SetY1NDC(0.6)
+        stats_qcd.SetY2NDC(0.69)
+        stats_qcd.Draw()
+
+        canv.Modified()
+        
         canv.Print("out/alphat_excess_%s_%s.pdf" % (cat,
-            "incl_%s-%s" % (HTbins[0].split("_")[0], "inf" if HTbins[-1] == "1075" else HTbins[-1])))
+            "incl_%s-%s" % (HTbins[0].split("_")[0], "inf" if HTbins[-1] == "1075" else HTbins[-1].split("_")[1])))
 
 def make_single_plot(xvals = [], yvals = [], title = ''):
     gr = r.TGraphErrors(len(xvals))
@@ -224,11 +272,11 @@ def make_combined_plot(graphs = [], title = ''):
     for gr in graphs:
         multi_graph.Add(gr)
     
+    multi_graph.SetTitle(title)
     multi_graph.Draw("ap*")
-    multi_graph.SetMinimum(0.)
+    multi_graph.SetMinimum(0.001)
     multi_graph.GetXaxis().SetTitle("#alpha_{T}")
     multi_graph.GetYaxis().SetTitle("Events")
-    multi_graph.SetTitle(title)
 
     return multi_graph
 
