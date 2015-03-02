@@ -21,6 +21,7 @@ from object_cat import event_cat
 # opts = options.parse_args()
 
 r.gStyle.SetOptStat(0)
+r.gROOT.SetBatch(1)
 grabr.set_palette()
 
 def dict_printer(dicto = {}, indent = 1):
@@ -82,7 +83,7 @@ def get_excess():
 
     in_dir = "/Users/chrislucas/SUSY/AnalysisCode/RA1_scripts/in"
     for dir in os.walk(in_dir):
-        # change this for mutliple dirs with diff aT thresholds
+        # change this for multiple dirs with diff aT thresholds
         if dir[-1]:
             alpha_key = dir[0].split("_")[-1]
             yields[alpha_key] = {}
@@ -95,9 +96,9 @@ def get_excess():
                 yields[alpha_key][this_key] = cat_obj
                 file.close()
 
-    print ""
-    for key in yields:
-        print key, yields[key]
+    # print ""
+    # for key in yields:
+    #     print key, yields[key]
 
     return yields
 
@@ -124,7 +125,7 @@ def get_qcd(alphat_vals = ["0p507"]):
 
     for alpha_key in alphat_vals:
         yields[alpha_key] = {}
-        my_path = "Root_Files_22Feb_gt0p3_latest_aT_%s_v0" % alpha_key
+        my_path = "Root_Files_22Feb_lt0p3_latest_aT_%s_v0" % alpha_key
         for nb, nj in product(n_b, n_j):
             vals = []
             errs = []
@@ -136,9 +137,7 @@ def get_qcd(alphat_vals = ["0p507"]):
                 val = h_mc.IntegralAndError(1, h_mc.GetNbinsX(), this_err)
                 vals.append(val)
                 errs.append(this_err)
-            # print nb, nj
-            # print yields
-            # print errs
+
             this_key = "%s_%s" % (nb, nj)
             this_cat = event_cat(pred = vals, pred_err = errs)
             this_cat._catstring = this_key
@@ -148,14 +147,68 @@ def get_qcd(alphat_vals = ["0p507"]):
 
 def make_plots(excess = {}, qcd = {}):
 
-    for cat in excess:
-        if cat not in qcd.keys():
-            continue
-        excess_val, excess_err = excess[cat].the_excess()
-        qcd_val, qcd_err = excess[cat].the_preds()
-        print cat
-        for i in range(len(excess_val)):
-            print excess_val[i], qcd_val[i]
+    HTbins = ["200_275","275_325","325_375","375_475","475_575","575_675","675_775","775_875","875_975","975_1075","1075"][3:]
+    canv = r.TCanvas()
+
+    # get list of alphat vals to plot
+    alpha_keys = []
+    for alpha in excess:
+        if alpha not in qcd.keys(): continue
+        alpha_keys.append(alpha)
+
+    for cat in excess[alpha_keys[0]]:
+        if cat not in qcd[alpha_keys[0]]: continue
+
+        for iht in range(len(HTbins)):
+            combined_distro = r.TMultiGraph()
+            ex_distro = r.TGraphErrors(len(alpha_keys))
+            qcd_distro = r.TGraphErrors(len(alpha_keys))
+            
+
+            xvals_ex = []
+            yvals_ex = []
+            xvals_qcd = []
+            yvals_qcd = []
+
+            # loop all the viable alphat values
+            for n, a_key in enumerate(alpha_keys):
+                # very inefficient...
+                ex_vals, ex_err = excess[a_key][cat].the_excess()
+                qcd_vals, qcd_err = qcd[a_key][cat].the_preds()
+                
+                xvals_ex.append(float(a_key.replace("p", ".")))
+                yvals_ex.append(ex_vals[iht])
+                xvals_qcd.append(float(a_key.replace("p", ".")))
+                yvals_qcd.append(qcd_vals[iht])
+            ex_distro = make_single_plot(xvals_ex, yvals_ex)
+            qcd_distro = make_single_plot(xvals_qcd, yvals_qcd)
+
+            ex_distro.SetMarkerColor(r.kBlue)
+            qcd_distro.SetMarkerColor(r.kRed)
+
+            mgraph = make_combined_plot([ex_distro, qcd_distro], cat)
+
+            canv.Print("out/alphat_excess_%s_%s.pdf" % (cat, HTbins[iht]))
+
+def make_single_plot(xvals = [], yvals = []):
+    gr = r.TGraphErrors(len(xvals))
+    if len(xvals) != len(yvals):
+        exit("Bad length.")
+    for i in range(len(xvals)):
+        gr.SetPoint(i, xvals[i], yvals[i])
+    return gr
+
+def make_combined_plot(graphs = [], title = []):
+    multi_graph = r.TMultiGraph()
+
+    for gr in graphs:
+        multi_graph.Add(gr)
+    
+    multi_graph.Draw("ap*")
+    multi_graph.SetMinimum(0.)
+    multi_graph.SetTitle(title)
+
+    return multi_graph
 
 def main():
     # get excess yields
@@ -165,7 +218,7 @@ def main():
     qcd = get_qcd(excess.keys())
 
     # make comparison plots
-    # make_plots(excess, qcd)
+    make_plots(excess, qcd)
 
 if __name__ == "__main__":
     main()
