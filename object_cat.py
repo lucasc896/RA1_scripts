@@ -7,6 +7,8 @@ class event_cat(object):
         self._pred_err = pred_err
         if self._data:
             self._hasData = True
+        else:
+            self._hasData = False
         self.check_list_consistency()
         self._nbins = len(self._pred)
         self.check_val_types()
@@ -60,5 +62,8 @@ class event_cat(object):
             self._excess.append(d-p)
             self._excess_err.append(perr)
 
-    def get_excess(self):
+    def the_excess(self):
         return self._excess, self._excess_err
+
+    def the_preds(self):
+        return self._pred, self._pred_err
