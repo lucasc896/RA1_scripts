@@ -207,18 +207,18 @@ def make_plots(excess = {}, qcd = {}):
         qcd_distro.Draw("ap*")
 
         ratio_vals = []
-        for a, b, in zip(yvals_ex_incl, yvals_qcd_incl):
+        for a, b, in zip(yvals_qcd_incl, yvals_ex_incl):
             try:
                 ratio = a[0]/b[0]
                 ratio_err = ratio * ma.sqrt( ma.pow(a[1]/a[0], 2) + ma.pow(b[1]/b[0], 2) )
                 ratio_vals.append( [ratio, ratio_err] )
             except ZeroDivisionError:
                 ratio_vals.append( [0, 0.0] )
-        ratio_graph = make_single_plot(xvals, ratio_vals, "%s - Excess/QCD" % cat)
+        ratio_graph = make_single_plot(xvals, ratio_vals, "%s - QCD/Excess" % cat)
         ratio_graph.Draw("ap*")
         ratio_graph.GetXaxis().SetTitle("#alpha_{T}")
         ratio_graph.GetYaxis().SetTitle("Events")
-        ratio_graph.GetYaxis().SetRangeUser(0., 3.5)
+        ratio_graph.GetYaxis().SetRangeUser(0., 2.)
         ratio_graph.Fit("pol0", "q")
         canv.Print("out/alphat_excess_%s_%s_ratio.pdf" % (cat,
             "incl_%s-%s" % (HTbins[0].split("_")[0], "inf" if HTbins[-1] == "1075" else HTbins[-1].split("_")[1])))
@@ -248,7 +248,7 @@ def make_plots(excess = {}, qcd = {}):
         stats_qcd.Draw()
 
         canv.Modified()
-        
+
         canv.Print("out/alphat_excess_%s_%s.pdf" % (cat,
             "incl_%s-%s" % (HTbins[0].split("_")[0], "inf" if HTbins[-1] == "1075" else HTbins[-1].split("_")[1])))
 
