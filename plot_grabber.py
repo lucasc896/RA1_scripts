@@ -79,7 +79,7 @@ def jet_string(jet = ""):
     except KeyError:
         return None
 
-def trig_eff(sele = "OneMuon", ht = "", njet = ""):
+def trig_eff(sele = "OneMuon", ht = "", njet = "", quiet = False):
     """ list trigger efficiencies """
 
     # if inclusive jet selection, use ge5j effs
@@ -126,11 +126,12 @@ def trig_eff(sele = "OneMuon", ht = "", njet = ""):
                 "975_1":1.,  "975_2":1.,   "975_3":1.,  "975_4":1.,
                 "1075_1":1., "1075_2":1.,  "1075_3":1., "1075_4":1.,}
 
-    print "> Trig corr (%s): %.3f" % (ht+"_"+njet, d[ht+"_"+njet])
+    if not quiet:
+        print "> Trig corr (%s): %.3f" % (ht+"_"+njet, d[ht+"_"+njet])
 
     return d[ht+"_"+njet]
 
-def lumi(sele = "mu"):
+def lumi(sele = "mu", quiet = False):
     """get the luminosity in fb-1"""
 
     d = {
@@ -140,11 +141,12 @@ def lumi(sele = "mu"):
             "ph": 19.12,
     }
 
-    print "> Lumi corr (%s): %.3f (*10.)" % (sele, d[sele])
+    if not quiet:
+        print "> Lumi corr (%s): %.3f (*10.)" % (sele, d[sele])
 
     return d[sele]*10.
 
-def sb_corr(samp = ""):
+def sb_corr(samp = "", quiet = False):
     """get the process sideband correction"""
 
     d = {
@@ -158,13 +160,14 @@ def sb_corr(samp = ""):
             "QCD": 1.,
     }
 
-    print "> Sb corr (%s): %.2f" % (samp, d[samp])
-    if samp == "EWK":
-        print ">>> Note: EWK root file has no distinct sb corr. Weight = 1."
+    if not quiet:
+        print "> Sb corr (%s): %.2f" % (samp, d[samp])
+        if samp == "EWK":
+            print ">>> Note: EWK root file has no distinct sb corr. Weight = 1."
 
     return d[samp]
 
-def grab_plots(f_path = "", h_title = "", sele = "OneMuon", njet = "", btag = "", ht_bins = []):
+def grab_plots(f_path = "", h_title = "", sele = "OneMuon", njet = "", btag = "", ht_bins = [], quiet = False):
     """main function to extract single plot from various cats"""
 
     if f_path:
@@ -186,10 +189,10 @@ def grab_plots(f_path = "", h_title = "", sele = "OneMuon", njet = "", btag = ""
             # apply ht bin trig effs
             h.Scale( trig_eff(sele = sele,
                             ht = d.split("_")[-2] if "1075" != d[-4:] else d.split("_")[-1],
-                            njet = jet_string(njet)) )
+                            njet = jet_string(njet), quiet = quiet) )
             if "SMS" not in f_path.split("/")[-1]:
-                h.Scale( sb_corr(f_path.split("/")[-1].split("_")[1][:-5]) )
-            h.Scale( lumi(sele) )
+                h.Scale( sb_corr(f_path.split("/")[-1].split("_")[1][:-5], quiet = quiet) )
+            h.Scale( lumi(sele, quiet = quiet) )
         if not h_total:
             h_total = h.Clone()
         else:
