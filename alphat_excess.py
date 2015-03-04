@@ -134,9 +134,30 @@ def get_qcd(alphat_vals = ["0p507"]):
 
     return yields
 
+def alpha_order(alpha = []):
+    out = []
+
+    def get_val(string = ''):
+        return float(string.replace("p", "."))
+
+    while True:
+        if len(alpha) == 0: break
+        min = '1p0'
+        ind = 0
+        for n, key in enumerate(alpha):
+            if get_val(key) < get_val(min):
+                min = key
+                index = n
+        out.append(min)
+        alpha.pop(index)
+
+    return out
+
 def make_plots(excess = {}, qcd = {}):
 
     HTbins = ["200_275","275_325","325_375","375_475","475_575","575_675","675_775","775_875","875_975","975_1075","1075"][3:]
+    mode = ["cumu", "diff"][0]
+    fit_func = ["pol1", "expo"][1]
     canv = r.TCanvas("canv", "canv", 600, 500)
 
     # get list of alphat vals to plot
@@ -145,11 +166,15 @@ def make_plots(excess = {}, qcd = {}):
         if alpha not in qcd.keys(): continue
         alpha_keys.append(alpha)
 
+    # sort alphat keys into ascending cut order
+    alpha_keys = alpha_order(alpha_keys)
+
     for cat in excess[alpha_keys[0]]:
         if cat not in qcd[alpha_keys[0]]: continue
 
         # skip eq2j cats, as we're looking at lt0p3
         if "eq2j" in cat: continue
+        if cat not in cat_white_list(): continue
 
         yvals_ex_incl = []
         yvals_qcd_incl = []
@@ -175,13 +200,25 @@ def make_plots(excess = {}, qcd = {}):
                     yvals_ex_incl.append( [ex_vals[iht], ex_err[iht]] )
                 else:
                     yvals_ex_incl[n][0] += ex_vals[iht]
-                    yvals_ex_incl[n][1] += ex_err[iht]
+                    # yvals_ex_incl[n][1] += ex_err[iht]
+                    yvals_ex_incl[n][1] += ma.pow(ex_err[iht], 2)
                 # sum the qcd inclusive selection
                 if n+1 > len(yvals_qcd_incl):
                     yvals_qcd_incl.append( [qcd_vals[iht], qcd_err[iht]] )
                 else:
                     yvals_qcd_incl[n][0] += qcd_vals[iht]
-                    yvals_qcd_incl[n][1] += qcd_err[iht]
+                    # yvals_qcd_incl[n][1] += qcd_err[iht]
+                    yvals_qcd_incl[n][1] += ma.pow(qcd_err[iht], 2)
+
+            if mode == "diff":
+                # differential mode - split into bins of alphat
+                for iy in range(len(yvals_ex)):
+                    if iy+1 == len(yvals_ex): continue #skip the last entry in the list
+                    yvals_ex[iy][0] -= yvals_ex[iy+1][0] #ex_value
+                    yvals_ex[iy][1] += yvals_ex[iy+1][1] #ex_err
+                    yvals_qcd[iy][0] -= yvals_qcd[iy+1][0] #qcd_value
+                    yvals_qcd[iy][1] += yvals_qcd[iy+1][1] #qcd_err
+
 
             ex_distro = make_single_plot(xvals, yvals_ex, "Excess")
             ex_distro.SetMarkerColor(r.kBlue)
@@ -192,7 +229,22 @@ def make_plots(excess = {}, qcd = {}):
             canv.BuildLegend(0.7, 0.8, 0.89, 0.89)
             # canv.Print("out/alphat_excess_%s_%s.pdf" % (cat, HTbins[iht]))
 
-        fit_func = ["pol1", "expo"][1]
+
+        # sqrt for inclusive sum errors, summed in quadrature
+        for n in range(len(yvals_ex_incl)):
+            yvals_ex_incl[n][1] = ma.pow(yvals_ex_incl[n][1], 0.5)
+            yvals_qcd_incl[n][1] = ma.pow(yvals_qcd_incl[n][1], 0.5)
+
+        if mode == "diff":
+            # differential mode - split into bins of alphat
+            for iy in range(len(yvals_ex_incl)):
+                if iy+1 == len(yvals_ex_incl): continue #skip the last entry in the list
+                yvals_ex_incl[iy][0] -= yvals_ex_incl[iy+1][0] #ex_value
+                yvals_ex_incl[iy][1] += yvals_ex_incl[iy+1][1] #ex_err
+
+                yvals_qcd_incl[iy][0] -= yvals_qcd_incl[iy+1][0] #qcd_value
+                yvals_qcd_incl[iy][1] -= yvals_qcd_incl[iy+1][1] #qcd_err
+
 
         # now make inclusive HT selection plot
         ex_distro = make_single_plot(xvals, yvals_ex_incl, "Excess")
@@ -220,8 +272,8 @@ def make_plots(excess = {}, qcd = {}):
         ratio_graph.GetYaxis().SetTitle("Events")
         ratio_graph.GetYaxis().SetRangeUser(0., 2.)
         ratio_graph.Fit("pol0", "q")
-        canv.Print("out/alphat_excess_%s_%s_ratio.pdf" % (cat,
-            "incl_%s-%s" % (HTbins[0].split("_")[0], "inf" if HTbins[-1] == "1075" else HTbins[-1].split("_")[1])))
+        canv.Print("out/alphat_excess_%s_%s_%s_ratio.pdf" % (cat,
+            "incl_%s-%s" % (HTbins[0].split("_")[0], "inf" if HTbins[-1] == "1075" else HTbins[-1].split("_")[1]), mode))
 
         mgraph = make_combined_plot([ex_distro, qcd_distro], "%s - Yields" % cat)
 
@@ -249,8 +301,8 @@ def make_plots(excess = {}, qcd = {}):
 
         canv.Modified()
 
-        canv.Print("out/alphat_excess_%s_%s.pdf" % (cat,
-            "incl_%s-%s" % (HTbins[0].split("_")[0], "inf" if HTbins[-1] == "1075" else HTbins[-1].split("_")[1])))
+        canv.Print("out/alphat_excess_%s_%s_%s.pdf" % (cat,
+            "incl_%s-%s" % (HTbins[0].split("_")[0], "inf" if HTbins[-1] == "1075" else HTbins[-1].split("_")[1]), mode))
 
 def make_single_plot(xvals = [], yvals = [], title = ''):
     gr = r.TGraphErrors(len(xvals))
@@ -279,6 +331,20 @@ def make_combined_plot(graphs = [], title = ''):
     multi_graph.GetYaxis().SetTitle("Events")
 
     return multi_graph
+
+def cat_white_list():
+    out = [
+            "eq0b_eq3j",
+            "eq0b_eq4j",
+            "eq0b_ge5j",
+            "eq1b_eq3j",
+            "eq1b_eq4j",
+            "eq1b_ge5j",
+            "ge0b_eq3j",
+            "ge0b_eq4j",
+            "ge0b_ge5j",
+            ]
+    return out
 
 def main():
     # get excess yields
