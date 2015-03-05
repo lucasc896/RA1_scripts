@@ -122,7 +122,6 @@ def get_qcd(alphat_vals = ["0p507"]):
                 h_mc = grabr.grab_plots(f_path = "/Users/chrislucas/SUSY/AnalysisCode/rootfiles/%s/Had_QCD.root" % my_path,
                                         sele = selec, h_title = hist_title, njet = nj, btag = nb, ht_bins = htbin, quiet = True)
                 this_err = r.Double(0.)
-                # check this is giving the correct, weighted vals for QCD MC
                 val = h_mc.IntegralAndError(1, h_mc.GetNbinsX(), this_err)
                 vals.append(val)
                 errs.append(this_err)
@@ -158,7 +157,7 @@ def make_plots(excess = {}, qcd = {}):
     HTbins = ["200_275","275_325","325_375","375_475","475_575","575_675","675_775","775_875","875_975","975_1075","1075"][3:]
     mode = ["cumu", "diff"][0]
     fit_func = ["pol1", "expo"][1]
-    canv = r.TCanvas("canv", "canv", 600, 500)
+    canv = r.TCanvas("canv", "canv", 450, 450)
 
     # get list of alphat vals to plot
     alpha_keys = []
@@ -215,9 +214,11 @@ def make_plots(excess = {}, qcd = {}):
                 for iy in range(len(yvals_ex)):
                     if iy+1 == len(yvals_ex): continue #skip the last entry in the list
                     yvals_ex[iy][0] -= yvals_ex[iy+1][0] #ex_value
-                    yvals_ex[iy][1] += yvals_ex[iy+1][1] #ex_err
+                    yvals_ex[iy][1] = ma.pow(yvals_ex[iy][1], 2) - ma.pow(yvals_ex[iy+1][1], 2) #ex_err
+                    yvals_ex[iy][1] = ma.pow(yvals_ex[iy][1], 0.5)
                     yvals_qcd[iy][0] -= yvals_qcd[iy+1][0] #qcd_value
-                    yvals_qcd[iy][1] += yvals_qcd[iy+1][1] #qcd_err
+                    yvals_qcd[iy][1] = ma.pow(yvals_qcd[iy][1], 2) - ma.pow(yvals_qcd[iy+1][1], 2) #qcd_err
+                    yvals_qcd[iy][1] = ma.pow(yvals_qcd[iy][1], 0.5)
 
 
             ex_distro = make_single_plot(xvals, yvals_ex, "Excess")
@@ -240,11 +241,12 @@ def make_plots(excess = {}, qcd = {}):
             for iy in range(len(yvals_ex_incl)):
                 if iy+1 == len(yvals_ex_incl): continue #skip the last entry in the list
                 yvals_ex_incl[iy][0] -= yvals_ex_incl[iy+1][0] #ex_value
-                yvals_ex_incl[iy][1] += yvals_ex_incl[iy+1][1] #ex_err
-
+                yvals_ex_incl[iy][1] = ma.pow(yvals_ex_incl[iy][1], 2) - ma.pow(yvals_ex_incl[iy+1][1], 2) #ex_err
+                yvals_ex_incl[iy][1] = ma.pow(yvals_ex_incl[iy][1], 0.5) # subtracted in quadrature
+                
                 yvals_qcd_incl[iy][0] -= yvals_qcd_incl[iy+1][0] #qcd_value
-                yvals_qcd_incl[iy][1] -= yvals_qcd_incl[iy+1][1] #qcd_err
-
+                yvals_qcd_incl[iy][1] = ma.pow(yvals_qcd_incl[iy][1], 2) - ma.pow(yvals_qcd_incl[iy+1][1], 2) #qcd_err
+                yvals_qcd_incl[iy][1] = ma.pow(yvals_qcd_incl[iy][1], 0.5) # subtracted in quadrature
 
         # now make inclusive HT selection plot
         ex_distro = make_single_plot(xvals, yvals_ex_incl, "Excess")
@@ -265,7 +267,7 @@ def make_plots(excess = {}, qcd = {}):
                 ratio_err = ratio * ma.sqrt( ma.pow(a[1]/a[0], 2) + ma.pow(b[1]/b[0], 2) )
                 ratio_vals.append( [ratio, ratio_err] )
             except ZeroDivisionError:
-                ratio_vals.append( [0, 0.0] )
+                ratio_vals.append( [0, 1.0] ) # if the above calc doesn't work out, set to zero with large err, so fit isn't pulled
         ratio_graph = make_single_plot(xvals, ratio_vals, "%s - QCD/Excess" % cat)
         ratio_graph.Draw("ap*")
         ratio_graph.GetXaxis().SetTitle("#alpha_{T}")
@@ -281,6 +283,8 @@ def make_plots(excess = {}, qcd = {}):
         canv.SetGridx(1)
         canv.SetGridy(1)
         # canv.SetLogy(1)
+
+        canv.SetRightMargin(0.03)
 
         r.gPad.Update()
         stats_ex = ex_distro.GetListOfFunctions().FindObject("stats")
