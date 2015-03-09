@@ -72,6 +72,7 @@ def jet_string(jet = ""):
         "eq3j": "2",
         "eq4j": "3",
         "ge5j": "4",
+        "ge2j": "all",
     }
 
     try:
@@ -148,6 +149,9 @@ def lumi(sele = "mu", quiet = False):
 
 def sb_corr(samp = "", quiet = False):
     """get the process sideband correction"""
+
+    if not samp:
+        return 1.
 
     d = {
             "Zinv": .94,
