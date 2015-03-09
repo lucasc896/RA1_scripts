@@ -29,6 +29,16 @@ def convert_val(val = ''):
         return 0.
     return float(val)
 
+def get_ht_bins(line_split = []):
+
+    bins = []
+    for ent in line_split[1:]:
+        ent = ent.rstrip("$\\infty$           \\\\ \n")
+        ent = ent.replace("--", "_")
+        ent = ent.rstrip("_")
+        bins.append(ent)
+    return bins
+
 def harvest_excess_yields(file = None):
 
     data = []
@@ -36,13 +46,16 @@ def harvest_excess_yields(file = None):
     pred_err = []
     excess = []
     excess_err = []
+    htbins = []
 
     for n, line in enumerate(file.readlines()):
         if n>50: # skip lines beyond first table 
             break
         line_split = line.split("&")
         line_split = remove_whitespace(line_split)
-        if line_split[0] == "Total SM prediction":
+        if "Bin" in line_split[0]:
+            htbins += get_ht_bins(line_split)
+        elif line_split[0] == "Total SM prediction":
             # print ">>> BG harvest:"
             harvest_values(line_split, pred, pred_err)
         elif line_split[0] == "Hadronic yield from data":
@@ -50,14 +63,14 @@ def harvest_excess_yields(file = None):
             harvest_values(line_split, data)
 
     # return an event_cat object, which handles excess and err calc
-    return event_cat(data, pred, pred_err)
+    return event_cat(data, pred, pred_err, htbins)
 
 def get_file_key(str = ''):
 
     tmp_split = str.split("/")[-1]
     tmp_split = tmp_split.split(".")[0]
     tmp_split = tmp_split.split("_")
-    
+
     bcat = "ge0" if tmp_split[-3] == "Inc" else tmp_split[-3]
     jcat = "ge2" if tmp_split[-1] == "inclusive" else tmp_split[-1]
 
@@ -70,13 +83,15 @@ def get_excess():
 
     yields = {}
 
-    in_dir = "/Users/chrislucas/SUSY/AnalysisCode/RA1_scripts/in"
+    in_dir = "/Users/chrislucas/SUSY/AnalysisCode/RA1_scripts/in/"
     for dir in os.walk(in_dir):
         # change this for multiple dirs with diff aT thresholds
         if dir[-1]:
+            if "TexFiles" not in dir[0]: continue
             alpha_key = dir[0].split("_")[-1]
             yields[alpha_key] = {}
             for file in dir[-1]:
+                if ".tex" not in file: continue
                 file_path = dir[0]+"/"+file
                 this_key = get_file_key(file_path)
                 file = open(file_path)
@@ -91,13 +106,12 @@ def get_excess():
 
     return yields
 
-def get_qcd(alphat_vals = ["0p507"]):
+def get_qcd(alphat_vals = ["0p507"], HTbins = []):
 
     print ">>> Getting QCD yields."
 
-    HTbins = ["200_275","275_325","325_375","375_475","475_575","575_675","675_775","775_875","875_975","975_1075","1075"][3:]
     ht_scheme = ["incl", "excl"][1]
-    n_j = ["eq2j", "eq3j", "eq4j", "ge5j"]
+    n_j = ["eq2j", "eq3j", "eq4j", "ge5j", "ge2j"]
     n_b = ["eq0b", "eq1b", "eq2b", "eq3b", "ge0b"]
     selec = ["OneMuon", "DiMuon", "Had"][2]
     hist_title = ["AlphaT"][0]
@@ -121,13 +135,16 @@ def get_qcd(alphat_vals = ["0p507"]):
             for htbin in my_iter:
                 h_mc = grabr.grab_plots(f_path = "/Users/chrislucas/SUSY/AnalysisCode/rootfiles/%s/Had_QCD.root" % my_path,
                                         sele = selec, h_title = hist_title, njet = nj, btag = nb, ht_bins = htbin, quiet = True)
+                # h_mc = grabr.grab_plots(f_path = "/Users/chrislucas/SUSY/AnalysisCode/rootfiles/Root_Files_05Mar_lt0p3_latest_SMS_variousAlphaT_v0/Had_T2_4body_250_240_aT_%s.root" % alpha_key,
+                #                         sele = selec, h_title = hist_title, njet = nj, btag = nb, ht_bins = htbin, quiet = True)
+                h_mc.Scale(0.01)
                 this_err = r.Double(0.)
                 val = h_mc.IntegralAndError(1, h_mc.GetNbinsX(), this_err)
                 vals.append(val)
                 errs.append(this_err)
 
             this_key = "%s_%s" % (nb, nj)
-            this_cat = event_cat(pred = vals, pred_err = errs)
+            this_cat = event_cat(pred = vals, pred_err = errs, ht_bins = my_iter)
             this_cat._catstring = this_key
             yields[alpha_key][this_key] = this_cat
 
@@ -152,9 +169,9 @@ def alpha_order(alpha = []):
 
     return out
 
-def make_plots(excess = {}, qcd = {}):
+def make_plots(excess = {}, qcd = {}, HTbins = []):
 
-    HTbins = ["200_275","275_325","325_375","375_475","475_575","575_675","675_775","775_875","875_975","975_1075","1075"][3:]
+    # HTbins = ["200_275","275_325","325_375","375_475","475_575","575_675","675_775","775_875","875_975","975_1075","1075"][3:]
     mode = ["cumu", "diff"][0]
     fit_func = ["pol1", "expo"][1]
     canv = r.TCanvas("canv", "canv", 450, 450)
@@ -169,6 +186,7 @@ def make_plots(excess = {}, qcd = {}):
     alpha_keys = alpha_order(alpha_keys)
 
     for cat in excess[alpha_keys[0]]:
+
         if cat not in qcd[alpha_keys[0]]: continue
 
         # skip eq2j cats, as we're looking at lt0p3
@@ -224,6 +242,7 @@ def make_plots(excess = {}, qcd = {}):
             ex_distro = make_single_plot(xvals, yvals_ex, "Excess")
             ex_distro.SetMarkerColor(r.kBlue)
             qcd_distro = make_single_plot(xvals, yvals_qcd, "QCD")
+            # qcd_distro = make_single_plot(xvals, yvals_qcd, "T2cc (250, 240)")
             qcd_distro.SetMarkerColor(r.kRed)
 
             mgraph = make_combined_plot([ex_distro, qcd_distro], cat)
@@ -251,13 +270,14 @@ def make_plots(excess = {}, qcd = {}):
         # now make inclusive HT selection plot
         ex_distro = make_single_plot(xvals, yvals_ex_incl, "Excess")
         ex_distro.SetMarkerColor(r.kBlue)
-        ex_distro.Fit(fit_func, "q")
-        ex_distro.GetFunction(fit_func).SetLineColor(r.kBlue)
+        # ex_distro.Fit(fit_func, "q")
+        # ex_distro.GetFunction(fit_func).SetLineColor(r.kBlue)
         ex_distro.Draw("ap*")
 
         qcd_distro = make_single_plot(xvals, yvals_qcd_incl, "QCD")
+        # qcd_distro = make_single_plot(xvals, yvals_qcd_incl, "T2cc (250, 240)")
         qcd_distro.SetMarkerColor(r.kRed)
-        qcd_distro.Fit(fit_func, "q")
+        # qcd_distro.Fit(fit_func, "q")
         qcd_distro.Draw("ap*")
 
         ratio_vals = []
@@ -269,9 +289,10 @@ def make_plots(excess = {}, qcd = {}):
             except ZeroDivisionError:
                 ratio_vals.append( [0, 1.0] ) # if the above calc doesn't work out, set to zero with large err, so fit isn't pulled
         ratio_graph = make_single_plot(xvals, ratio_vals, "%s - QCD/Excess" % cat)
+        # ratio_graph = make_single_plot(xvals, ratio_vals, "%s - T2cc/Excess" % cat)
         ratio_graph.Draw("ap*")
         ratio_graph.GetXaxis().SetTitle("#alpha_{T}")
-        ratio_graph.GetYaxis().SetTitle("Events")
+        ratio_graph.GetYaxis().SetTitle("Ratio")
         ratio_graph.GetYaxis().SetRangeUser(0., 2.)
         ratio_graph.Fit("pol0", "q")
         canv.Print("out/alphat_excess_%s_%s_%s_ratio.pdf" % (cat,
@@ -287,21 +308,21 @@ def make_plots(excess = {}, qcd = {}):
         canv.SetRightMargin(0.03)
 
         r.gPad.Update()
-        stats_ex = ex_distro.GetListOfFunctions().FindObject("stats")
-        stats_ex.SetTextColor(r.kBlue)
-        stats_ex.SetX1NDC(0.75)
-        stats_ex.SetX2NDC(0.89)
-        stats_ex.SetY1NDC(0.7)
-        stats_ex.SetY2NDC(0.79)
-        stats_ex.Draw()
+        # stats_ex = ex_distro.GetListOfFunctions().FindObject("stats")
+        # stats_ex.SetTextColor(r.kBlue)
+        # stats_ex.SetX1NDC(0.75)
+        # stats_ex.SetX2NDC(0.89)
+        # stats_ex.SetY1NDC(0.7)
+        # stats_ex.SetY2NDC(0.79)
+        # stats_ex.Draw()
 
-        stats_qcd = qcd_distro.GetListOfFunctions().FindObject("stats")
-        stats_qcd.SetTextColor(r.kRed)
-        stats_qcd.SetX1NDC(0.75)
-        stats_qcd.SetX2NDC(0.89)
-        stats_qcd.SetY1NDC(0.6)
-        stats_qcd.SetY2NDC(0.69)
-        stats_qcd.Draw()
+        # stats_qcd = qcd_distro.GetListOfFunctions().FindObject("stats")
+        # stats_qcd.SetTextColor(r.kRed)
+        # stats_qcd.SetX1NDC(0.75)
+        # stats_qcd.SetX2NDC(0.89)
+        # stats_qcd.SetY1NDC(0.6)
+        # stats_qcd.SetY2NDC(0.69)
+        # stats_qcd.Draw()
 
         canv.Modified()
 
@@ -341,24 +362,33 @@ def cat_white_list():
             "eq0b_eq3j",
             "eq0b_eq4j",
             "eq0b_ge5j",
+            "eq0b_ge2j",
             "eq1b_eq3j",
             "eq1b_eq4j",
             "eq1b_ge5j",
+            "eq1b_ge2j",
             "ge0b_eq3j",
             "ge0b_eq4j",
             "ge0b_ge5j",
+            "ge0b_ge2j",
             ]
     return out
 
 def main():
+
+    HTbins = ["200_275","275_325","325_375","375_475","475_575","575_675","675_775","775_875","875_975","975_1075","1075"][3:]
+
     # get excess yields
     excess = get_excess()
-    
+    # now this object contains a list of the htbins it refers to
+    # can use this as a reference when using odd combinations of HTbins
+    # should also pass this to the following functions so the HTbins overlap
+
     # get qcd yields
-    qcd = get_qcd(excess.keys())
+    qcd = get_qcd(excess.keys(), HTbins)
 
     # make comparison plots
-    make_plots(excess, qcd)
+    make_plots(excess, qcd, HTbins)
 
 if __name__ == "__main__":
     main()
