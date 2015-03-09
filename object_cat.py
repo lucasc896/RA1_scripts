@@ -1,10 +1,11 @@
 class event_cat(object):
     """data container for event yields"""
-    def __init__(self, data = [], pred = [], pred_err = []):
+    def __init__(self, data = [], pred = [], pred_err = [], ht_bins = []):
         self._catstring = ''
         self._data = data
         self._pred = pred
         self._pred_err = pred_err
+        self._htbins = ht_bins
         if self._data:
             self._hasData = True
         else:
@@ -42,6 +43,10 @@ class event_cat(object):
             print "preds and pred_errs arrays different lengths"
             print self._pred
             print self._pred_err
+        if len(self._htbins) != len(self._pred):
+            print "htbins and preds arrays different lengths"
+            print self._htbins
+            print self._pred
 
     def check_val_types(self):
         """check all val types are consistently floats"""
@@ -62,8 +67,14 @@ class event_cat(object):
             self._excess.append(d-p)
             self._excess_err.append(perr)
 
+    def the_data(self):
+        return self._data
+
     def the_excess(self):
         return self._excess, self._excess_err
 
     def the_preds(self):
         return self._pred, self._pred_err
+
+    def the_htbins(self):
+        return self._htbins
