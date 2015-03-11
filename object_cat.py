@@ -48,6 +48,19 @@ class event_cat(object):
             print self._htbins
             print self._pred
 
+    def pick_htbins(self, htbins_wlist = []):
+        pop_list = []
+        for n, ht in enumerate(self._htbins):
+            if ht not in htbins_wlist:
+                pop_list.append(n)
+
+        for p in reversed(pop_list):
+            for list in [self._data, self._pred, self._pred_err, self._excess, self._excess_err, self._htbins]:
+                if list:
+                    list.pop(p)
+
+        self._nbins -= len(pop_list)
+
     def check_val_types(self):
         """check all val types are consistently floats"""
         
