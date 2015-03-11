@@ -78,7 +78,7 @@ def get_file_key(str = ''):
 
     return "%sb_%sj" % (bcat, jcat)
 
-def get_excess():
+def get_excess(HTbins = []):
     print ">>> Getting excess yields."
 
     yields = {}
@@ -96,17 +96,14 @@ def get_excess():
                 this_key = get_file_key(file_path)
                 file = open(file_path)
                 cat_obj = harvest_excess_yields(file)
+                cat_obj.pick_htbins(HTbins)
                 cat_obj._catstring = this_key
                 yields[alpha_key][this_key] = cat_obj
                 file.close()
 
-    # print ""
-    # for key in yields:
-    #     print key, yields[key]
-
     return yields
 
-def get_qcd(alphat_vals = ["0p507"], HTbins = []):
+def get_mc(alphat_vals = ["0p507"], HTbins = [], SMS = None):
 
     print ">>> Getting QCD yields."
 
@@ -133,11 +130,13 @@ def get_qcd(alphat_vals = ["0p507"], HTbins = []):
             vals = []
             errs = []
             for htbin in my_iter:
-                h_mc = grabr.grab_plots(f_path = "/Users/chrislucas/SUSY/AnalysisCode/rootfiles/%s/Had_QCD.root" % my_path,
+                if not SMS:
+                    h_mc = grabr.grab_plots(f_path = "/Users/chrislucas/SUSY/AnalysisCode/rootfiles/%s/Had_QCD.root" % my_path,
                                         sele = selec, h_title = hist_title, njet = nj, btag = nb, ht_bins = htbin, quiet = True)
-                # h_mc = grabr.grab_plots(f_path = "/Users/chrislucas/SUSY/AnalysisCode/rootfiles/Root_Files_05Mar_lt0p3_latest_SMS_variousAlphaT_v0/Had_T2_4body_250_240_aT_%s.root" % alpha_key,
-                #                         sele = selec, h_title = hist_title, njet = nj, btag = nb, ht_bins = htbin, quiet = True)
-                h_mc.Scale(0.01)
+                else:
+                    h_mc = grabr.grab_plots(f_path = "/Users/chrislucas/SUSY/AnalysisCode/rootfiles/Root_Files_05Mar_lt0p3_latest_SMS_variousAlphaT_v0/Had_%s_aT_%s.root" % (SMS, alpha_key),
+                                            sele = selec, h_title = hist_title, njet = nj, btag = nb, ht_bins = htbin, quiet = True)
+                    h_mc.Scale(0.01)
                 this_err = r.Double(0.)
                 val = h_mc.IntegralAndError(1, h_mc.GetNbinsX(), this_err)
                 vals.append(val)
@@ -169,12 +168,20 @@ def alpha_order(alpha = []):
 
     return out
 
-def make_plots(excess = {}, qcd = {}, HTbins = []):
+def format_sms_string(string = ''):
+    """assume format as 'MODEL_MSTOP_MLSP'"""
+    spl = string.split("_")
+    return "%s (%s, %s)" % (spl[0], spl[1], spl[2])
 
-    # HTbins = ["200_275","275_325","325_375","375_475","475_575","575_675","675_775","775_875","875_975","975_1075","1075"][3:]
+def make_plots(excess = {}, qcd = {}, HTbins = [], SMS = None):
+
+    # plot_HTbins = ["200_275","275_325","325_375","375_475","475_575","575_675","675_775","775_875","875_975","975_1075","1075"][3:]
     mode = ["cumu", "diff"][0]
     fit_func = ["pol1", "expo"][1]
     canv = r.TCanvas("canv", "canv", 450, 450)
+
+    # do some HTbin magic (probably eventually put into a function)
+
 
     # get list of alphat vals to plot
     alpha_keys = []
@@ -204,6 +211,13 @@ def make_plots(excess = {}, qcd = {}, HTbins = []):
 
             # loop all the viable alphat values
             for n, a_key in enumerate(alpha_keys):
+
+                if excess[a_key][cat].the_htbins() != qcd[a_key][cat].the_htbins():
+                    print ">>> HTbin mismatch\n\t", a_key, cat
+                    print excess[a_key][cat].the_htbins()
+                    print qcd[a_key][cat].the_htbins()
+                    exit()
+
                 # very inefficient...
                 ex_vals, ex_err = excess[a_key][cat].the_excess()
                 qcd_vals, qcd_err = qcd[a_key][cat].the_preds()
@@ -217,14 +231,12 @@ def make_plots(excess = {}, qcd = {}, HTbins = []):
                     yvals_ex_incl.append( [ex_vals[iht], ex_err[iht]] )
                 else:
                     yvals_ex_incl[n][0] += ex_vals[iht]
-                    # yvals_ex_incl[n][1] += ex_err[iht]
                     yvals_ex_incl[n][1] += ma.pow(ex_err[iht], 2)
                 # sum the qcd inclusive selection
                 if n+1 > len(yvals_qcd_incl):
                     yvals_qcd_incl.append( [qcd_vals[iht], qcd_err[iht]] )
                 else:
                     yvals_qcd_incl[n][0] += qcd_vals[iht]
-                    # yvals_qcd_incl[n][1] += qcd_err[iht]
                     yvals_qcd_incl[n][1] += ma.pow(qcd_err[iht], 2)
 
             if mode == "diff":
@@ -241,8 +253,10 @@ def make_plots(excess = {}, qcd = {}, HTbins = []):
 
             ex_distro = make_single_plot(xvals, yvals_ex, "Excess")
             ex_distro.SetMarkerColor(r.kBlue)
-            qcd_distro = make_single_plot(xvals, yvals_qcd, "QCD")
-            # qcd_distro = make_single_plot(xvals, yvals_qcd, "T2cc (250, 240)")
+            if not SMS:
+                qcd_distro = make_single_plot(xvals, yvals_qcd, "QCD")
+            else:
+                qcd_distro = make_single_plot(xvals, yvals_qcd, format_sms_string(SMS))
             qcd_distro.SetMarkerColor(r.kRed)
 
             mgraph = make_combined_plot([ex_distro, qcd_distro], cat)
@@ -274,8 +288,10 @@ def make_plots(excess = {}, qcd = {}, HTbins = []):
         # ex_distro.GetFunction(fit_func).SetLineColor(r.kBlue)
         ex_distro.Draw("ap*")
 
-        qcd_distro = make_single_plot(xvals, yvals_qcd_incl, "QCD")
-        # qcd_distro = make_single_plot(xvals, yvals_qcd_incl, "T2cc (250, 240)")
+        if not SMS:
+            qcd_distro = make_single_plot(xvals, yvals_qcd_incl, "QCD")
+        else:
+            qcd_distro = make_single_plot(xvals, yvals_qcd_incl, format_sms_string(SMS))
         qcd_distro.SetMarkerColor(r.kRed)
         # qcd_distro.Fit(fit_func, "q")
         qcd_distro.Draw("ap*")
@@ -288,8 +304,8 @@ def make_plots(excess = {}, qcd = {}, HTbins = []):
                 ratio_vals.append( [ratio, ratio_err] )
             except ZeroDivisionError:
                 ratio_vals.append( [0, 1.0] ) # if the above calc doesn't work out, set to zero with large err, so fit isn't pulled
-        ratio_graph = make_single_plot(xvals, ratio_vals, "%s - QCD/Excess" % cat)
-        # ratio_graph = make_single_plot(xvals, ratio_vals, "%s - T2cc/Excess" % cat)
+
+        ratio_graph = make_single_plot(xvals, ratio_vals, "%s -%s/Excess" % (cat, SMS.split("_")[0] if SMS else "QCD"))
         ratio_graph.Draw("ap*")
         ratio_graph.GetXaxis().SetTitle("#alpha_{T}")
         ratio_graph.GetYaxis().SetTitle("Ratio")
@@ -377,18 +393,19 @@ def cat_white_list():
 def main():
 
     HTbins = ["200_275","275_325","325_375","375_475","475_575","575_675","675_775","775_875","875_975","975_1075","1075"][3:]
+    sms_model = [None, "T2_4body_250_240", "T2cc_250_240"][2]
 
-    # get excess yields
-    excess = get_excess()
+    # get excess yields - for specific HTbins
+    excess = get_excess(HTbins)
     # now this object contains a list of the htbins it refers to
     # can use this as a reference when using odd combinations of HTbins
     # should also pass this to the following functions so the HTbins overlap
 
     # get qcd yields
-    qcd = get_qcd(excess.keys(), HTbins)
+    mc = get_mc(excess.keys(), HTbins, sms_model)
 
     # make comparison plots
-    make_plots(excess, qcd, HTbins)
+    make_plots(excess, mc, HTbins, sms_model)
 
 if __name__ == "__main__":
     main()
