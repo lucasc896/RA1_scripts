@@ -12,6 +12,8 @@ def btag_prob(yield_dict = {}, jcats = []):
             cat = "%s_%s" % (nb, nj)
             # make single plot for a b-tag cat
             vals = []
+            vals_excl = []
+            vals_incl = []
             for alpha in yield_tools.alpha_order(yield_dict.keys()):
                 try:
                     yields, yield_errs = yield_dict[alpha][cat].the_excess()
@@ -46,13 +48,39 @@ def btag_prob(yield_dict = {}, jcats = []):
                     incl_err += ma.pow(tot_yields[i], 2)
                 excl_err = ma.pow(excl_err, 0.5)
                 incl_err = ma.pow(incl_err, 0.5)
+                # try:
+                #     ratio_val = float(excl_yield/incl_yield)
+                #     ratio_err = ma.sqrt( ma.pow(excl_err/excl_yield, 2) + ma.pow(incl_err/incl_yield, 2) )
+                # except:
+                #     ratio_val = 0.
+                #     ratio_err = 0.
+                # vals.append([float(alpha.replace("p", ".")), [ratio_val, ratio_err]])
+                vals_excl.append([float(alpha.replace("p", ".")), [excl_yield, excl_err]])
+                vals_incl.append([float(alpha.replace("p", ".")), [incl_yield, incl_err]])
+
+            # make differential
+            for j in range(len(vals_excl)):
+                if j == len(vals_excl)-1: continue
+                vals_excl[j][1][0] -= vals_excl[j+1][1][0] # subtract higher yield
+                vals_excl[j][1][1] = ma.pow(vals_excl[j][1][1], 2) - ma.pow(vals_excl[j+1][1][1], 2)
+                vals_excl[j][1][1] = ma.pow(vals_excl[j][1][1], 0.5)
+
+                vals_incl[j][1][0] -= vals_incl[j+1][1][0] # subtract higher yield
+                vals_incl[j][1][1] = ma.pow(vals_incl[j][1][1], 2) - ma.pow(vals_incl[j+1][1][1], 2)
+                vals_incl[j][1][1] = ma.pow(vals_incl[j][1][1], 0.5)
+
+            # now calculate ratio
+            # time consuming, but good to seperate
+            for k in range(len(vals_excl)):
                 try:
-                    ratio_val = float(excl_yield/incl_yield)
-                    ratio_err = ma.sqrt( ma.pow(excl_err/excl_yield, 2) + ma.pow(incl_err/incl_yield, 2) )
+                    ratio_val = float(vals_excl[k][1][0]/vals_incl[k][1][0])
+                    ratio_err = ma.sqrt( ma.pow(vals_excl[k][1][1]/vals_excl[k][1][0], 2) + ma.pow(vals_incl[k][1][1]/vals_incl[k][1][0], 2) )
                 except:
                     ratio_val = 0.
                     ratio_err = 0.
-                vals.append((float(alpha.replace("p", ".")), (ratio_val, ratio_err)))
+
+                vals.append( (vals_excl[k][0], (ratio_val, ratio_err)) )
+
             graphs.append( make_single_graph(vals, nb) )
         print_multi_graph(graphs, "btag_prob_alphat_%s_inclHT" % nj)
 
@@ -69,7 +97,7 @@ def make_single_graph(vals = [], title = ''):
 def print_multi_graph(graphs = [], title = ''):
     canv = r.TCanvas()
     mg = r.TMultiGraph()
-, r.kYellow-3, r.kGreen-2]
+    cols = [r.kRed-3, r.kYellow-3, r.kGreen-2]
     marks = [r.kFullCircle, r.kFullSquare, r.kFullTriangleUp]
 
     for gr, col, mark in zip(graphs, cols, marks):
@@ -82,6 +110,8 @@ def print_multi_graph(graphs = [], title = ''):
     mg.Draw("ap")
     mg.SetMinimum(-0.2)
     mg.SetMaximum(1.2)
+    mg.GetXaxis().SetTitle("#alpha_{T}")
+    mg.GetYaxis().SetTitle("Probability")
     canv.BuildLegend(0.11, 0.75, 0.3, 0.89)
     canv.Print("out/" + title + ".pdf")
 
