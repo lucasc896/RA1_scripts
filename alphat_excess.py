@@ -81,6 +81,10 @@ def get_file_key(str = ''):
 def get_excess(HTbins = []):
     print ">>> Getting excess yields."
 
+    if not HTbins:
+        print "\n\t> Exiting: No HTbins specified in get_excess.\n"
+        exit()
+
     yields = {}
 
     in_dir = "/Users/chrislucas/SUSY/AnalysisCode/RA1_scripts/in/"
@@ -179,9 +183,6 @@ def make_plots(excess = {}, qcd = {}, HTbins = [], SMS = None):
     mode = ["cumu", "diff"][0]
     fit_func = ["pol1", "expo"][1]
     canv = r.TCanvas("canv", "canv", 450, 450)
-
-    # do some HTbin magic (probably eventually put into a function)
-
 
     # get list of alphat vals to plot
     alpha_keys = []
