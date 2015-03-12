@@ -1,10 +1,14 @@
 import plot_grabber as grabr
 import ROOT as r
 from itertools import product
+from copy import deepcopy
 
 r.gStyle.SetOptStat(0)
 r.gROOT.SetBatch(1)
 grabr.set_palette()
+
+def colours():
+    return [r.kBlack, r.kRed, r.kBlue-2, r.kGreen-2, r.kYellow]
 
 def print_hist(vals = None, title = '', d = {}):
     
@@ -24,18 +28,57 @@ def print_hist(vals = None, title = '', d = {}):
     canv.Print("out/qcdplots_%s_%s_%s_%s_xstrip_%s-%s.pdf" % (d["selec"],
                         d["title"], d["nj"], d["nb"], d["xbinlo"], d["xbinhi"]))
 
+    return hist.Clone()
+
 def print_x_strips(hist = None, details = {}):
     if not hist: return
 
+    hist_list = []
     for xbin in range(1, hist.GetNbinsX()+1):
+        print xbin
         vals = []
         details["xbinlo"] = hist.GetXaxis().GetBinLowEdge(xbin)
         details["xbinhi"] = hist.GetXaxis().GetBinUpEdge(xbin)
         for ybin in range(1, hist.GetNbinsY()+1):
-            # print xbin, ybin, hist.GetBinContent(xbin, ybin), hist.GetBinError(xbin, ybin)
+            print xbin, ybin, hist.GetBinContent(xbin, ybin), hist.GetBinError(xbin, ybin)
             vals.append( (hist.GetYaxis().GetBinCenter(ybin), (hist.GetBinContent(xbin, ybin), hist.GetBinError(xbin, ybin))) )
+        slice_hist = print_hist(vals, 'genMet/genJetPt = ', details)
+        # print details['xbinlo']
+        # if details["xbinlo"] < 1.:
+        if len(hist_list) < 4:
+            hist_list.append(slice_hist)
 
-        print_hist(vals, 'genMet/jetPt = ', details)
+    print_combined_strips(hist_list, 'genMet/genJetPt')
+
+def print_combined_strips(hists = [], title = ''):
+    canv = r.TCanvas()
+    lg = r.TLegend(0.23, 0.6, 0.45, 0.89)
+    for n, hist in enumerate(hists):
+        print n
+
+        integ = hist.Integral()
+        print integ
+        if integ > 0.: hist.Scale(1./integ)
+
+        if n==0:
+            hist.Draw("hist")
+        else:
+            hist.Draw("histsame")
+        hist.SetLineColor(colours()[n])
+        hist.SetLineWidth(2)
+        title = deepcopy(hist.GetTitle())
+        lg.AddEntry(hist, title, "L")
+
+    hist.GetXaxis().SetTitle("CSV")
+    hist.GetYaxis().SetTitle("Normalised Counts")
+    hists[0].SetTitle("CSV Summary")
+    lg.Draw()
+    lg.SetLineColor(0)
+    lg.SetFillColor(0)
+
+    canv.Print("out/test.pdf")
+
+
 
 def main():
 
@@ -47,7 +90,7 @@ def main():
     hist_title = ["genMetJetPtFrac", "genMetHTFrac",
                     "neutVectPt_ov_genMet", "numGenNeutrino",
                     "genMetOverJetPt_vs_CSV", "genMetOverJetPt_vs_CSV_c", "genMetOverJetPt_vs_CSV_b",
-                    "genMetOverJetPt_vs_CSV_other"][-3:]
+                    "genMetOverJetPt_vs_CSV_other"][-2:-1]
     my_path = "Root_Files_08Mar_genMETQCD_v2"
 
     if ht_scheme == "incl":
@@ -79,10 +122,10 @@ def main():
                     canv.SetLogy(1)
 
                 if is_th2:
-                    h_mc.GetXaxis().SetTitle("genMet/JetPt")
+                    h_mc.GetXaxis().SetTitle("genMet/genJetPt")
                     h_mc.GetYaxis().SetTitle("CSV Discriminator")
-                    h_mc.RebinX(10)
-                    h_mc.RebinY(10)
+                    h_mc.RebinX(20)
+                    h_mc.RebinY(20)
                     deets = {"nb":nb, "nj": nj, "selec":selec, "title":my_title}
                     print_x_strips(h_mc, deets)
                 canv.Print("out/qcdplots_%s_%s_%s_%s.pdf" % (selec, my_title, nb, nj))
