@@ -35,6 +35,37 @@ def print_yields(dic = {}):
         print d
         print dic[d].GetEntries()
 
+def validate_yields(old = {}, new = {}):
+    lng.debug("Validating yields.")
+
+    old_ents = {}
+    new_ents = {}
+    for k in old:
+        old_ents[k] = old[k].GetEntries() if old[k] else 0
+
+    for k in new:
+        new_ents[k] = new[k].GetEntries() if new[k] else 0
+
+    # list of possible problems
+    tests = [
+                "new_ents['all'] != old_ents['all']",
+                "new_ents['2'] != (old_ents['1'] + old_ents['2'])",
+                "new_ents['3'] != (old_ents['3'] + old_ents['4'])",
+                "new_ents['all'] != (new_ents['2'] + new_ents['3'])",
+            ]
+
+    valid = True
+    while valid:
+        for test in tests:
+            outcome = eval(test)
+            if outcome:
+                lng.error("Test: %s returned %s." % (test, str(valid)))
+                exit("Exiting.")
+        return True
+    return False
+
+
+
 def process_hist(file = None, dirname = '', histname = ''):
     lng.debug("Processing hist: %s/%s" % (dirname, histname))
 
@@ -64,6 +95,8 @@ def process_hist(file = None, dirname = '', histname = ''):
 
     lng.debug("New_hists: %s" % str(new_hists))
 
+    validate_yields(old_hists, new_hists)
+
     return new_hists
 
 def process_dir(file = None, dirname = ''):
@@ -83,7 +116,7 @@ def process_dir(file = None, dirname = ''):
 
     new_dirs = {}
     for ent in hist_names:
-        if ent != "AlphaT": continue
+        if ent != "AlphaT": continue #tmp mask for only AlphaT distro
         new_dirs = process_hist(file, dirname, ent)
 
     return new_dirs
@@ -102,7 +135,6 @@ def write_new_file(filename = '', content = {}):
     # create new file
     ofile = r.TFile.Open("%s/%s" % (outdir, filename), "RECREATE")
     for newdirname in content:
-        # print newdirname
         ofile.mkdir(newdirname)
         ofile.cd(newdirname)
         for hist in content[newdirname].values():
