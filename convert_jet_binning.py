@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import ROOT as r
 import logging as lng
+import os
 from sys import exit
 
 def splash():
@@ -9,9 +10,29 @@ def splash():
     print "*"*40
     print ""
 
+def get_input_files():
+    if not opts.indir:
+        lng.error("No input directory specified.")
+        exit("Exiting.")
 
+    in_files = []
 
+    for ent in os.walk(opts.indir):
+        for f in ent[-1]:
+            if f[-5:] == ".root":
+                in_files.append(f)
 
+    num = len(in_files)
+    lng.info("Found %d file%s for conversion." % (len(in_files), "s" if num > 1 else ""))
+    lng.debug("Found: %s" % ", ".join(in_files))
+    
+    return in_files
+
+def main():
+    
+    infiles = get_input_files()
+
+    print infiles
 
 
 
@@ -37,3 +58,5 @@ if __name__ == "__main__":
         lng.info("Converting: fine -> coarse.")
     elif opts.jbin in ['f', 'fine', 'fn']:
         lng.info("Converting: coarse -> fine.")
+
+    main()
