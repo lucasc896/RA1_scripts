@@ -10,7 +10,7 @@ def splash():
     print "*"*40
     print ""
 
-def get_input_files():
+def gather_input_files():
     if not opts.indir:
         lng.error("No input directory specified.")
         exit("Exiting.")
@@ -28,12 +28,15 @@ def get_input_files():
     
     return in_files
 
+def convert(fname = None):
+    lng.debug("Converting file: %s" % fname)
+
 def main():
     
-    infiles = get_input_files()
+    infiles = gather_input_files()
 
-    print infiles
-
+    for fname in infiles:
+        convert(fname)
 
 
 if __name__ == "__main__":
@@ -46,11 +49,16 @@ if __name__ == "__main__":
     parser.add_argument('-d', help = 'For debug use',
                         dest = 'debug', default = False,
                         action="store_true")
+    parser.add_argument('--log', help = 'Set logging level (WARNING/DEBUG/INFO/ERROR/CRITICAL)',
+                        dest = 'loglevel', default = 'INFO')
     parser.add_argument('-j', help = 'Target jet binning (fine/coarse)',
                         dest = 'jbin', default = 'fine')
     opts = parser.parse_args()
 
-    lng.basicConfig(level=lng.INFO)
+    if opts.debug:
+        opts.loglevel = 'DEBUG'
+
+    lng.basicConfig(level=opts.loglevel.upper())
 
     splash()
 
