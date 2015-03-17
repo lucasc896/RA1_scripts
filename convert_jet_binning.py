@@ -3,6 +3,7 @@ import ROOT as r
 import logging as lng
 import os
 from sys import exit
+from copy import deepcopy
 
 def splash():
     print "*"*40
@@ -28,20 +29,96 @@ def gather_input_files():
     
     return in_files
 
-def convert(fname = None):
-    lng.debug("Converting file: %s" % fname)
+def print_yields(dic = {}):
+    for d in dic:
+        if not dic[d]: continue
+        print d
+        print dic[d].GetEntries()
+
+def process_hist(file = None, dirname = '', histname = ''):
+    lng.debug("Processing hist: %s/%s" % (dirname, histname))
+
+    multis = ["all", "1", "2", "3", "4"]
+    old_hists = dict.fromkeys(multis)
+    new_hists = dict.fromkeys(multis)
+
+    # open the old hists
+    for m in multis:
+        h = file.Get("%s/%s_%s" % (dirname, histname, m))
+        old_hists[m] = h
+
+    lng.debug("Old_hists: %s" % str(old_hists))
+
+    # create new histograms from old (make sure to clone the right
+    # ones, to preserve hist titles)
+    # inclusive
+    new_hists['all'] = deepcopy(old_hists['all'])
+
+    # le3j
+    new_hists['2'] = deepcopy(old_hists['2'].Clone())
+    new_hists['2'].Add(old_hists['1'])
+
+    # ge4j
+    new_hists['3'] = deepcopy(old_hists['3'].Clone())
+    new_hists['3'].Add(old_hists['4'])
+
+    lng.debug("New_hists: %s" % str(new_hists))
+
+    print_yields(old_hists)
+    print_yields(new_hists)
+
+    return new_hists
+
+def process_dir(file = None, dirname = ''):
+    lng.debug("Processing directory: %s" % dirname)
+    
+    dir = file.Get(dirname)
+    
+    # get list of histogram names in directory
+    hist_names = []
+    for hkey in dir.GetListOfKeys():
+        hname = hkey.GetName().split("_")[:-1]
+        hname = "_".join(hname)
+        if hname not in hist_names:
+            hist_names.append(hname)
+
+    lng.debug("Found %d hists in directory %s." % (len(hist_names), dirname))
+
+    new_dirs = {}
+
+    for ent in hist_names:
+        if ent != "AlphaT": continue
+        new_dirs[dirname] = process_hist(file, dirname, ent)
+
+    return new_dirs
+
+def convert_file(fname = None):
+    lng.debug("Converting file: %s%s" % (opts.indir, fname))
+
+    file = r.TFile.Open("%s/%s" % (opts.indir, fname))
+
+    for dkey in file.GetListOfKeys():
+        dir = dkey.GetTitle()
+        if dir != "375_475":
+            continue
+        new_content = process_dir(file, dir)
+    # close this rootfile - all hists deepcopy'd, so fine to do
+    file.Close()
+
+    write_new_file(fname, new_content)
+
 
 def main():
     
     infiles = gather_input_files()
 
     for fname in infiles:
-        convert(fname)
+        convert_file(fname)
 
 
 if __name__ == "__main__":
     import argparse
-    parser = argparse.ArgumentParser(description ='Convert ICF rootfiles to different jet binning')
+    parser = argparse.ArgumentParser(description ='Convert fine ICF rootfiles to coarse jet binning')
     parser.add_argument('-i', help = 'input file directory',
                         dest = 'indir', type =str)
     parser.add_argument('-o', help = 'output file directory',
@@ -51,8 +128,6 @@ if __name__ == "__main__":
                         action="store_true")
     parser.add_argument('--log', help = 'Set logging level (WARNING/DEBUG/INFO/ERROR/CRITICAL)',
                         dest = 'loglevel', default = 'INFO')
-    parser.add_argument('-j', help = 'Target jet binning (fine/coarse)',
-                        dest = 'jbin', default = 'fine')
     opts = parser.parse_args()
 
     if opts.debug:
@@ -61,10 +136,5 @@ if __name__ == "__main__":
     lng.basicConfig(level=opts.loglevel.upper())
 
     splash()
-
-    if opts.jbin in ['c', 'coarse', 'crse', 'cr']:
-        lng.info("Converting: fine -> coarse.")
-    elif opts.jbin in ['f', 'fine', 'fn']:
-        lng.info("Converting: coarse -> fine.")
 
     main()
