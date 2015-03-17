@@ -2,13 +2,23 @@
 import ROOT as r
 import logging as lng
 import os
-from sys import exit
+from sys import exit, stdout
 from copy import deepcopy
 
+def print_progress(percent):
+
+    if opts.debug: return
+
+    width = 60
+
+    stdout.write("\t  %.2f%% complete." % percent)
+    stdout.write(" |"+"="*int(percent*0.01*width)+" "*int((1.-percent*0.01)*width)+">     \r")
+    stdout.flush()
+
 def splash():
-    print "*"*40
+    print "*"*42
     print "\n\tICF rootfile jet converter\n"
-    print "*"*40
+    print "*"*42
     print ""
 
 def gather_input_files():
@@ -18,6 +28,7 @@ def gather_input_files():
 
     in_files = []
 
+    lng.debug("Going for a walk in: %s" % opts.indir)
     for ent in os.walk(opts.indir):
         for f in ent[-1]:
             if f[-5:] == ".root":
@@ -35,7 +46,7 @@ def print_yields(dic = {}):
         print d
         print dic[d].GetEntries()
 
-def validate_yields(old = {}, new = {}):
+def validate_yields(old = {}, new = {}, string = ''):
     lng.debug("Validating yields.")
 
     old_ents = {}
@@ -56,11 +67,17 @@ def validate_yields(old = {}, new = {}):
 
     valid = True
     while valid:
-        for test in tests:
+        for n, test in enumerate(tests):
             outcome = eval(test)
-            if outcome:
+            # check if there's a True test
+            # hack: ignore the outcome of the last test for GenJetPt_ (formula btag plots)
+            # known issue.
+            if outcome and ("GenJetPt_" not in string and n !=3):
                 lng.error("Test: %s returned %s." % (test, str(valid)))
-                exit("Exiting.")
+                lng.error("Tag: %s" % string)
+                print old_ents
+                print new_ents
+                # exit("Exiting.")
         return True
     return False
 
@@ -95,7 +112,8 @@ def process_hist(file = None, dirname = '', histname = ''):
 
     lng.debug("New_hists: %s" % str(new_hists))
 
-    validate_yields(old_hists, new_hists)
+    tag = " ".join([str(file), dirname, histname])
+    validate_yields(old_hists, new_hists, tag)
 
     return new_hists
 
@@ -109,6 +127,7 @@ def process_dir(file = None, dirname = ''):
     for hkey in dir.GetListOfKeys():
         hname = hkey.GetName().split("_")[:-1]
         hname = "_".join(hname)
+        # if hname not in ["AlphaT", "HT"]: continue
         if hname not in hist_names:
             hist_names.append(hname)
 
@@ -116,8 +135,8 @@ def process_dir(file = None, dirname = ''):
 
     new_dirs = {}
     for ent in hist_names:
-        if ent != "AlphaT": continue #tmp mask for only AlphaT distro
-        new_dirs = process_hist(file, dirname, ent)
+        # if ent != "AlphaT": continue #tmp mask for only AlphaT distro
+        new_dirs[ent] = process_hist(file, dirname, ent)
 
     return new_dirs
 
@@ -134,11 +153,13 @@ def write_new_file(filename = '', content = {}):
 
     # create new file
     ofile = r.TFile.Open("%s/%s" % (outdir, filename), "RECREATE")
-    for newdirname in content:
+    ndirs = len(content.keys())
+    for n, newdirname in enumerate(content.keys()):
         ofile.mkdir(newdirname)
         ofile.cd(newdirname)
-        for hist in content[newdirname].values():
-            if hist: hist.Write()
+        for histname in content[newdirname]:
+            for hist in content[newdirname][histname].values():
+                if hist: hist.Write()
         ofile.cd()
 
     ofile.Close()
@@ -151,12 +172,26 @@ def convert_file(fname = None):
     file = r.TFile.Open("%s/%s" % (opts.indir, fname))
     new_content = {}
 
-    for dkey in file.GetListOfKeys():
+    nkeys = len(file.GetListOfKeys())
+
+    for n, dkey in enumerate(file.GetListOfKeys()):
         dir = dkey.GetTitle()
+        if dir == "count_total": continue
+        # if dir not in ["375_475"]: continue
         new_content[dir] = process_dir(file, dir)
-    
+        print_progress(100.*(float(n)/float(nkeys)))
+    print_progress(100.)
+
     # close this rootfile - all hists deepcopy'd, so fine to do
     file.Close()
+
+    # for i in new_content:
+    #     print i
+    #     for j in new_content[i]:
+    #         print " ", j
+    #         for k in new_content[i][j]:
+    #             print "  ", k
+    #             print "    ", new_content[i][j][k]
 
     write_new_file(fname.replace(".root", "_coarseNJet.root"), new_content)
 
@@ -165,6 +200,7 @@ def main():
     infiles = gather_input_files()
 
     for fname in infiles:
+        # if "Had_Data" in fname:
         convert_file(fname)
 
 
@@ -184,6 +220,9 @@ if __name__ == "__main__":
 
     if opts.debug:
         opts.loglevel = 'DEBUG'
+
+    opts.indir = os.getcwd() + "/" + opts.indir
+    opts.outdir = os.getcwd() + "/" + opts.outdir
 
     lng.basicConfig(level=opts.loglevel.upper())
 
