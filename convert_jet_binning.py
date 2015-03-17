@@ -64,9 +64,6 @@ def process_hist(file = None, dirname = '', histname = ''):
 
     lng.debug("New_hists: %s" % str(new_hists))
 
-    print_yields(old_hists)
-    print_yields(new_hists)
-
     return new_hists
 
 def process_dir(file = None, dirname = ''):
@@ -85,28 +82,51 @@ def process_dir(file = None, dirname = ''):
     lng.debug("Found %d hists in directory %s." % (len(hist_names), dirname))
 
     new_dirs = {}
-
     for ent in hist_names:
         if ent != "AlphaT": continue
-        new_dirs[dirname] = process_hist(file, dirname, ent)
+        new_dirs = process_hist(file, dirname, ent)
 
     return new_dirs
 
+def write_new_file(filename = '', content = {}):
+    lng.info("Writing new file: %s" % filename)
+
+    if opts.outdir:
+        outdir = opts.outdir
+    else:
+        outdir = "/tmp"
+        lng.info("No output directory specified. Using %s" % outdir)
+
+    lng.debug("File output: %s/%s" % (outdir, filename))
+
+    # create new file
+    ofile = r.TFile.Open("%s/%s" % (outdir, filename), "RECREATE")
+    for newdirname in content:
+        # print newdirname
+        ofile.mkdir(newdirname)
+        ofile.cd(newdirname)
+        for hist in content[newdirname].values():
+            if hist: hist.Write()
+        ofile.cd()
+
+    ofile.Close()
+    lng.debug("File written and closed.")
+
+
 def convert_file(fname = None):
-    lng.debug("Converting file: %s%s" % (opts.indir, fname))
+    lng.info("Converting file: %s/%s" % (opts.indir, fname))
 
     file = r.TFile.Open("%s/%s" % (opts.indir, fname))
+    new_content = {}
 
     for dkey in file.GetListOfKeys():
         dir = dkey.GetTitle()
-        if dir != "375_475":
-            continue
-        new_content = process_dir(file, dir)
+        new_content[dir] = process_dir(file, dir)
+    
     # close this rootfile - all hists deepcopy'd, so fine to do
     file.Close()
 
-    write_new_file(fname, new_content)
-
+    write_new_file(fname.replace(".root", "_coarseNJet.root"), new_content)
 
 def main():
     
