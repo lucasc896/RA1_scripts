@@ -16,6 +16,7 @@ def print_progress(percent):
     stdout.flush()
 
 def splash():
+    print ""
     print "*"*42
     print "\n\tICF rootfile jet converter\n"
     print "*"*42
@@ -77,7 +78,7 @@ def validate_yields(old = {}, new = {}, string = ''):
                 lng.error("Tag: %s" % string)
                 print old_ents
                 print new_ents
-                # exit("Exiting.")
+                exit("Exiting.")
         return True
     return False
 
@@ -127,7 +128,6 @@ def process_dir(file = None, dirname = ''):
     for hkey in dir.GetListOfKeys():
         hname = hkey.GetName().split("_")[:-1]
         hname = "_".join(hname)
-        # if hname not in ["AlphaT", "HT"]: continue
         if hname not in hist_names:
             hist_names.append(hname)
 
@@ -135,13 +135,12 @@ def process_dir(file = None, dirname = ''):
 
     new_dirs = {}
     for ent in hist_names:
-        # if ent != "AlphaT": continue #tmp mask for only AlphaT distro
         new_dirs[ent] = process_hist(file, dirname, ent)
 
     return new_dirs
 
 def write_new_file(filename = '', content = {}):
-    lng.info("Writing new file: %s" % filename)
+    lng.info("\nWriting new file: %s" % filename)
 
     if opts.outdir:
         outdir = opts.outdir
@@ -163,6 +162,7 @@ def write_new_file(filename = '', content = {}):
         ofile.cd()
 
     ofile.Close()
+
     lng.debug("File written and closed.")
 
 
@@ -183,15 +183,8 @@ def convert_file(fname = None):
     print_progress(100.)
 
     # close this rootfile - all hists deepcopy'd, so fine to do
-    file.Close()
-
-    # for i in new_content:
-    #     print i
-    #     for j in new_content[i]:
-    #         print " ", j
-    #         for k in new_content[i][j]:
-    #             print "  ", k
-    #             print "    ", new_content[i][j][k]
+    # use this technique instead of the super slow file.Close()
+    r.gROOT.GetListOfFiles().Remove(file)
 
     write_new_file(fname.replace(".root", "_coarseNJet.root"), new_content)
 
@@ -200,7 +193,6 @@ def main():
     infiles = gather_input_files()
 
     for fname in infiles:
-        # if "Had_Data" in fname:
         convert_file(fname)
 
 
@@ -210,7 +202,7 @@ if __name__ == "__main__":
     parser.add_argument('-i', help = 'input file directory',
                         dest = 'indir', type =str)
     parser.add_argument('-o', help = 'output file directory',
-                        dest = 'outdir', type =str)
+                        dest = 'outdir', default = 'out/', type =str)
     parser.add_argument('-d', help = 'For debug use',
                         dest = 'debug', default = False,
                         action="store_true")
@@ -221,8 +213,10 @@ if __name__ == "__main__":
     if opts.debug:
         opts.loglevel = 'DEBUG'
 
-    opts.indir = os.getcwd() + "/" + opts.indir
-    opts.outdir = os.getcwd() + "/" + opts.outdir
+    if opts.indir[0] != "/":
+        opts.indir = os.getcwd() + "/" + opts.indir
+    if opts.outdir[0] != "/":
+        opts.outdir = os.getcwd() + "/" + opts.outdir
 
     lng.basicConfig(level=opts.loglevel.upper())
 
