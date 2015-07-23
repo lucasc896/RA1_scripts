@@ -22,6 +22,7 @@ def splash():
     print "*"*42
     print ""
 
+
 def gather_input_files():
     if not opts.indir:
         lng.error("No input directory specified.")
@@ -33,6 +34,12 @@ def gather_input_files():
     for ent in os.walk(opts.indir):
         for f in ent[-1]:
             if f[-5:] == ".root":
+                if "_EWK" in f: continue
+                if "_SM" in f: continue
+
+#                if "Had_Data_sigtrig" not in f:
+#                    continue
+
                 in_files.append(f)
 
     num = len(in_files)
@@ -167,7 +174,15 @@ def write_new_file(filename = '', content = {}):
 
 
 def convert_file(fname = None):
-    lng.info("Converting file: %s/%s" % (opts.indir, fname))
+
+    new_file_name = fname.replace(".root", "_coarseNJet.root") if not opts.noRename else fname
+
+    if opts.dryRun:
+        lng.info("Input file:  %s/%s" % (opts.indir, fname))
+        lng.info("Output file: %s/%s\n" % (opts.outdir, new_file_name))
+        return
+    else:
+        lng.info("Converting file: %s/%s" % (opts.indir, fname))
 
     file = r.TFile.Open("%s/%s" % (opts.indir, fname))
     new_content = {}
@@ -186,7 +201,7 @@ def convert_file(fname = None):
     # use this technique instead of the super slow file.Close()
     r.gROOT.GetListOfFiles().Remove(file)
 
-    write_new_file(fname.replace(".root", "_coarseNJet.root"), new_content)
+    write_new_file(new_file_name, new_content)
 
 def main():
     
@@ -205,7 +220,13 @@ if __name__ == "__main__":
                         dest = 'outdir', default = 'out/', type =str)
     parser.add_argument('-d', help = 'For debug use',
                         dest = 'debug', default = False,
-                        action="store_true")
+                        action = "store_true")
+    parser.add_argument('--noRename', help = 'Do not rename output files',
+                        dest = 'noRename', default = False,
+                        action = "store_true")
+    parser.add_argument('--dryRun', help = 'Dry run',
+                        dest = 'dryRun', default = False,
+                        action = "store_true")
     parser.add_argument('--log', help = 'Set logging level (WARNING/DEBUG/INFO/ERROR/CRITICAL)',
                         dest = 'loglevel', default = 'INFO')
     opts = parser.parse_args()
