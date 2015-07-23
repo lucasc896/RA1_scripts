@@ -42,9 +42,9 @@ def get_dirs(htbins = None, sele = "", btag = "", keyword = ""):
     out = []
     for ht in htbins:
         this_bin = []
-        if sele == "QCD": this_bin.append(sele)
+        if "QCD" in sele: this_bin.append("QCD")
         if btag_str: this_bin.append(btag_str)
-        if sele not in ["Had", "QCD"]:
+        if sele not in ["Had", "HadQCD"]:
             this_bin.append(sele)
         this_bin.append(ht)
         if keyword: this_bin.append(keyword)
@@ -134,7 +134,7 @@ def trig_eff(sele = "OneMuon", ht = "", njet = "", quiet = False, fineJet = True
         if njet == "all":
             njet = "2"
 
-        if "OneMuon" in sele:
+        if sele in ["OneMuon", "OneMuonQCD"]:
             d = {"150_2": 0.872,"150_3": 0.881,
                       "200_2": 0.875,"200_3": 0.881,
                       "275_2": 0.878,"275_3": 0.882,
@@ -160,12 +160,11 @@ def trig_eff(sele = "OneMuon", ht = "", njet = "", quiet = False, fineJet = True
                         "875_2": 0.987,"875_3": 0.986,
                         "975_2": 0.987,"975_3": 0.988,
                         "1075_2":0.987,"1075_3":0.987,}
-        if sele in ["Had", "QCD"]:
-            # note: these effs should be updated with new numbers from Adam
+        if sele in ["Had"]:
             d = {
                     "200_2":0.818,  "200_3":0.789,
                     "275_2":0.952,  "275_3":0.900,
-                    "325_2":0.978,  "325_3":0.959,
+                    "325_2":0.979,  "325_3":0.956,
                     "375_2":0.992,  "375_3":0.987,
                     "475_2":0.998,  "475_3":0.996,
                     "575_2":1.,     "575_3":1.,
@@ -174,6 +173,21 @@ def trig_eff(sele = "OneMuon", ht = "", njet = "", quiet = False, fineJet = True
                     "875_2":1.,     "875_3":1.,
                     "975_2":1.,     "975_3":1.,
                     "1075_2":1.,    "1075_3":1.,}
+        if sele in ["HadQCD"]:
+            d = {
+                    "200_2":0.819,  "200_3":0.885,
+                    "275_2":0.952,  "275_3":0.938,
+                    "325_2":0.980,  "325_3":0.959,
+                    "375_2":0.995,  "375_3":0.994,
+                    "475_2":1.,     "475_3":1.,
+                    "575_2":1.,     "575_3":1.,
+                    "675_2":1.,     "675_3":1.,
+                    "775_2":1.,     "775_3":1.,
+                    "875_2":1.,     "875_3":1.,
+                    "975_2":1.,     "975_3":1.,
+                    "1075_2":1.,    "1075_3":1.,}
+
+
 
     if not quiet:
         print "> Trig corr (%s): %.3f" % (ht+"_"+njet, d[ht+"_"+njet])
@@ -183,8 +197,9 @@ def trig_eff(sele = "OneMuon", ht = "", njet = "", quiet = False, fineJet = True
 def lumi(sele = "mu", quiet = False):
     """get the luminosity in fb-1"""
 
+    sele = sele.translate(None, "QCD")
+
     d = {
-            "QCD": 18.493,
             "Had": 18.493,
             "OneMuon": 19.131,
             "DiMuon": 19.131,
