@@ -40,29 +40,29 @@ class Yield(object):
 
 ######################################################################
 
-class CatYield(object):
-    """object to hold a bunch of yields, recursively"""
-    def __init__(self, cats = []):
-        self._cats = cats if cats else []
+# class CatYield(object):
+#     """object to hold a bunch of yields, recursively"""
+#     def __init__(self, cats = []):
+#         self._cats = cats if cats else []
 
 
-    def AddCat(self, cat = "", val = None):
-        # print cat, val, self._cats
-        if cat in self._cats:
-            print "%s already exists." % cat
-        setattr(self, cat, val)
-        self._cats.append(cat)
+#     def AddCat(self, cat = "", val = None):
+#         # print cat, val, self._cats
+#         if cat in self._cats:
+#             print "%s already exists." % cat
+#         setattr(self, cat, val)
+#         self._cats.append(cat)
 
-    def __str__(self):
-        out = "\n-CatYield object-\n"
-        out += "Cats: " + ", ".join(self._cats) + "\n"
+#     def __str__(self):
+#         out = "\n-CatYield object-\n"
+#         out += "Cats: " + ", ".join(self._cats) + "\n"
         
-        for cat in self._cats:
-            try:
-                out += "%s: %s\n" % (cat, getattr(self, cat))
-            except AttributeError:
-                pass
-        return out
+#         for cat in self._cats:
+#             try:
+#                 out += "%s: %s\n" % (cat, getattr(self, cat))
+#             except AttributeError:
+#                 pass
+#         return out
 
 ######################################################################
 
@@ -114,6 +114,12 @@ class AnalysisYields(object):
                         self._dict[dphi][j][b][ht] = Yield(val, err)
                     # make inclusive ht cat
                     self._dict[dphi][j][b]['inc'] = self.MakeInclusiveYield(self._dict[dphi][j][b], "ht")
+                # make inclusive nb cat
+                self._dict[dphi][j]['inc'] = self.MakeInclusiveYield(self._dict[dphi][j], "nb")
+            # make inclusive nj cat
+            self._dict[dphi]['inc'] = self.MakeInclusiveYield(self._dict[dphi], "nj")
+        # make inclusive dphi cat
+        pass
 
 
     def MakeInclusiveYield(self, dic = {}, dim = ""):
@@ -127,7 +133,28 @@ class AnalysisYields(object):
             for cat in exclCats:
                 inclYield = inclYield + dic[cat]
             return inclYield
+        elif type(dic[exclCats[0]]) is dict:
+            # dict_printer(dic)
+            return self.dictSummer(dic)
 
+    def dictSummer(self, dic = {}):
+        """this is the wrong way to do it...change!"""
+        keys = dic.keys()
+
+        if type(dic[keys[0]]) is dict:
+            subKeys = dic[keys[0]].keys()
+            # print type(dic[keys[0]][subKeys[0]])
+            if type(dic[keys[0]][subKeys[0]]) is Yield:
+                inclDict = dict.fromkeys(subKeys)
+                for skey in subKeys:
+                    inclDict[skey] = Yield(0., 0.)
+                    for key in keys:
+                        inclDict[skey] = inclDict[skey] + dic[key][skey]
+                return inclDict
+            elif type(dic[keys[0]][subKeys[0]]) is dict:
+                for key in keys:
+                    summed = self.dictSummer(dic[key])
+                    print key, summed
 
 
     def GetYield(self, **cats):
@@ -164,8 +191,8 @@ class AnalysisYields(object):
 def bins(key = ""):
     try:
         return {"nj": ["le3j", "ge4j"],
-                "nb": ["eq0b", "eq1b", "eq2b", "eq3b"],
-                "ht": ["200_275","275_325","325_375","375_475","475_575","575_675","675_775","775_875","875_975","975_1075","1075"][:3]}[key]
+                "nb": ["eq0b", "eq1b", "eq2b", "eq3b"][:2],
+                "ht": ["200_275","275_325","325_375","375_475","475_575","575_675","675_775","775_875","875_975","975_1075","1075"][:1]}[key]
     except:
         return None
 
@@ -179,7 +206,7 @@ def fpath():
 if __name__ == "__main__":
 
     had_data = AnalysisYields("HadQCD")
-    # print had_data
+    print had_data
     # had_mc = AnalysisYields("HadQCD", data = False)
     # print had_mc
     d = {
