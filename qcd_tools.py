@@ -1,18 +1,17 @@
 import ROOT as r
+import plot_grabber as grabr
 from sys import exit
 from copy import deepcopy
 from alphat_excess import dict_printer
-import plot_grabber as grabr
+from itertools import product
 
 ######################################################################
-
-# TO-DO
-
-# 1. Get HT trigger effs
-# 2. Setup QCD muon selection in plot grabber
-# 3. Wrap the yield collector into an object
-    # can then create an instance and use functions to access yields
-
+"""
+TO-DO
+1. Setup automatic inclusive maker with 'inc' keyword
+2. Add an additional alphaT dimension
+3. Verify yield from grabr are correct!
+"""
 ######################################################################
 
 class Yield(object):
@@ -58,6 +57,18 @@ class CatYield(object):
 
 ######################################################################
 
+def inclusiveCats(dim = ""):
+    try:
+        return {"nj": ["le3j", "ge4j"],
+                "nb": ["eq0b", "eq1b", "eq2b", "eq3b", "ge4b"],
+                "ht": ["200_275","275_325","325_375","375_475","475_575","575_675","675_775","775_875","875_975","975_1075","1075"],
+                "at": ["all"],
+                "dphi": ["lt0p3", "gt0p3"]}[dim]
+    except KeyError:
+        return []
+
+######################################################################
+
 class AnalysisYields(object):
     def __init__(self, selec = "", data = True):
         print "> Creating AnalysisYields object for %s selection in %s" % (selec,
@@ -93,12 +104,31 @@ class AnalysisYields(object):
                         val = htotal.IntegralAndError(1, htotal.GetNbinsX()+1, err)
                         self._dict[dphi][j][b][ht] = Yield(val, err)
 
-    def GetYield(self, ht = None, nj = None, nb = None, dphi = None):
+    # def GetYield(self, ht = None, nj = None, nb = None, dphi = None):
+    def GetYield(self, **cats):
+        
+        defaultArgs = ["ht", "nj", "nb", "dphi"]
+        
+        for dflt in defaultArgs:
+            assert cats[dflt], "%s val missing" % dflt
 
-        for dflt in [ht, nj, nb, dphi]:
-            assert dflt, "%s val missing" % dflt
+        if all(type(cats[arg]) is str for arg in defaultArgs):
+            # asking for a specific value, as all args are strings
+            return self._dict[cats["dphi"]][cats["nj"]][cats["nb"]][cats["ht"]]
+        
+        # get here if one or more arguements are lists (i.e. want multiple yields to be returned)
+        listArgs = []
+        out = {}
+        for arg in defaultArgs:
+            assert type(cats[arg]) in [str, list], "Arguement for %s must be either str or list." % a
+            if type(cats[arg]) is str:
+                cats[arg] = [cats[arg]]
 
-        return self._dict[dphi][nj][nb][ht]
+        for h, j, b, d in product(*[cats[arg] for arg in defaultArgs]): # messy!
+            key = "%s_%s_%s_%s" % (h, j, b, d)
+            out[key] = self._dict[d][j][b][h]
+
+        return out
 
     def __str__(self):
         dict_printer(self._dict)
@@ -108,8 +138,8 @@ class AnalysisYields(object):
 
 def bins(key = ""):
     try:
-        return {"nj": ["le3j", "ge4j", "ge2j"][:1],
-                "nb": ["eq0b", "eq1b", "eq2b", "eq3b", "ge0b"][:1],
+        return {"nj": ["le3j", "ge4j", "ge2j"],
+                "nb": ["eq0b", "eq1b", "eq2b", "eq3b", "ge0b"],
                 "htbins": ["200_275","275_325","325_375","375_475","475_575","575_675","675_775","775_875","875_975","975_1075","1075"][:3]}[key]
     except:
         return None
@@ -128,11 +158,12 @@ if __name__ == "__main__":
     # had_mc = AnalysisYields("HadQCD", data = False)
     # print had_mc
     d = {
-    "ht": "200_275",
-    "nj": "le3j",
-    # "nb": "eq0b",
+    "ht": bins("htbins")[0:2],
+    "nj": bins("nj"),
+    "nb": "eq0b",
     "dphi": "lt0p3",
     }
 
     y = had_data.GetYield(**d)
-    print y
+    for k in y:
+        print k, y[k]
