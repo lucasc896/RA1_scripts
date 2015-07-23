@@ -58,11 +58,59 @@ class CatYield(object):
 
 ######################################################################
 
+class AnalysisYields(object):
+    def __init__(self, selec = "", data = True):
+        print "> Creating AnalysisYields object for %s selection in %s" % (selec,
+            "data" if data else "MC")
+        self._selec = selec
+        self._data = data
+        self.HarvestYields()
+
+    def HarvestYields(self):
+        if self._data:
+            files = ["Had_Data"]
+        else:
+            files = ["Had_TTbar", "Had_SingleTop", "Had_WJets", "Had_DY", "Had_Zinv", "Had_DiBoson"]
+
+        self._dict = dict.fromkeys(["lt0p3", "gt0p3"])
+        for dphi in ["lt0p3", "gt0p3"]:
+            self._dict[dphi] = dict.fromkeys(bins("nj"))
+            for j in bins("nj"):
+                self._dict[dphi][j] = dict.fromkeys(bins("nb"))
+                for b in bins("nb"):
+                    self._dict[dphi][j][b] = dict.fromkeys(bins("htbins"))
+                    for ht in bins("htbins"):
+                        htotal = None
+                        for fname in files:
+                            hist = grabr.grab_plots(f_path = "%s/%s/%s.root" % (fpath(), dphi, fname),
+                                                    sele = self._selec, h_title = "AlphaT_Signal", njet = j,
+                                                    btag = b, quiet = True, ht_bins = ht)
+                            if not htotal:
+                                htotal = hist.Clone()
+                            else:
+                                htotal.Add(hist)
+                        err = r.Double(0.)
+                        val = htotal.IntegralAndError(1, htotal.GetNbinsX()+1, err)
+                        self._dict[dphi][j][b][ht] = Yield(val, err)
+
+    def GetYield(self, ht = None, nj = None, nb = None, dphi = None):
+
+        for dflt in [ht, nj, nb, dphi]:
+            assert dflt, "%s val missing" % dflt
+
+        return self._dict[dphi][nj][nb][ht]
+
+    def __str__(self):
+        dict_printer(self._dict)
+        return ""
+
+######################################################################
+
 def bins(key = ""):
     try:
-        return {"nj": ["le3j", "ge4j", "ge2j"],
-                "nb": ["eq0b", "eq1b", "eq2b", "eq3b", "ge0b"],
-                "htbins": ["200_275","275_325","325_375","375_475","475_575","575_675","675_775","775_875","875_975","975_1075","1075"]}[key]
+        return {"nj": ["le3j", "ge4j", "ge2j"][:1],
+                "nb": ["eq0b", "eq1b", "eq2b", "eq3b", "ge0b"][:1],
+                "htbins": ["200_275","275_325","325_375","375_475","475_575","575_675","675_775","775_875","875_975","975_1075","1075"][:3]}[key]
     except:
         return None
 
@@ -73,40 +121,18 @@ def fpath():
 
 ######################################################################
 
-def get_yields(selec = "", data = True):
-
-    if data:
-        files = ["Had_Data"]
-    else:
-        files = ["Had_TTbar", "Had_SingleTop", "Had_WJets", "Had_DY", "Had_Zinv", "Had_DiBoson"]
-
-    d = dict.fromkeys(["lt0p3", "gt0p3"])
-    for dphi in ["lt0p3", "gt0p3"]:
-        d[dphi] = dict.fromkeys(bins("nj"))
-        for j in bins("nj"):
-            d[dphi][j] = dict.fromkeys(bins("nb"))
-            for b in bins("nb"):
-                d[dphi][j][b] = dict.fromkeys(bins("htbins"))
-                for ht in bins("htbins"):
-                    htotal = None
-                    for fname in files:
-                        hist = grabr.grab_plots(f_path = "%s/%s/%s.root" % (fpath(), dphi, fname),
-                                                sele = "QCD", h_title = "AlphaT_Signal", njet = j,
-                                                btag = b, quiet = True, ht_bins = ht)
-                        if not htotal:
-                            htotal = hist.Clone()
-                        else:
-                            htotal.Add(hist)
-                    err = r.Double(0.)
-                    val = htotal.IntegralAndError(1, htotal.GetNbinsX()+1, err)
-                    d[dphi][j][b][ht] = Yield(val, err)
-
-    return d
-
-######################################################################
-
 if __name__ == "__main__":
     
-    had_data = get_yields("QCD")
-    had_mc = get_yields("QCD", data = False)
-    dict_printer(had_data)
+    had_data = AnalysisYields("HadQCD")
+    print had_data
+    # had_mc = AnalysisYields("HadQCD", data = False)
+    # print had_mc
+    d = {
+    "ht": "200_275",
+    "nj": "le3j",
+    # "nb": "eq0b",
+    "dphi": "lt0p3",
+    }
+
+    y = had_data.GetYield(**d)
+    print y
