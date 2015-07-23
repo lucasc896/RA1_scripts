@@ -117,12 +117,13 @@ def print_multi_graph(graphs = [], title = ''):
 
 def main():
 
+    HTbins = ["200_275","275_325","325_375","375_475","475_575","575_675","675_775","775_875","875_975","975_1075","1075"][3:]
     jcats = ["eq2j", "eq3j", "eq4j", "ge5j", "ge2j"][1:]
     bcats = ["eq0b", "eq1b", "eq2b"]
 
     # get excess yields
-    excess = yield_tools.get_excess()
-    
+    excess = yield_tools.get_excess(HTbins)
+
     btag_prob(excess, jcats)
 
     # get qcd yields
