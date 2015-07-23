@@ -1,4 +1,5 @@
 import ROOT as r
+import math as ma
 import plot_grabber as grabr
 from sys import exit
 from copy import deepcopy
@@ -25,6 +26,15 @@ class Yield(object):
             self.fe = 0.
     def __str__(self):
         return "Yield: %.3f +/- %.3f" % (self.v, self.e)
+    def __add__(self, other):
+        totv = self.v + other.v
+        tote = ma.sqrt( ma.pow(self.e, 2) + ma.pow(other.e, 2) )
+        return Yield(totv, tote)
+    def __sub__(self, other):
+        totv = self.v - other.v
+        tote = ma.sqrt( ma.pow(self.e, 2) + ma.pow(other.e, 2) )
+        return Yield(totv, tote)
+
 
 ######################################################################
 
@@ -43,21 +53,18 @@ class CatYield(object):
 
     def __str__(self):
         out = "\n-CatYield object-\n"
-        # out = ""
         out += "Cats: " + ", ".join(self._cats) + "\n"
         
         for cat in self._cats:
             try:
                 out += "%s: %s\n" % (cat, getattr(self, cat))
             except AttributeError:
-                pass    
-        # out += "+++"
-        
+                pass
         return out
 
 ######################################################################
 
-def inclusiveCats(dim = ""):
+def exclusiveCats(dim = ""):
     try:
         return {"nj": ["le3j", "ge4j"],
                 "nb": ["eq0b", "eq1b", "eq2b", "eq3b", "ge4b"],
@@ -103,8 +110,14 @@ class AnalysisYields(object):
                         err = r.Double(0.)
                         val = htotal.IntegralAndError(1, htotal.GetNbinsX()+1, err)
                         self._dict[dphi][j][b][ht] = Yield(val, err)
+                    # self._dict[dphi][j][b]['inc'] = 
 
-    # def GetYield(self, ht = None, nj = None, nb = None, dphi = None):
+    def MakeInclusiveYield(self, dict = {}, dim = ""):
+        exclCats = exclusiveCats(dim)
+        
+        # for cat in exclCats:
+
+
     def GetYield(self, **cats):
         
         defaultArgs = ["ht", "nj", "nb", "dphi"]
@@ -152,7 +165,7 @@ def fpath():
 ######################################################################
 
 if __name__ == "__main__":
-    
+
     had_data = AnalysisYields("HadQCD")
     print had_data
     # had_mc = AnalysisYields("HadQCD", data = False)
@@ -167,3 +180,5 @@ if __name__ == "__main__":
     y = had_data.GetYield(**d)
     for k in y:
         print k, y[k]
+
+
