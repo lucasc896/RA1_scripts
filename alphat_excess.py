@@ -17,12 +17,12 @@ def dict_printer(dicto = {}, indent = 1):
 
   print "{ (%d keys)\n" % len(dicto)
   for key in dicto:
-    print "\t"*indent, "'%s': " % key,
+    print "  "*indent, "'%s': " % key,
     if dict == type(dicto[key]):
       dict_printer(dicto[key], indent+1)
     else:
       print dicto[key]
-  print "\t"*indent, "}\n"
+  print "  "*indent, "}\n"
 
 def convert_val(val = ''):
     if val == "-":
@@ -71,10 +71,17 @@ def get_file_key(str = ''):
     tmp_split = tmp_split.split(".")[0]
     tmp_split = tmp_split.split("_")
 
-    bcat = "ge0" if tmp_split[-3] == "Inc" else tmp_split[-3]
-    jcat = "ge2" if tmp_split[-1] == "inclusive" else tmp_split[-1]
-
-    jcat = jcat.replace("greq", "ge")
+    bcat = "ge0" if tmp_split[4] == "Inc" else tmp_split[4]
+    
+    if tmp_split[-1] == "inclusive":
+        jcat = "ge2"
+    elif tmp_split[-3:] == ['eq2', 'and', '3']:
+        jcat = "le3"
+    elif tmp_split[-1] == "greq4":
+        jcat = "ge4"
+    else:
+        jcat = None
+        exit("get_file_key fail.")
 
     return "%sb_%sj" % (bcat, jcat)
 
@@ -91,11 +98,12 @@ def get_excess(HTbins = []):
     for dir in os.walk(in_dir):
         # change this for multiple dirs with diff aT thresholds
         if dir[-1]:
-            if "TexFiles" not in dir[0]: continue
+            if "in/TexFiles" not in dir[0]: continue
             alpha_key = dir[0].split("_")[-1]
             yields[alpha_key] = {}
             for file in dir[-1]:
                 if ".tex" not in file: continue
+                if file in ["ptdr-definitions.tex", "symbols.tex"]: continue
                 file_path = dir[0]+"/"+file
                 this_key = get_file_key(file_path)
                 file = open(file_path)
@@ -105,14 +113,19 @@ def get_excess(HTbins = []):
                 yields[alpha_key][this_key] = cat_obj
                 file.close()
 
+    if not yields:
+        print "> Error: no yield tables found in: %s" % in_dir
+        exit("> Exiting.")
+
     return yields
 
 def get_mc(alphat_vals = ["0p507"], HTbins = [], SMS = None):
 
-    print ">>> Getting QCD yields."
+    print ">>> Getting MC yields."
 
     ht_scheme = ["incl", "excl"][1]
-    n_j = ["eq2j", "eq3j", "eq4j", "ge5j", "ge2j"]
+    n_j = ["eq2j", "eq3j", "eq4j", "ge5j", "ge2j"][-1:]
+    n_j = ["le3j", "ge4j", "ge2j"]
     n_b = ["eq0b", "eq1b", "eq2b", "eq3b", "ge0b"]
     selec = ["OneMuon", "DiMuon", "Had"][2]
     hist_title = ["AlphaT"][0]
@@ -129,13 +142,17 @@ def get_mc(alphat_vals = ["0p507"], HTbins = [], SMS = None):
 
     for alpha_key in alphat_vals:
         yields[alpha_key] = {}
-        my_path = "Root_Files_22Feb_lt0p3_latest_aT_%s_v0" % alpha_key
+        my_path = "QCDKiller_GOLDEN/Root_Files_23Mar_%s_fullLatest_v0" % alpha_key
+        # my_path = "QCDKiller_GOLDEN/Root_Files_01April_PythiaQCD_fullLatest_multiAlphaT_lt0p3_v0"
+        # my_path = "Root_Files_22Feb_lt0p3_latest_aT_%s_v0" % alpha_key
         for nb, nj in product(n_b, n_j):
             vals = []
             errs = []
             for htbin in my_iter:
                 if not SMS:
-                    h_mc = grabr.grab_plots(f_path = "/Users/chrislucas/SUSY/AnalysisCode/rootfiles/%s/Had_QCD.root" % my_path,
+                    # h_mc = grabr.grab_plots(f_path = "/Users/chrislucas/SUSY/AnalysisCode/rootfiles/%s/Had_QCD_Pythia_%s.root" % (my_path, alpha_key),
+                    #                     sele = selec, h_title = hist_title, njet = nj, btag = nb, ht_bins = htbin, quiet = True)
+                    h_mc = grabr.grab_plots(f_path = "/Users/chrislucas/SUSY/AnalysisCode/rootfiles/%s/Had_QCD.root" % (my_path),
                                         sele = selec, h_title = hist_title, njet = nj, btag = nb, ht_bins = htbin, quiet = True)
                 else:
                     h_mc = grabr.grab_plots(f_path = "/Users/chrislucas/SUSY/AnalysisCode/rootfiles/Root_Files_05Mar_lt0p3_latest_SMS_variousAlphaT_v0/Had_%s_aT_%s.root" % (SMS, alpha_key),
@@ -242,14 +259,23 @@ def make_plots(excess = {}, qcd = {}, HTbins = [], SMS = None):
 
             if mode == "diff":
                 # differential mode - split into bins of alphat
+                # print yvals_ex
+                # print yvals_qcd
                 for iy in range(len(yvals_ex)):
                     if iy+1 == len(yvals_ex): continue #skip the last entry in the list
                     yvals_ex[iy][0] -= yvals_ex[iy+1][0] #ex_value
                     yvals_ex[iy][1] = ma.pow(yvals_ex[iy][1], 2) - ma.pow(yvals_ex[iy+1][1], 2) #ex_err
                     yvals_ex[iy][1] = ma.pow(yvals_ex[iy][1], 0.5)
                     yvals_qcd[iy][0] -= yvals_qcd[iy+1][0] #qcd_value
+                    # print yvals_qcd[iy][1], yvals_qcd[iy+1][1]
                     yvals_qcd[iy][1] = ma.pow(yvals_qcd[iy][1], 2) - ma.pow(yvals_qcd[iy+1][1], 2) #qcd_err
-                    yvals_qcd[iy][1] = ma.pow(yvals_qcd[iy][1], 0.5)
+                    try:
+                        yvals_qcd[iy][1] = ma.pow(yvals_qcd[iy][1], 0.5)
+                    except ValueError:
+                        print a_key, cat
+                        print iy, len(yvals_ex)
+                        print yvals_qcd
+                        
 
 
             ex_distro = make_single_plot(xvals, yvals_ex, "Excess")
@@ -307,7 +333,7 @@ def make_plots(excess = {}, qcd = {}, HTbins = [], SMS = None):
                 ratio_vals.append( [0, 1.0] ) # if the above calc doesn't work out, set to zero with large err, so fit isn't pulled
 
         ratio_graph = make_single_plot(xvals, ratio_vals, "%s -%s/Excess" % (cat, SMS.split("_")[0] if SMS else "QCD"))
-        ratio_graph.Draw("ap*")
+        ratio_graph.Draw("ap*0")
         ratio_graph.GetXaxis().SetTitle("#alpha_{T}")
         ratio_graph.GetYaxis().SetTitle("Ratio")
         ratio_graph.GetYaxis().SetRangeUser(0., 2.)
@@ -376,10 +402,14 @@ def make_combined_plot(graphs = [], title = ''):
 
 def cat_white_list():
     out = [
+            "eq0b_le3j",
+            "eq0b_ge4j",
             "eq0b_eq3j",
             "eq0b_eq4j",
             "eq0b_ge5j",
             "eq0b_ge2j",
+            "eq1b_le3j",
+            "eq1b_ge4j",
             "eq1b_eq3j",
             "eq1b_eq4j",
             "eq1b_ge5j",
@@ -387,17 +417,20 @@ def cat_white_list():
             "ge0b_eq3j",
             "ge0b_eq4j",
             "ge0b_ge5j",
+            "ge0b_le3j",
+            "ge0b_ge4j",
             "ge0b_ge2j",
             ]
     return out
 
 def main():
 
-    HTbins = ["200_275","275_325","325_375","375_475","475_575","575_675","675_775","775_875","875_975","975_1075","1075"][3:]
-    sms_model = [None, "T2_4body_250_240", "T2cc_250_240"][2]
+    HTbins = ["200_275","275_325","325_375","375_475","475_575","575_675","675_775","775_875","875_975","975_1075","1075"][-4:]
+    sms_model = [None, "T2_4body_250_240", "T2cc_250_240"][0]
 
     # get excess yields - for specific HTbins
     excess = get_excess(HTbins)
+
     # now this object contains a list of the htbins it refers to
     # can use this as a reference when using odd combinations of HTbins
     # should also pass this to the following functions so the HTbins overlap
