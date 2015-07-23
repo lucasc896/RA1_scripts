@@ -12,6 +12,8 @@ TO-DO
 1. Setup automatic inclusive maker with 'inc' keyword
 2. Add an additional alphaT dimension
 3. Verify yield from grabr are correct!
+4. Correct the erorr handling of the Yield addition/subtraction
+5. Add other inclusive categories - should recursively use inclusive maker
 """
 ######################################################################
 
@@ -66,9 +68,9 @@ class CatYield(object):
 
 def exclusiveCats(dim = ""):
     try:
-        return {"nj": ["le3j", "ge4j"],
-                "nb": ["eq0b", "eq1b", "eq2b", "eq3b", "ge4b"],
-                "ht": ["200_275","275_325","325_375","375_475","475_575","575_675","675_775","775_875","875_975","975_1075","1075"],
+        return {"nj": bins("nj"),
+                "nb": bins("nb"),
+                "ht": bins("ht"),
                 "at": ["all"],
                 "dphi": ["lt0p3", "gt0p3"]}[dim]
     except KeyError:
@@ -96,8 +98,8 @@ class AnalysisYields(object):
             for j in bins("nj"):
                 self._dict[dphi][j] = dict.fromkeys(bins("nb"))
                 for b in bins("nb"):
-                    self._dict[dphi][j][b] = dict.fromkeys(bins("htbins"))
-                    for ht in bins("htbins"):
+                    self._dict[dphi][j][b] = dict.fromkeys(bins("ht"))
+                    for ht in bins("ht"):
                         htotal = None
                         for fname in files:
                             hist = grabr.grab_plots(f_path = "%s/%s/%s.root" % (fpath(), dphi, fname),
@@ -110,12 +112,22 @@ class AnalysisYields(object):
                         err = r.Double(0.)
                         val = htotal.IntegralAndError(1, htotal.GetNbinsX()+1, err)
                         self._dict[dphi][j][b][ht] = Yield(val, err)
-                    # self._dict[dphi][j][b]['inc'] = 
+                    # make inclusive ht cat
+                    self._dict[dphi][j][b]['inc'] = self.MakeInclusiveYield(self._dict[dphi][j][b], "ht")
 
-    def MakeInclusiveYield(self, dict = {}, dim = ""):
+
+    def MakeInclusiveYield(self, dic = {}, dim = ""):
         exclCats = exclusiveCats(dim)
-        
-        # for cat in exclCats:
+
+        assert "inc" not in dic.keys(), "This shouldn't happen!"
+
+        # check that we're at the individual Yield level
+        if type(dic[exclCats[0]]) is Yield:
+            inclYield = Yield(0., 0.)
+            for cat in exclCats:
+                inclYield = inclYield + dic[cat]
+            return inclYield
+
 
 
     def GetYield(self, **cats):
@@ -151,9 +163,9 @@ class AnalysisYields(object):
 
 def bins(key = ""):
     try:
-        return {"nj": ["le3j", "ge4j", "ge2j"],
-                "nb": ["eq0b", "eq1b", "eq2b", "eq3b", "ge0b"],
-                "htbins": ["200_275","275_325","325_375","375_475","475_575","575_675","675_775","775_875","875_975","975_1075","1075"][:3]}[key]
+        return {"nj": ["le3j", "ge4j"],
+                "nb": ["eq0b", "eq1b", "eq2b", "eq3b"],
+                "ht": ["200_275","275_325","325_375","375_475","475_575","575_675","675_775","775_875","875_975","975_1075","1075"][:3]}[key]
     except:
         return None
 
@@ -167,18 +179,18 @@ def fpath():
 if __name__ == "__main__":
 
     had_data = AnalysisYields("HadQCD")
-    print had_data
+    # print had_data
     # had_mc = AnalysisYields("HadQCD", data = False)
     # print had_mc
     d = {
-    "ht": bins("htbins")[0:2],
+    "ht": bins("ht")[0:2],
     "nj": bins("nj"),
     "nb": "eq0b",
     "dphi": "lt0p3",
     }
 
-    y = had_data.GetYield(**d)
-    for k in y:
-        print k, y[k]
+    # y = had_data.GetYield(**d)
+    # for k in y:
+    #     print k, y[k]
 
 
