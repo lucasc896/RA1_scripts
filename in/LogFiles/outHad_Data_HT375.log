@@ -1,0 +1,493 @@
+{
+  "Dataset" : [],
+  "Configuration" : 
+  {
+    "Common.AlphaT.CalcWithEt" : 1,
+    "Common.ApplyXCleaning" : 1,
+    "Common.Btag.Algo" : 5,
+    "Common.Btag.Corrections" : "2013New",
+    "Common.Btag.Discrim" : 0.679,
+    "Common.Btag.RA1_matching" : 0,
+    "Common.Electrons.ApplyID" : 1,
+    "Common.Electrons.CombIsoCut" : 0.1,
+    "Common.Electrons.EtaCut" : 2.5,
+    "Common.Electrons.PtCut" : 10,
+    "Common.Electrons.RequireLooseForOdd" : 1,
+    "Common.Electrons.TightID" : 0,
+    "Common.Electrons.TrkIsoCut" : 5,
+    "Common.Jets.ApplyID" : 1,
+    "Common.Jets.EtaCut" : 3,
+    "Common.Jets.PtCut" : 50,
+    "Common.Jets.TightID" : 0,
+    "Common.Muons.ApplyID" : 1,
+    "Common.Muons.CombIsoCut" : 0.1,
+    "Common.Muons.EtaCut" : 2.5,
+    "Common.Muons.PtCut" : 10,
+    "Common.Muons.RequireLooseForOdd" : 1,
+    "Common.Muons.TightID" : 0,
+    "Common.Muons.TrkIsoCut" : 3,
+    "Common.Photons.EcalIsoCut" : 4,
+    "Common.Photons.EcalIsoRel" : 0,
+    "Common.Photons.EtCut" : 25,
+    "Common.Photons.EtaCut" : 2.5,
+    "Common.Photons.EtaEBMaxCut" : 1.479,
+    "Common.Photons.EtaEEMaxCut" : 5,
+    "Common.Photons.EtaEEMinCut" : 1.525,
+    "Common.Photons.HadOverEmCut" : 0.05,
+    "Common.Photons.HcalIsoCut" : 2,
+    "Common.Photons.HcalIsoRel" : 0,
+    "Common.Photons.IDReq" : 3,
+    "Common.Photons.R9Cut" : 0,
+    "Common.Photons.RequireLooseForOdd" : 1,
+    "Common.Photons.SigIhIhEBCut" : 0.015,
+    "Common.Photons.SigIhIhEECut" : 0.035,
+    "Common.Photons.TrackIsoCut" : 2,
+    "Common.Photons.TrackIsoRel" : 0,
+    "Common.Photons.UseID" : 1,
+    "Common.SMS.Model" : 1,
+    "Common.SMS.bJets" : [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    "Common.SMS.cJets" : [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    "Common.SMS.udsg_high" : [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    "Common.SMS.udsg_low" : [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    "Common.Taus.ApplyID" : 1,
+    "Common.Taus.ElecClean" : 0,
+    "Common.Taus.EtaCut" : 2.5,
+    "Common.Taus.JetClean" : 0,
+    "Common.Taus.MuonClean" : 0,
+    "Common.Taus.PtCut" : 20,
+    "Common.Taus.TightID" : 0,
+    "Gen.Electrons.EtaCut" : 999,
+    "Gen.Electrons.PtCut" : -1,
+    "Gen.Muons.EtaCut" : 999,
+    "Gen.Muons.PtCut" : -1,
+    "LogFileFormat" : "JSON",
+    "NT7.GenMatch.ElecPzLTReqForMatch" : 998,
+    "NT7.GenMatch.JetEtaLTReq" : 100,
+    "NT7.GenMatch.MuonPzLTReqForMatch" : 998,
+    "NT7.JetCorrType" : "MC",
+    "NT7.Smear.IsJetSmeared" : 0,
+    "NT7.Smear.SmearJetFactor" : 0,
+    "NT7.Smear.SmearJetNonGaussNorm" : 0,
+    "NT7.Smear.SmearJetRespFuncFileName" : "./Response.root",
+    "NT7.Smear.SmearJetType" : "pT",
+    "NT7.Xclean.ElecCcAssocElecReq" : 0,
+    "NT7.Xclean.JetCcAssocJetReq" : 0,
+    "NT7.Xclean.MuonCcAssocMuonReq" : 0,
+    "NT7.Xclean.PhotCcAssocPhotReq" : 0,
+    "Ntuple.Electrons.LooseID" : "EIDLoose",
+    "Ntuple.Electrons.Prefix" : "electron",
+    "Ntuple.Electrons.Suffix" : "Pat",
+    "Ntuple.Electrons.TightID" : "EIDTight",
+    "Ntuple.Jets.Prefix" : "ak5Jet",
+    "Ntuple.Jets.Suffix" : "Pat",
+    "Ntuple.Jets.Uncorrected" : 0,
+    "Ntuple.L1Particles.Prefix" : "L1",
+    "Ntuple.L1Particles.Suffix" : "",
+    "Ntuple.Muons.LooseID" : "IsGlobalMuon",
+    "Ntuple.Muons.Prefix" : "muon",
+    "Ntuple.Muons.Suffix" : "Pat",
+    "Ntuple.Muons.TightID" : "IDGlobalMuonPromptTight",
+    "Ntuple.Photons.Prefix" : "photon",
+    "Ntuple.Photons.Suffix" : "Pat",
+    "Ntuple.SecJets.Prefix" : "ak5JetPF2PAT",
+    "Ntuple.SecJets.Suffix" : "Pat",
+    "Ntuple.SecJets.Uncorrected" : 0,
+    "Ntuple.SecMuons.Prefix" : "muon",
+    "Ntuple.SecMuons.Suffix" : "PF",
+    "Ntuple.SecTaus.Prefix" : "tauHPS",
+    "Ntuple.SecTaus.Suffix" : "PF",
+    "Ntuple.Taus.Prefix" : "tau",
+    "Ntuple.Taus.Suffix" : "PF",
+    "Ntuple.TerJets.Prefix" : "ak5JetJPT",
+    "Ntuple.TerJets.Suffix" : "Pat",
+    "Ntuple.TerJets.Uncorrected" : 0,
+    "Ntuple.Weight" : "User",
+    "XCleaning.ElectronJet" : 1,
+    "XCleaning.Electrons.CombIsoCut" : 10,
+    "XCleaning.Electrons.ElectronIsoTypePtCutoff" : 30,
+    "XCleaning.Electrons.ElectronJetDeltaR" : 0.5,
+    "XCleaning.Electrons.ElectronLooseIdRequired" : 1,
+    "XCleaning.Electrons.ElectronTightIdRequired" : 0,
+    "XCleaning.Electrons.EtaCut" : 2.5,
+    "XCleaning.Electrons.PtCut" : 10,
+    "XCleaning.Electrons.RequireLooseIdForInitialFilter" : 0,
+    "XCleaning.Electrons.TrkIsoCut" : 10,
+    "XCleaning.Jets.EtaCut" : 10,
+    "XCleaning.Jets.PtCut" : 10,
+    "XCleaning.MuonJet" : 1,
+    "XCleaning.Muons.CombIsoCut" : 10,
+    "XCleaning.Muons.EtaCut" : 2.5,
+    "XCleaning.Muons.ModifyJetEnergy" : 1,
+    "XCleaning.Muons.MuonIsoTypePtCutoff" : 30,
+    "XCleaning.Muons.MuonJetDeltaR" : 0.5,
+    "XCleaning.Muons.PtCut" : 10,
+    "XCleaning.Muons.RequireLooseIdForInitialFilter" : 1,
+    "XCleaning.Muons.TrkIsoCut" : 10,
+    "XCleaning.PhotonJet" : 1,
+    "XCleaning.Photons.CaloIsoCut" : 6,
+    "XCleaning.Photons.EtCut" : 25,
+    "XCleaning.Photons.EtaCut" : 5,
+    "XCleaning.Photons.EtaEBMaxCut" : 1.479,
+    "XCleaning.Photons.EtaEEMaxCut" : 5,
+    "XCleaning.Photons.EtaEEMinCut" : 1.525,
+    "XCleaning.Photons.IDReq" : 3,
+    "XCleaning.Photons.PhotonIsoTypePtCutoff" : 30,
+    "XCleaning.Photons.PhotonJetDeltaR" : 0.5,
+    "XCleaning.Photons.TrkIsoCut" : 2,
+    "XCleaning.Photons.UseID" : 1,
+    "XCleaning.ResolveConflicts" : 1,
+    "XCleaning.TauJet" : 0,
+    "XCleaning.Verbose" : 0
+  },
+  "Dataset Configuration" : [],
+  "Weighting" : "",
+  "Number of Events Processed" : 161866108,
+  "Cut Flow" : 
+  {
+    "Tree Name" : "Data",
+    "Dummy filter set to 'pass'" : 
+    {
+      "efficiency" : 1,
+      "T" : 161866108,
+      "eT" : 12722.6615961,
+      "F" : 0,
+      "eF" : 0.0,
+      "JSON Filter: " : 
+      {
+        "efficiency" : 0,
+        "T" : 153716716,
+        "eT" : 12398.2547025,
+        "F" : 8149392,
+        "eF" : 2854.71405843,
+        "JSON Output: " : 
+        {
+          "efficiency" : 1,
+          "T" : 153716716,
+          "eT" : 12398.2547025,
+          "F" : 0,
+          "eF" : 0.0,
+          "NumComJets Operation (num unsigned int >= 2)" : 
+          {
+            "efficiency" : 0,
+            "T" : 151689664,
+            "eT" : 12316.2358352,
+            "F" : 2027052,
+            "eF" : 1423.74577842,
+            "Check if an event failed 2012 8TeV MET Filters" : 
+            {
+              "efficiency" : 0,
+              "T" : 149885013,
+              "eT" : 12242.7538966,
+              "F" : 1804651,
+              "eF" : 1343.37307423,
+              "Check if an event failed Good event selection" : 
+              {
+                "efficiency" : 0,
+                "T" : 149746017,
+                "eT" : 12237.0757752,
+                "F" : 138996,
+                "eF" : 372.821651495,
+                "Dead ECAL cut 0.3 " : 
+                {
+                  "efficiency" : 0,
+                  "T" : 53066597,
+                  "eT" : 7284.6821497,
+                  "F" : 96679420,
+                  "eF" : 9832.56918247,
+                  "MultiTrigger:   HLT_HT350_AlphaT0p52_v*" : 
+                  {
+                    "efficiency" : 0,
+                    "T" : 1995549,
+                    "eT" : 1412.63906312,
+                    "F" : 51071048,
+                    "eF" : 7146.40162919,
+                    "NumComElectrons Operation (num unsigned int <= 0)" : 
+                    {
+                      "efficiency" : 0,
+                      "T" : 1965269,
+                      "eT" : 1401.88053567,
+                      "F" : 30280,
+                      "eF" : 174.011476994,
+                      "Number of Common Photons unsigned int <= 0)" : 
+                      {
+                        "efficiency" : 0,
+                        "T" : 1920124,
+                        "eT" : 1385.68537394,
+                        "F" : 45145,
+                        "eF" : 212.473504523,
+                        "NumComMuons Operation (num unsigned int <= 0)" : 
+                        {
+                          "efficiency" : 0,
+                          "T" : 1888711,
+                          "eT" : 1374.30391249,
+                          "F" : 31413,
+                          "eF" : 177.237107273,
+                          "Maximum EMF of all jets <  0.1 " : 
+                          {
+                            "efficiency" : 0,
+                            "T" : 1888576,
+                            "eT" : 1374.25477647,
+                            "F" : 135,
+                            "eF" : 11.6189447151,
+                            "First jet Pt > 100 GeV: " : 
+                            {
+                              "efficiency" : 0,
+                              "T" : 1847501,
+                              "eT" : 1359.22811734,
+                              "F" : 41075,
+                              "eF" : 202.669670213,
+                              " first Jet Eta < 2.5 rad): " : 
+                              {
+                                "efficiency" : 0,
+                                "T" : 1797777,
+                                "eT" : 1340.81208173,
+                                "F" : 49724,
+                                "eF" : 222.988770188,
+                                "Second jet Pt > 100 GeV: " : 
+                                {
+                                  "efficiency" : 0,
+                                  "T" : 1469654,
+                                  "eT" : 1212.29284555,
+                                  "F" : 328123,
+                                  "eF" : 572.820170309,
+                                  "Check if a jet failed loose quality criteria" : 
+                                  {
+                                    "efficiency" : 0,
+                                    "T" : 1201096,
+                                    "eT" : 1095.94525041,
+                                    "F" : 268558,
+                                    "eF" : 518.225779648,
+                                    "Bad muon in a Jet" : 
+                                    {
+                                      "efficiency" : 0,
+                                      "T" : 1186370,
+                                      "eT" : 1089.20614821,
+                                      "F" : 14726,
+                                      "eF" : 121.35073908,
+                                      "Check if a electron failed loose quality criteria" : 
+                                      {
+                                        "efficiency" : 1,
+                                        "T" : 1186370,
+                                        "eT" : 1089.20614821,
+                                        "F" : 0,
+                                        "eF" : 0.0,
+                                        "Check if a photon failed loose quality criteria" : 
+                                        {
+                                          "efficiency" : 1,
+                                          "T" : 1186370,
+                                          "eT" : 1089.20614821,
+                                          "F" : 0,
+                                          "eF" : 0.0,
+                                          "NumComElectrons Operation (num unsigned int <= 0)" : 
+                                          {
+                                            "efficiency" : 1,
+                                            "T" : 1186370,
+                                            "eT" : 1089.20614821,
+                                            "F" : 0,
+                                            "eF" : 0.0,
+                                            "Number of Common Photons unsigned int <= 0)" : 
+                                            {
+                                              "efficiency" : 1,
+                                              "T" : 1186370,
+                                              "eT" : 1089.20614821,
+                                              "F" : 0,
+                                              "eF" : 0.0,
+                                              "NumComMuons Operation (num unsigned int <= 0)" : 
+                                              {
+                                                "efficiency" : 1,
+                                                "T" : 1186370,
+                                                "eT" : 1089.20614821,
+                                                "F" : 0,
+                                                "eF" : 0.0,
+                                                "Checking that  sum Vertex Pt / HT is  > 0.1 " : 
+                                                {
+                                                  "efficiency" : 0,
+                                                  "T" : 1186368,
+                                                  "eT" : 1089.20523327,
+                                                  "F" : 2,
+                                                  "eF" : 1.41421356237,
+                                                  "Veto Events with sum of cleaned rechits above 30 GeV " : 
+                                                  {
+                                                    "efficiency" : 0,
+                                                    "T" : 1167861,
+                                                    "eT" : 1080.6762019,
+                                                    "F" : 18507,
+                                                    "eF" : 136.040421193,
+                                                    "IsoTrackVeto: " : 
+                                                    {
+                                                      "efficiency" : 0,
+                                                      "T" : 1001646,
+                                                      "eT" : 1000.822669,
+                                                      "F" : 166215,
+                                                      "eF" : 407.6946526,
+                                                      "Dead ECAL cut 0.3 " : 
+                                                      {
+                                                        "efficiency" : 1,
+                                                        "T" : 1001646,
+                                                        "eT" : 1000.822669,
+                                                        "F" : 0,
+                                                        "eF" : 0.0,
+                                                        "CommonMinBiasDPhi >  0.3 " : 
+                                                        {
+                                                          "efficiency" : 0,
+                                                          "T" : 195361,
+                                                          "eT" : 441.996649454,
+                                                          "F" : 806285,
+                                                          "eF" : 897.933806299,
+                                                          "HT 375 GeV " : 
+                                                          {
+                                                            "efficiency" : 0,
+                                                            "T" : 143255,
+                                                            "eT" : 378.49028655,
+                                                            "F" : 52106,
+                                                            "eF" : 228.267382103,
+                                                            "Passing MHT over MET cut of: 1.25 " : 
+                                                            {
+                                                              "efficiency" : 0,
+                                                              "T" : 13263,
+                                                              "eT" : 115.165116934,
+                                                              "F" : 129992,
+                                                              "eF" : 360.543857534,
+                                                              "Alpha_t  > 0.55 GeV): " : 
+                                                              {
+                                                                "efficiency" : 0,
+                                                                "T" : 5073,
+                                                                "eT" : 71.2250015811,
+                                                                "F" : 8190,
+                                                                "eF" : 90.49861657,
+                                                                "Passing MHT over MET cut of: 1.25 " : 
+                                                                {
+                                                                  "efficiency" : 1,
+                                                                  "T" : 5073,
+                                                                  "eT" : 71.2250015811,
+                                                                  "F" : 0,
+                                                                  "eF" : 0.0,
+                                                                  "MultiTrigger:   HLT_HT350_AlphaT0p52_v*" : 
+                                                                  {
+                                                                    "efficiency" : 1,
+                                                                    "T" : 5073,
+                                                                    "eT" : 71.2250015811,
+                                                                    "F" : 0,
+                                                                    "eF" : 0.0,
+                                                                    "HT 375 GeV " : 
+                                                                    {
+                                                                      "efficiency" : 1,
+                                                                      "T" : 5073,
+                                                                      "eT" : 71.2250015811,
+                                                                      "F" : 0,
+                                                                      "eF" : 0.0,
+                                                                      "HT less than475 GeV " : 
+                                                                      {
+                                                                        "efficiency" : 0,
+                                                                        "T" : 3303,
+                                                                        "eT" : 57.4717348717,
+                                                                        "F" : 1770,
+                                                                        "eF" : 42.0713504316,
+                                                                        "Hadronic Common Plots (bins 1 to 20) " : 
+                                                                        {
+                                                                          "efficiency" : 1,
+                                                                          "T" : 3303,
+                                                                          "eT" : 57.4717348717,
+                                                                          "F" : 0,
+                                                                          "eF" : 0.0
+                                                                        }
+                                                                      }
+                                                                    }
+                                                                  },
+                                                                  "NumComBtagsJets Operation (num unsigned int > 3) with BTag cut 0.679 using Btag Algorithm 5" : 
+                                                                  {
+                                                                    "efficiency" : 0,
+                                                                    "T" : 2,
+                                                                    "eT" : 1.41421356237,
+                                                                    "F" : 5071,
+                                                                    "eF" : 71.210960153,
+                                                                    "MultiTrigger:   HLT_HT350_AlphaT0p52_v*" : 
+                                                                    {
+                                                                      "efficiency" : 1,
+                                                                      "T" : 2,
+                                                                      "eT" : 1.41421356237,
+                                                                      "F" : 0,
+                                                                      "eF" : 0.0,
+                                                                      "HT 375 GeV " : 
+                                                                      {
+                                                                        "efficiency" : 1,
+                                                                        "T" : 2,
+                                                                        "eT" : 1.41421356237,
+                                                                        "F" : 0,
+                                                                        "eF" : 0.0,
+                                                                        "HT less than475 GeV " : 
+                                                                        {
+                                                                          "efficiency" : 0,
+                                                                          "T" : 0,
+                                                                          "eT" : 0.0,
+                                                                          "F" : 2,
+                                                                          "eF" : 1.41421356237,
+                                                                          "Hadronic Common Plots (bins 1 to 20) " : 
+                                                                          {
+                                                                            "efficiency" : 0,
+                                                                            "T" : 0,
+                                                                            "eT" : 0.0,
+                                                                            "F" : 0,
+                                                                            "eF" : 0.0
+                                                                          }
+                                                                        }
+                                                                      }
+                                                                    },
+                                                                    "MultiTrigger:   HLT_HT400_AlphaT0p51_v*" : 
+                                                                    {
+                                                                      "efficiency" : 1,
+                                                                      "T" : 2,
+                                                                      "eT" : 1.41421356237,
+                                                                      "F" : 0,
+                                                                      "eF" : 0.0,
+                                                                      "HT 1075 GeV " : 
+                                                                      {
+                                                                        "efficiency" : 0,
+                                                                        "T" : 0,
+                                                                        "eT" : 0.0,
+                                                                        "F" : 2,
+                                                                        "eF" : 1.41421356237,
+                                                                        "Hadronic Common Plots (bins 1 to 20) " : 
+                                                                        {
+                                                                          "efficiency" : 0,
+                                                                          "T" : 0,
+                                                                          "eT" : 0.0,
+                                                                          "F" : 0,
+                                                                          "eF" : 0.0
+                                                                        }
+                                                                      }
+                                                                    }
+                                                                  }
+                                                                }
+                                                              }
+                                                            }
+                                                          }
+                                                        }
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

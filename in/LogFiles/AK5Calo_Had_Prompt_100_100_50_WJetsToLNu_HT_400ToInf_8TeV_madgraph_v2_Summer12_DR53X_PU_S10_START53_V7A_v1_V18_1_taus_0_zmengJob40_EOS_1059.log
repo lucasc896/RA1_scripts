@@ -1,0 +1,1869 @@
+{
+  "Dataset" : "WJetsToLNu_HT_400ToInf_8TeV_madgraph_v2_Summer12_DR53X_PU_S10_START53_V7A_v1_V18_1_taus_0_zmengJob40_EOS",
+  "Configuration" :
+  {
+    "Common.AlphaT.CalcWithEt" : 1,
+    "Common.ApplyXCleaning" : 1,
+    "Common.Btag.Algo" : 5,
+    "Common.Btag.Corrections" : "2013New",
+    "Common.Btag.Discrim" : 0.679,
+    "Common.Btag.RA1_matching" : 0,
+    "Common.Electrons.ApplyID" : 1,
+    "Common.Electrons.CombIsoCut" : 0.1,
+    "Common.Electrons.EtaCut" : 2.5,
+    "Common.Electrons.PtCut" : 10,
+    "Common.Electrons.RequireLooseForOdd" : 1,
+    "Common.Electrons.TightID" : 0,
+    "Common.Electrons.TrkIsoCut" : 5,
+    "Common.Jets.ApplyID" : 1,
+    "Common.Jets.EtaCut" : 3,
+    "Common.Jets.PtCut" : 50,
+    "Common.Jets.TightID" : 0,
+    "Common.Muons.ApplyID" : 1,
+    "Common.Muons.CombIsoCut" : 0.1,
+    "Common.Muons.EtaCut" : 2.5,
+    "Common.Muons.PtCut" : 10,
+    "Common.Muons.RequireLooseForOdd" : 1,
+    "Common.Muons.TightID" : 0,
+    "Common.Muons.TrkIsoCut" : 3,
+    "Common.Photons.EcalIsoCut" : 4,
+    "Common.Photons.EcalIsoRel" : 0,
+    "Common.Photons.EtCut" : 25,
+    "Common.Photons.EtaCut" : 2.5,
+    "Common.Photons.EtaEBMaxCut" : 1.479,
+    "Common.Photons.EtaEEMaxCut" : 5,
+    "Common.Photons.EtaEEMinCut" : 1.525,
+    "Common.Photons.HadOverEmCut" : 0.05,
+    "Common.Photons.HcalIsoCut" : 2,
+    "Common.Photons.HcalIsoRel" : 0,
+    "Common.Photons.IDReq" : 3,
+    "Common.Photons.R9Cut" : 0,
+    "Common.Photons.RequireLooseForOdd" : 1,
+    "Common.Photons.SigIhIhEBCut" : 0.015,
+    "Common.Photons.SigIhIhEECut" : 0.035,
+    "Common.Photons.TrackIsoCut" : 2,
+    "Common.Photons.TrackIsoRel" : 0,
+    "Common.Photons.UseID" : 1,
+    "Common.SMS.Model" : 0,
+    "Common.SMS.bJets" : [ 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 ],
+    "Common.SMS.cJets" : [ 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 ],
+    "Common.SMS.udsg_high" : [ 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 ],
+    "Common.SMS.udsg_low" : [ 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 ],
+    "Common.Taus.ApplyID" : 1,
+    "Common.Taus.ElecClean" : 0,
+    "Common.Taus.EtaCut" : 2.5,
+    "Common.Taus.JetClean" : 0,
+    "Common.Taus.MuonClean" : 0,
+    "Common.Taus.PtCut" : 20,
+    "Common.Taus.TightID" : 0,
+    "Gen.Electrons.EtaCut" : 999,
+    "Gen.Electrons.PtCut" : -1,
+    "Gen.Muons.EtaCut" : 999,
+    "Gen.Muons.PtCut" : -1,
+    "LogFileFormat" : "JSON",
+    "NT7.GenMatch.ElecPzLTReqForMatch" : 998,
+    "NT7.GenMatch.JetEtaLTReq" : 100,
+    "NT7.GenMatch.MuonPzLTReqForMatch" : 998,
+    "NT7.JetCorrType" : "MC",
+    "NT7.Smear.IsJetSmeared" : 0,
+    "NT7.Smear.SmearJetFactor" : 0,
+    "NT7.Smear.SmearJetNonGaussNorm" : 0,
+    "NT7.Smear.SmearJetRespFuncFileName" : "./Response.root",
+    "NT7.Smear.SmearJetType" : "pT",
+    "NT7.Xclean.ElecCcAssocElecReq" : 0,
+    "NT7.Xclean.JetCcAssocJetReq" : 0,
+    "NT7.Xclean.MuonCcAssocMuonReq" : 0,
+    "NT7.Xclean.PhotCcAssocPhotReq" : 0,
+    "Ntuple.Electrons.LooseID" : "EIDLoose",
+    "Ntuple.Electrons.Prefix" : "electron",
+    "Ntuple.Electrons.Suffix" : "Pat",
+    "Ntuple.Electrons.TightID" : "EIDTight",
+    "Ntuple.Jets.Prefix" : "ak5Jet",
+    "Ntuple.Jets.Suffix" : "Pat",
+    "Ntuple.Jets.Uncorrected" : 0,
+    "Ntuple.L1Particles.Prefix" : "L1",
+    "Ntuple.L1Particles.Suffix" : "",
+    "Ntuple.Muons.LooseID" : "IsGlobalMuon",
+    "Ntuple.Muons.Prefix" : "muon",
+    "Ntuple.Muons.Suffix" : "Pat",
+    "Ntuple.Muons.TightID" : "IDGlobalMuonPromptTight",
+    "Ntuple.Photons.Prefix" : "photon",
+    "Ntuple.Photons.Suffix" : "Pat",
+    "Ntuple.SecJets.Prefix" : "ak5JetPF2PAT",
+    "Ntuple.SecJets.Suffix" : "Pat",
+    "Ntuple.SecJets.Uncorrected" : 0,
+    "Ntuple.SecMuons.Prefix" : "muon",
+    "Ntuple.SecMuons.Suffix" : "PF",
+    "Ntuple.SecTaus.Prefix" : "tauHPS",
+    "Ntuple.SecTaus.Suffix" : "PF",
+    "Ntuple.Taus.Prefix" : "tau",
+    "Ntuple.Taus.Suffix" : "PF",
+    "Ntuple.TerJets.Prefix" : "ak5JetJPT",
+    "Ntuple.TerJets.Suffix" : "Pat",
+    "Ntuple.TerJets.Uncorrected" : 0,
+    "Ntuple.Weight" : "User",
+    "XCleaning.ElectronJet" : 1,
+    "XCleaning.Electrons.CombIsoCut" : 10,
+    "XCleaning.Electrons.ElectronIsoTypePtCutoff" : 30,
+    "XCleaning.Electrons.ElectronJetDeltaR" : 0.5,
+    "XCleaning.Electrons.ElectronLooseIdRequired" : 1,
+    "XCleaning.Electrons.ElectronTightIdRequired" : 0,
+    "XCleaning.Electrons.EtaCut" : 2.5,
+    "XCleaning.Electrons.PtCut" : 10,
+    "XCleaning.Electrons.RequireLooseIdForInitialFilter" : 0,
+    "XCleaning.Electrons.TrkIsoCut" : 10,
+    "XCleaning.Jets.EtaCut" : 10,
+    "XCleaning.Jets.PtCut" : 10,
+    "XCleaning.MuonJet" : 1,
+    "XCleaning.Muons.CombIsoCut" : 10,
+    "XCleaning.Muons.EtaCut" : 2.5,
+    "XCleaning.Muons.ModifyJetEnergy" : 1,
+    "XCleaning.Muons.MuonIsoTypePtCutoff" : 30,
+    "XCleaning.Muons.MuonJetDeltaR" : 0.5,
+    "XCleaning.Muons.PtCut" : 10,
+    "XCleaning.Muons.RequireLooseIdForInitialFilter" : 1,
+    "XCleaning.Muons.TrkIsoCut" : 10,
+    "XCleaning.PhotonJet" : 1,
+    "XCleaning.Photons.CaloIsoCut" : 6,
+    "XCleaning.Photons.EtCut" : 25,
+    "XCleaning.Photons.EtaCut" : 5,
+    "XCleaning.Photons.EtaEBMaxCut" : 1.479,
+    "XCleaning.Photons.EtaEEMaxCut" : 5,
+    "XCleaning.Photons.EtaEEMinCut" : 1.525,
+    "XCleaning.Photons.IDReq" : 3,
+    "XCleaning.Photons.PhotonIsoTypePtCutoff" : 30,
+    "XCleaning.Photons.PhotonJetDeltaR" : 0.5,
+    "XCleaning.Photons.TrkIsoCut" : 2,
+    "XCleaning.Photons.UseID" : 1,
+    "XCleaning.ResolveConflicts" : 1,
+    "XCleaning.TauJet" : 0,
+    "XCleaning.Verbose" : 0
+  },
+  "Dataset Configuration" :
+  {
+    "CrossSection" : 28.97,
+    "Events" : 4875847,
+    "File" : "",
+    "FileList" : [ "root://gfe02.grid.hep.ph.ic.ac.uk/pnfs/hep.ph.ic.ac.uk/data/cms/store/user/bainbrid/dburton/Parked13/WJets_400toinf/SusyCAF_Tree_101_1_zk1.root , root://gfe02.grid.hep.ph.ic.ac.uk/pnfs/hep.ph.ic.ac.uk/data/cms/store/user/bainbrid/dburton/Parked13/WJets_400toinf/SusyCAF_Tree_102_1_low.root , root://gfe02.grid.hep.ph.ic.ac.uk/pnfs/hep.ph.ic.ac.uk/data/cms/store/user/bainbrid/dburton/Parked13/WJets_400toinf/SusyCAF_Tree_103_1_C7Q.root , root://gfe02.grid.hep.ph.ic.ac.uk/pnfs/hep.ph.ic.ac.uk/data/cms/store/user/bainbrid/dburton/Parked13/WJets_400toinf/SusyCAF_Tree_104_1_ikL.root , root://gfe02.grid.hep.ph.ic.ac.uk/pnfs/hep.ph.ic.ac.uk/data/cms/store/user/bainbrid/dburton/Parked13/WJets_400toinf/SusyCAF_Tree_105_1_oOv.root , root://gfe02.grid.hep.ph.ic.ac.uk/pnfs/hep.ph.ic.ac.uk/data/cms/store/user/bainbrid/dburton/Parked13/WJets_400toinf/SusyCAF_Tree_106_1_QPQ.root , root://gfe02.grid.hep.ph.ic.ac.uk/pnfs/hep.ph.ic.ac.uk/data/cms/store/user/bainbrid/dburton/Parked13/WJets_400toinf/SusyCAF_Tree_107_1_mBb.root , root://gfe02.grid.hep.ph.ic.ac.uk/pnfs/hep.ph.ic.ac.uk/data/cms/store/user/bainbrid/dburton/Parked13/WJets_400toinf/SusyCAF_Tree_108_1_ULL.root , root://gfe02.grid.hep.ph.ic.ac.uk/pnfs/hep.ph.ic.ac.uk/data/cms/store/user/bainbrid/dburton/Parked13/WJets_400toinf/SusyCAF_Tree_109_1_OeC.root , root://gfe02.grid.hep.ph.ic.ac.uk/pnfs/hep.ph.ic.ac.uk/data/cms/store/user/bainbrid/dburton/Parked13/WJets_400toinf/SusyCAF_Tree_10_1_M5c.root" ],
+    "FirstEntry" : 0,
+    "JsonFile" : "./results_07_Apr/Had_Prompt_NoSmear_100_100_50//AK5Calo_Had_Prompt_100_100_50_WJetsToLNu_HT_400ToInf_8TeV_madgraph_v2_Summer12_DR53X_PU_S10_START53_V7A_v1_V18_1_taus_0_zmengJob40_EOS_1059.json",
+    "LastEntry" : 0,
+    "LogFile" : "./results_07_Apr/Had_Prompt_NoSmear_100_100_50//AK5Calo_Had_Prompt_100_100_50_WJetsToLNu_HT_400ToInf_8TeV_madgraph_v2_Summer12_DR53X_PU_S10_START53_V7A_v1_V18_1_taus_0_zmengJob40_EOS_1059.log",
+    "Name" : "WJetsToLNu_HT_400ToInf_8TeV_madgraph_v2_Summer12_DR53X_PU_S10_START53_V7A_v1_V18_1_taus_0_zmengJob40_EOS",
+    "NtupleFormat" : "ICF",
+    "NtupleVersion" : 3,
+    "OutputFile" : "./results_07_Apr/Had_Prompt_NoSmear_100_100_50//AK5Calo_Had_Prompt_100_100_50_WJetsToLNu_HT_400ToInf_8TeV_madgraph_v2_Summer12_DR53X_PU_S10_START53_V7A_v1_V18_1_taus_0_zmengJob40_EOS_1059.root",
+    "Reweight" : -1,
+    "Weight" : -1
+  },
+  "Weighting" : "Event weights will be calculated for constant number of events: 4875847. Weighted to 100pb^-1. Weight = 0.000594153.",
+  "Number of Events Processed" : 95.0965,
+  "Cut Flow" : 
+  {
+    "Tree Name" : "MC",
+    "CountOp (count_total) " : 
+    {
+      "efficiency" : 1,
+      "T" : 95.0965,
+      "eT" : 0.237741,
+      "F" : 0,
+      "eF" : 0,
+      "NumComJets Operation (num unsigned int >= 2)" : 
+      {
+        "efficiency" : 0.972733,
+        "T" : 92.5036,
+        "eT" : 0.234465,
+        "F" : 2.59295,
+        "eF" : 0.0393323,
+        "Check if an event failed noise filtering criteria" : 
+        {
+          "efficiency" : 0.997394,
+          "T" : 92.2625,
+          "eT" : 0.234163,
+          "F" : 0.241045,
+          "eF" : 0.0119043,
+          "Check if an event failed Good event selection" : 
+          {
+            "efficiency" : 1,
+            "T" : 92.2625,
+            "eT" : 0.234163,
+            "F" : 0,
+            "eF" : 0,
+            "Check if an event failed 2012 8TeV MET Filters" : 
+            {
+              "efficiency" : 0.9967,
+              "T" : 91.958,
+              "eT" : 0.233777,
+              "F" : 0.304502,
+              "eF" : 0.0134441,
+              "Maximum EMF of all jets <  0.1 " : 
+              {
+                "efficiency" : 0.999974,
+                "T" : 91.9557,
+                "eT" : 0.233773,
+                "F" : 0.00235611,
+                "eF" : 0.0013603,
+                " first Jet Eta < 2.5 rad): " : 
+                {
+                  "efficiency" : 0.985896,
+                  "T" : 90.6587,
+                  "eT" : 0.232087,
+                  "F" : 1.29698,
+                  "eF" : 0.0280302,
+                  "First jet Pt > 100 GeV: " : 
+                  {
+                    "efficiency" : 0.998825,
+                    "T" : 90.5522,
+                    "eT" : 0.231947,
+                    "F" : 0.106519,
+                    "eF" : 0.00805206,
+                    "Second jet Pt > 100 GeV: " : 
+                    {
+                      "efficiency" : 0.894861,
+                      "T" : 81.0316,
+                      "eT" : 0.219461,
+                      "F" : 9.52058,
+                      "eF" : 0.075077,
+                      "Check if a jet failed loose quality criteria" : 
+                      {
+                        "efficiency" : 0.975186,
+                        "T" : 79.0209,
+                        "eT" : 0.216709,
+                        "F" : 2.01071,
+                        "eF" : 0.0346468,
+                        "Bad muon in a Jet" : 
+                        {
+                          "efficiency" : 0.977489,
+                          "T" : 77.242,
+                          "eT" : 0.21428,
+                          "F" : 1.77884,
+                          "eF" : 0.0323586,
+                          "Check if a electron failed loose quality criteria" : 
+                          {
+                            "efficiency" : 1,
+                            "T" : 77.242,
+                            "eT" : 0.21428,
+                            "F" : 0,
+                            "eF" : 0,
+                            "Check if a photon failed loose quality criteria" : 
+                            {
+                              "efficiency" : 1,
+                              "T" : 77.242,
+                              "eT" : 0.21428,
+                              "F" : 0,
+                              "eF" : 0,
+                              "NumComElectrons Operation (num unsigned int <= 0)" : 
+                              {
+                                "efficiency" : 0.80541,
+                                "T" : 62.2115,
+                                "eT" : 0.192299,
+                                "F" : 15.0306,
+                                "eF" : 0.0945355,
+                                "Number of Common Photons unsigned int <= 0)" : 
+                                {
+                                  "efficiency" : 0.956939,
+                                  "T" : 59.5326,
+                                  "eT" : 0.188116,
+                                  "F" : 2.6789,
+                                  "eF" : 0.0398904,
+                                  "NumComMuons Operation (num unsigned int <= 0)" : 
+                                  {
+                                    "efficiency" : 0.687497,
+                                    "T" : 40.9285,
+                                    "eT" : 0.155828,
+                                    "F" : 18.6041,
+                                    "eF" : 0.105383,
+                                    "Checking that  sum Vertex Pt / HT is  > 0.1 " : 
+                                    {
+                                      "efficiency" : 1,
+                                      "T" : 40.9285,
+                                      "eT" : 0.155828,
+                                      "F" : 0,
+                                      "eF" : 0,
+                                      "Veto Events with sum of cleaned rechits above 30 GeV " : 
+                                      {
+                                        "efficiency" : 0.984026,
+                                        "T" : 40.2747,
+                                        "eT" : 0.155706,
+                                        "F" : 0.653788,
+                                        "eF" : 0.0143284,
+                                        "IsoTrackVeto: " : 
+                                        {
+                                          "efficiency" : 0.616981,
+                                          "T" : 24.8487,
+                                          "eT" : 0.122552,
+                                          "F" : 15.426,
+                                          "eF" : 0.0960527,
+                                          "Dead ECAL cut 0.3 " : 
+                                          {
+                                            "efficiency" : 0.386658,
+                                            "T" : 9.60796,
+                                            "eT" : 0.076048,
+                                            "F" : 15.2408,
+                                            "eF" : 0.0961031,
+                                            "Alpha_t  > 0.55 GeV): " : 
+                                            {
+                                              "efficiency" : 0.0379977,
+                                              "T" : 0.36508,
+                                              "eT" : 0.0149168,
+                                              "F" : 9.24288,
+                                              "eF" : 0.0745709,
+                                              "Passing MHT over MET cut of: 1.25 " : 
+                                              {
+                                                "efficiency" : 0.880556,
+                                                "T" : 0.321474,
+                                                "eT" : 0.0139639,
+                                                "F" : 0.0436066,
+                                                "eF" : 0.00524962,
+                                                "NumComBtagsJets Operation (num unsigned int = 0) with BTag cut 0.679 using Btag Algorithm 5" : 
+                                                {
+                                                  "efficiency" : 0.910212,
+                                                  "T" : 0.292609,
+                                                  "eT" : 0.013328,
+                                                  "F" : 0.0288644,
+                                                  "eF" : 0.00416622,
+                                                  "HT 375 GeV " : 
+                                                  {
+                                                    "efficiency" : 0.823296,
+                                                    "T" : 0.240904,
+                                                    "eT" : 0.0120603,
+                                                    "F" : 0.0517052,
+                                                    "eF" : 0.00567538,
+                                                    "HT less than475 GeV " : 
+                                                    {
+                                                      "efficiency" : 0.584624,
+                                                      "T" : 0.140838,
+                                                      "eT" : 0.0092866,
+                                                      "F" : 0.100066,
+                                                      "eF" : 0.00769736,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 1,
+                                                        "T" : 0.140838,
+                                                        "eT" : 0.0092866,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 475 GeV " : 
+                                                  {
+                                                    "efficiency" : 0.341977,
+                                                    "T" : 0.100066,
+                                                    "eT" : 0.00769736,
+                                                    "F" : 0.192544,
+                                                    "eF" : 0.0108832,
+                                                    "HT less than575 GeV " : 
+                                                    {
+                                                      "efficiency" : 0.63467,
+                                                      "T" : 0.0635087,
+                                                      "eT" : 0.00605532,
+                                                      "F" : 0.036557,
+                                                      "eF" : 0.00475932,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 1,
+                                                        "T" : 0.0635087,
+                                                        "eT" : 0.00605532,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 575 GeV " : 
+                                                  {
+                                                    "efficiency" : 0.124935,
+                                                    "T" : 0.036557,
+                                                    "eT" : 0.00475932,
+                                                    "F" : 0.256052,
+                                                    "eF" : 0.0124497,
+                                                    "HT less than675 GeV " : 
+                                                    {
+                                                      "efficiency" : 0.518957,
+                                                      "T" : 0.0189715,
+                                                      "eT" : 0.00335373,
+                                                      "F" : 0.0175855,
+                                                      "eF" : 0.00338433,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 1,
+                                                        "T" : 0.0189715,
+                                                        "eT" : 0.00335373,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 675 GeV " : 
+                                                  {
+                                                    "efficiency" : 0.0600989,
+                                                    "T" : 0.0175855,
+                                                    "eT" : 0.00338433,
+                                                    "F" : 0.275024,
+                                                    "eF" : 0.0128933,
+                                                    "HT less than775 GeV " : 
+                                                    {
+                                                      "efficiency" : 0.523371,
+                                                      "T" : 0.00920374,
+                                                      "eT" : 0.00237639,
+                                                      "F" : 0.00838174,
+                                                      "eF" : 0.0024196,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 1,
+                                                        "T" : 0.00920374,
+                                                        "eT" : 0.00237639,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 775 GeV " : 
+                                                  {
+                                                    "efficiency" : 0.0286448,
+                                                    "T" : 0.00838174,
+                                                    "eT" : 0.0024196,
+                                                    "F" : 0.284227,
+                                                    "eF" : 0.0131104,
+                                                    "HT less than875 GeV " : 
+                                                    {
+                                                      "efficiency" : 0.311898,
+                                                      "T" : 0.00261425,
+                                                      "eT" : 0.00130713,
+                                                      "F" : 0.00576749,
+                                                      "eF" : 0.00203912,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 1,
+                                                        "T" : 0.00261425,
+                                                        "eT" : 0.00130713,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 875 GeV " : 
+                                                  {
+                                                    "efficiency" : 0.0197106,
+                                                    "T" : 0.00576749,
+                                                    "eT" : 0.00203912,
+                                                    "F" : 0.286842,
+                                                    "eF" : 0.0131751,
+                                                    "HT less than975 GeV " : 
+                                                    {
+                                                      "efficiency" : 0.495946,
+                                                      "T" : 0.00286037,
+                                                      "eT" : 0.00143018,
+                                                      "F" : 0.00290713,
+                                                      "eF" : 0.00145356,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 1,
+                                                        "T" : 0.00286037,
+                                                        "eT" : 0.00143018,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 975 GeV " : 
+                                                  {
+                                                    "efficiency" : 0.00993518,
+                                                    "T" : 0.00290713,
+                                                    "eT" : 0.00145356,
+                                                    "F" : 0.289702,
+                                                    "eF" : 0.0132507,
+                                                    "HT less than1075 GeV " : 
+                                                    {
+                                                      "efficiency" : 0.265189,
+                                                      "T" : 0.000770938,
+                                                      "eT" : 0.000770938,
+                                                      "F" : 0.00213619,
+                                                      "eF" : 0.00123333,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 1,
+                                                        "T" : 0.000770938,
+                                                        "eT" : 0.000770938,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 1075 GeV " : 
+                                                  {
+                                                    "efficiency" : 0.00730048,
+                                                    "T" : 0.00213619,
+                                                    "eT" : 0.00123333,
+                                                    "F" : 0.290473,
+                                                    "eF" : 0.0132721,
+                                                    "Hadronic Common Plots (bins 1 to 20) " : 
+                                                    {
+                                                      "efficiency" : 1,
+                                                      "T" : 0.00213619,
+                                                      "eT" : 0.00123333,
+                                                      "F" : 0,
+                                                      "eF" : 0
+                                                    }
+                                                  }
+                                                },
+                                                "NumComBtagsJets Operation (num unsigned int > 0) with BTag cut 0.679 using Btag Algorithm 5" : 
+                                                {
+                                                  "efficiency" : 0.0897879,
+                                                  "T" : 0.0288644,
+                                                  "eT" : 0.00416622,
+                                                  "F" : 0.292609,
+                                                  "eF" : 0.013328,
+                                                  "HT 375 GeV " : 
+                                                  {
+                                                    "efficiency" : 0.81847,
+                                                    "T" : 0.0236247,
+                                                    "eT" : 0.00378298,
+                                                    "F" : 0.00523976,
+                                                    "eF" : 0.00174659,
+                                                    "HT less than475 GeV " : 
+                                                    {
+                                                      "efficiency" : 0.460428,
+                                                      "T" : 0.0108775,
+                                                      "eT" : 0.00256384,
+                                                      "F" : 0.0127472,
+                                                      "eF" : 0.00278167,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 1,
+                                                        "T" : 0.0108775,
+                                                        "eT" : 0.00256384,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 475 GeV " : 
+                                                  {
+                                                    "efficiency" : 0.441623,
+                                                    "T" : 0.0127472,
+                                                    "eT" : 0.00278167,
+                                                    "F" : 0.0161172,
+                                                    "eF" : 0.00310176,
+                                                    "HT less than575 GeV " : 
+                                                    {
+                                                      "efficiency" : 0.611327,
+                                                      "T" : 0.00779271,
+                                                      "eT" : 0.00224956,
+                                                      "F" : 0.0049545,
+                                                      "eF" : 0.0016515,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 1,
+                                                        "T" : 0.00779271,
+                                                        "eT" : 0.00224956,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 575 GeV " : 
+                                                  {
+                                                    "efficiency" : 0.171647,
+                                                    "T" : 0.0049545,
+                                                    "eT" : 0.0016515,
+                                                    "F" : 0.0239099,
+                                                    "eF" : 0.00382865,
+                                                    "HT less than675 GeV " : 
+                                                    {
+                                                      "efficiency" : 0.465543,
+                                                      "T" : 0.00230653,
+                                                      "eT" : 0.00115327,
+                                                      "F" : 0.00264797,
+                                                      "eF" : 0.00118421,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 1,
+                                                        "T" : 0.00230653,
+                                                        "eT" : 0.00115327,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 675 GeV " : 
+                                                  {
+                                                    "efficiency" : 0.0917381,
+                                                    "T" : 0.00264797,
+                                                    "eT" : 0.00118421,
+                                                    "F" : 0.0262165,
+                                                    "eF" : 0.00399797,
+                                                    "HT less than775 GeV " : 
+                                                    {
+                                                      "efficiency" : 0.525492,
+                                                      "T" : 0.00139149,
+                                                      "eT" : 0.000983929,
+                                                      "F" : 0.00125648,
+                                                      "eF" : 0.000725431,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 1,
+                                                        "T" : 0.00139149,
+                                                        "eT" : 0.000983929,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 775 GeV " : 
+                                                  {
+                                                    "efficiency" : 0.0435305,
+                                                    "T" : 0.00125648,
+                                                    "eT" : 0.000725431,
+                                                    "F" : 0.027608,
+                                                    "eF" : 0.00411555,
+                                                    "HT less than875 GeV " : 
+                                                    {
+                                                      "efficiency" : 1,
+                                                      "T" : 0.00125648,
+                                                      "eT" : 0.000725431,
+                                                      "F" : 0,
+                                                      "eF" : 0,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 1,
+                                                        "T" : 0.00125648,
+                                                        "eT" : 0.000725431,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 875 GeV " : 
+                                                  {
+                                                    "efficiency" : 0,
+                                                    "T" : 0,
+                                                    "eT" : 0,
+                                                    "F" : 0.0288644,
+                                                    "eF" : 0.00416622,
+                                                    "HT less than975 GeV " : 
+                                                    {
+                                                      "efficiency" : 0,
+                                                      "T" : 0,
+                                                      "eT" : 0,
+                                                      "F" : 0,
+                                                      "eF" : 0,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 0,
+                                                        "T" : 0,
+                                                        "eT" : 0,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 975 GeV " : 
+                                                  {
+                                                    "efficiency" : 0,
+                                                    "T" : 0,
+                                                    "eT" : 0,
+                                                    "F" : 0.0288644,
+                                                    "eF" : 0.00416622,
+                                                    "HT less than1075 GeV " : 
+                                                    {
+                                                      "efficiency" : 0,
+                                                      "T" : 0,
+                                                      "eT" : 0,
+                                                      "F" : 0,
+                                                      "eF" : 0,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 0,
+                                                        "T" : 0,
+                                                        "eT" : 0,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 1075 GeV " : 
+                                                  {
+                                                    "efficiency" : 0,
+                                                    "T" : 0,
+                                                    "eT" : 0,
+                                                    "F" : 0.0288644,
+                                                    "eF" : 0.00416622,
+                                                    "Hadronic Common Plots (bins 1 to 20) " : 
+                                                    {
+                                                      "efficiency" : 0,
+                                                      "T" : 0,
+                                                      "eT" : 0,
+                                                      "F" : 0,
+                                                      "eF" : 0
+                                                    }
+                                                  }
+                                                },
+                                                "NumComBtagsJets Operation (num unsigned int = 1) with BTag cut 0.679 using Btag Algorithm 5" : 
+                                                {
+                                                  "efficiency" : 0.0867422,
+                                                  "T" : 0.0278853,
+                                                  "eT" : 0.0041569,
+                                                  "F" : 0.293588,
+                                                  "eF" : 0.0133312,
+                                                  "HT 375 GeV " : 
+                                                  {
+                                                    "efficiency" : 0.812096,
+                                                    "T" : 0.0226456,
+                                                    "eT" : 0.00377426,
+                                                    "F" : 0.00523976,
+                                                    "eF" : 0.00174659,
+                                                    "HT less than475 GeV " : 
+                                                    {
+                                                      "efficiency" : 0.443834,
+                                                      "T" : 0.0100509,
+                                                      "eT" : 0.00251272,
+                                                      "F" : 0.0125947,
+                                                      "eF" : 0.00281626,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 1,
+                                                        "T" : 0.0100509,
+                                                        "eT" : 0.00251272,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 475 GeV " : 
+                                                  {
+                                                    "efficiency" : 0.45166,
+                                                    "T" : 0.0125947,
+                                                    "eT" : 0.00281626,
+                                                    "F" : 0.0152906,
+                                                    "eF" : 0.00305813,
+                                                    "HT less than575 GeV " : 
+                                                    {
+                                                      "efficiency" : 0.61873,
+                                                      "T" : 0.00779271,
+                                                      "eT" : 0.00224956,
+                                                      "F" : 0.00480198,
+                                                      "eF" : 0.00169775,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 1,
+                                                        "T" : 0.00779271,
+                                                        "eT" : 0.00224956,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 575 GeV " : 
+                                                  {
+                                                    "efficiency" : 0.172204,
+                                                    "T" : 0.00480198,
+                                                    "eT" : 0.00169775,
+                                                    "F" : 0.0230833,
+                                                    "eF" : 0.00379488,
+                                                    "HT less than675 GeV " : 
+                                                    {
+                                                      "efficiency" : 0.48033,
+                                                      "T" : 0.00230653,
+                                                      "eT" : 0.00115327,
+                                                      "F" : 0.00249544,
+                                                      "eF" : 0.00124772,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 1,
+                                                        "T" : 0.00230653,
+                                                        "eT" : 0.00115327,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 675 GeV " : 
+                                                  {
+                                                    "efficiency" : 0.0894894,
+                                                    "T" : 0.00249544,
+                                                    "eT" : 0.00124772,
+                                                    "F" : 0.0253899,
+                                                    "eF" : 0.00396523,
+                                                    "HT less than775 GeV " : 
+                                                    {
+                                                      "efficiency" : 0.557611,
+                                                      "T" : 0.00139149,
+                                                      "eT" : 0.000983929,
+                                                      "F" : 0.00110396,
+                                                      "eF" : 0.000780615,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 1,
+                                                        "T" : 0.00139149,
+                                                        "eT" : 0.000983929,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 775 GeV " : 
+                                                  {
+                                                    "efficiency" : 0.0395891,
+                                                    "T" : 0.00110396,
+                                                    "eT" : 0.000780615,
+                                                    "F" : 0.0267814,
+                                                    "eF" : 0.00408412,
+                                                    "HT less than875 GeV " : 
+                                                    {
+                                                      "efficiency" : 1,
+                                                      "T" : 0.00110396,
+                                                      "eT" : 0.000780615,
+                                                      "F" : 0,
+                                                      "eF" : 0,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 1,
+                                                        "T" : 0.00110396,
+                                                        "eT" : 0.000780615,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 875 GeV " : 
+                                                  {
+                                                    "efficiency" : 0,
+                                                    "T" : 0,
+                                                    "eT" : 0,
+                                                    "F" : 0.0278853,
+                                                    "eF" : 0.0041569,
+                                                    "HT less than975 GeV " : 
+                                                    {
+                                                      "efficiency" : 0,
+                                                      "T" : 0,
+                                                      "eT" : 0,
+                                                      "F" : 0,
+                                                      "eF" : 0,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 0,
+                                                        "T" : 0,
+                                                        "eT" : 0,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 975 GeV " : 
+                                                  {
+                                                    "efficiency" : 0,
+                                                    "T" : 0,
+                                                    "eT" : 0,
+                                                    "F" : 0.0278853,
+                                                    "eF" : 0.0041569,
+                                                    "HT less than1075 GeV " : 
+                                                    {
+                                                      "efficiency" : 0,
+                                                      "T" : 0,
+                                                      "eT" : 0,
+                                                      "F" : 0,
+                                                      "eF" : 0,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 0,
+                                                        "T" : 0,
+                                                        "eT" : 0,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 1075 GeV " : 
+                                                  {
+                                                    "efficiency" : 0,
+                                                    "T" : 0,
+                                                    "eT" : 0,
+                                                    "F" : 0.0278853,
+                                                    "eF" : 0.0041569,
+                                                    "Hadronic Common Plots (bins 1 to 20) " : 
+                                                    {
+                                                      "efficiency" : 0,
+                                                      "T" : 0,
+                                                      "eT" : 0,
+                                                      "F" : 0,
+                                                      "eF" : 0
+                                                    }
+                                                  }
+                                                },
+                                                "NumComBtagsJets Operation (num unsigned int > 1) with BTag cut 0.679 using Btag Algorithm 5" : 
+                                                {
+                                                  "efficiency" : 0.00304573,
+                                                  "T" : 0.000979121,
+                                                  "eT" : 0.000565296,
+                                                  "F" : 0.320495,
+                                                  "eF" : 0.013961,
+                                                  "HT 375 GeV " : 
+                                                  {
+                                                    "efficiency" : 1,
+                                                    "T" : 0.000979121,
+                                                    "eT" : 0.000565296,
+                                                    "F" : 0,
+                                                    "eF" : 0,
+                                                    "HT less than475 GeV " : 
+                                                    {
+                                                      "efficiency" : 0.844221,
+                                                      "T" : 0.000826594,
+                                                      "eT" : 0.00058449,
+                                                      "F" : 0.000152527,
+                                                      "eF" : 0.000152527,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 1,
+                                                        "T" : 0.000826594,
+                                                        "eT" : 0.00058449,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 475 GeV " : 
+                                                  {
+                                                    "efficiency" : 0.155779,
+                                                    "T" : 0.000152527,
+                                                    "eT" : 0.000152527,
+                                                    "F" : 0.000826594,
+                                                    "eF" : 0.00058449,
+                                                    "HT less than575 GeV " : 
+                                                    {
+                                                      "efficiency" : 0,
+                                                      "T" : 0,
+                                                      "eT" : 0,
+                                                      "F" : 0.000152527,
+                                                      "eF" : 0.000152527,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 0,
+                                                        "T" : 0,
+                                                        "eT" : 0,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 575 GeV " : 
+                                                  {
+                                                    "efficiency" : 0.155779,
+                                                    "T" : 0.000152527,
+                                                    "eT" : 0.000152527,
+                                                    "F" : 0.000826594,
+                                                    "eF" : 0.00058449,
+                                                    "HT less than675 GeV " : 
+                                                    {
+                                                      "efficiency" : 0,
+                                                      "T" : 0,
+                                                      "eT" : 0,
+                                                      "F" : 0.000152527,
+                                                      "eF" : 0.000152527,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 0,
+                                                        "T" : 0,
+                                                        "eT" : 0,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 675 GeV " : 
+                                                  {
+                                                    "efficiency" : 0.155779,
+                                                    "T" : 0.000152527,
+                                                    "eT" : 0.000152527,
+                                                    "F" : 0.000826594,
+                                                    "eF" : 0.00058449,
+                                                    "HT less than775 GeV " : 
+                                                    {
+                                                      "efficiency" : 0,
+                                                      "T" : 0,
+                                                      "eT" : 0,
+                                                      "F" : 0.000152527,
+                                                      "eF" : 0.000152527,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 0,
+                                                        "T" : 0,
+                                                        "eT" : 0,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 775 GeV " : 
+                                                  {
+                                                    "efficiency" : 0.155779,
+                                                    "T" : 0.000152527,
+                                                    "eT" : 0.000152527,
+                                                    "F" : 0.000826594,
+                                                    "eF" : 0.00058449,
+                                                    "HT less than875 GeV " : 
+                                                    {
+                                                      "efficiency" : 1,
+                                                      "T" : 0.000152527,
+                                                      "eT" : 0.000152527,
+                                                      "F" : 0,
+                                                      "eF" : 0,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 1,
+                                                        "T" : 0.000152527,
+                                                        "eT" : 0.000152527,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 875 GeV " : 
+                                                  {
+                                                    "efficiency" : 0,
+                                                    "T" : 0,
+                                                    "eT" : 0,
+                                                    "F" : 0.000979121,
+                                                    "eF" : 0.000565296,
+                                                    "HT less than975 GeV " : 
+                                                    {
+                                                      "efficiency" : 0,
+                                                      "T" : 0,
+                                                      "eT" : 0,
+                                                      "F" : 0,
+                                                      "eF" : 0,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 0,
+                                                        "T" : 0,
+                                                        "eT" : 0,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 975 GeV " : 
+                                                  {
+                                                    "efficiency" : 0,
+                                                    "T" : 0,
+                                                    "eT" : 0,
+                                                    "F" : 0.000979121,
+                                                    "eF" : 0.000565296,
+                                                    "HT less than1075 GeV " : 
+                                                    {
+                                                      "efficiency" : 0,
+                                                      "T" : 0,
+                                                      "eT" : 0,
+                                                      "F" : 0,
+                                                      "eF" : 0,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 0,
+                                                        "T" : 0,
+                                                        "eT" : 0,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 1075 GeV " : 
+                                                  {
+                                                    "efficiency" : 0,
+                                                    "T" : 0,
+                                                    "eT" : 0,
+                                                    "F" : 0.000979121,
+                                                    "eF" : 0.000565296,
+                                                    "Hadronic Common Plots (bins 1 to 20) " : 
+                                                    {
+                                                      "efficiency" : 0,
+                                                      "T" : 0,
+                                                      "eT" : 0,
+                                                      "F" : 0,
+                                                      "eF" : 0
+                                                    }
+                                                  }
+                                                },
+                                                "NumComBtagsJets Operation (num unsigned int = 2) with BTag cut 0.679 using Btag Algorithm 5" : 
+                                                {
+                                                  "efficiency" : 0.00304573,
+                                                  "T" : 0.000979121,
+                                                  "eT" : 0.000565296,
+                                                  "F" : 0.320495,
+                                                  "eF" : 0.013961,
+                                                  "HT 375 GeV " : 
+                                                  {
+                                                    "efficiency" : 1,
+                                                    "T" : 0.000979121,
+                                                    "eT" : 0.000565296,
+                                                    "F" : 0,
+                                                    "eF" : 0,
+                                                    "HT less than475 GeV " : 
+                                                    {
+                                                      "efficiency" : 0.844221,
+                                                      "T" : 0.000826594,
+                                                      "eT" : 0.00058449,
+                                                      "F" : 0.000152527,
+                                                      "eF" : 0.000152527,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 1,
+                                                        "T" : 0.000826594,
+                                                        "eT" : 0.00058449,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 475 GeV " : 
+                                                  {
+                                                    "efficiency" : 0.155779,
+                                                    "T" : 0.000152527,
+                                                    "eT" : 0.000152527,
+                                                    "F" : 0.000826594,
+                                                    "eF" : 0.00058449,
+                                                    "HT less than575 GeV " : 
+                                                    {
+                                                      "efficiency" : 0,
+                                                      "T" : 0,
+                                                      "eT" : 0,
+                                                      "F" : 0.000152527,
+                                                      "eF" : 0.000152527,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 0,
+                                                        "T" : 0,
+                                                        "eT" : 0,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 575 GeV " : 
+                                                  {
+                                                    "efficiency" : 0.155779,
+                                                    "T" : 0.000152527,
+                                                    "eT" : 0.000152527,
+                                                    "F" : 0.000826594,
+                                                    "eF" : 0.00058449,
+                                                    "HT less than675 GeV " : 
+                                                    {
+                                                      "efficiency" : 0,
+                                                      "T" : 0,
+                                                      "eT" : 0,
+                                                      "F" : 0.000152527,
+                                                      "eF" : 0.000152527,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 0,
+                                                        "T" : 0,
+                                                        "eT" : 0,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 675 GeV " : 
+                                                  {
+                                                    "efficiency" : 0.155779,
+                                                    "T" : 0.000152527,
+                                                    "eT" : 0.000152527,
+                                                    "F" : 0.000826594,
+                                                    "eF" : 0.00058449,
+                                                    "HT less than775 GeV " : 
+                                                    {
+                                                      "efficiency" : 0,
+                                                      "T" : 0,
+                                                      "eT" : 0,
+                                                      "F" : 0.000152527,
+                                                      "eF" : 0.000152527,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 0,
+                                                        "T" : 0,
+                                                        "eT" : 0,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 775 GeV " : 
+                                                  {
+                                                    "efficiency" : 0.155779,
+                                                    "T" : 0.000152527,
+                                                    "eT" : 0.000152527,
+                                                    "F" : 0.000826594,
+                                                    "eF" : 0.00058449,
+                                                    "HT less than875 GeV " : 
+                                                    {
+                                                      "efficiency" : 1,
+                                                      "T" : 0.000152527,
+                                                      "eT" : 0.000152527,
+                                                      "F" : 0,
+                                                      "eF" : 0,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 1,
+                                                        "T" : 0.000152527,
+                                                        "eT" : 0.000152527,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 875 GeV " : 
+                                                  {
+                                                    "efficiency" : 0,
+                                                    "T" : 0,
+                                                    "eT" : 0,
+                                                    "F" : 0.000979121,
+                                                    "eF" : 0.000565296,
+                                                    "HT less than975 GeV " : 
+                                                    {
+                                                      "efficiency" : 0,
+                                                      "T" : 0,
+                                                      "eT" : 0,
+                                                      "F" : 0,
+                                                      "eF" : 0,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 0,
+                                                        "T" : 0,
+                                                        "eT" : 0,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 975 GeV " : 
+                                                  {
+                                                    "efficiency" : 0,
+                                                    "T" : 0,
+                                                    "eT" : 0,
+                                                    "F" : 0.000979121,
+                                                    "eF" : 0.000565296,
+                                                    "HT less than1075 GeV " : 
+                                                    {
+                                                      "efficiency" : 0,
+                                                      "T" : 0,
+                                                      "eT" : 0,
+                                                      "F" : 0,
+                                                      "eF" : 0,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 0,
+                                                        "T" : 0,
+                                                        "eT" : 0,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 1075 GeV " : 
+                                                  {
+                                                    "efficiency" : 0,
+                                                    "T" : 0,
+                                                    "eT" : 0,
+                                                    "F" : 0.000979121,
+                                                    "eF" : 0.000565296,
+                                                    "Hadronic Common Plots (bins 1 to 20) " : 
+                                                    {
+                                                      "efficiency" : 0,
+                                                      "T" : 0,
+                                                      "eT" : 0,
+                                                      "F" : 0,
+                                                      "eF" : 0
+                                                    }
+                                                  }
+                                                },
+                                                "NumComBtagsJets Operation (num unsigned int = 3) with BTag cut 0.679 using Btag Algorithm 5" : 
+                                                {
+                                                  "efficiency" : 0,
+                                                  "T" : 0,
+                                                  "eT" : 0,
+                                                  "F" : 0.321474,
+                                                  "eF" : 0.0139639,
+                                                  "HT 375 GeV " : 
+                                                  {
+                                                    "efficiency" : 0,
+                                                    "T" : 0,
+                                                    "eT" : 0,
+                                                    "F" : 0,
+                                                    "eF" : 0,
+                                                    "HT less than475 GeV " : 
+                                                    {
+                                                      "efficiency" : 0,
+                                                      "T" : 0,
+                                                      "eT" : 0,
+                                                      "F" : 0,
+                                                      "eF" : 0,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 0,
+                                                        "T" : 0,
+                                                        "eT" : 0,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 475 GeV " : 
+                                                  {
+                                                    "efficiency" : 0,
+                                                    "T" : 0,
+                                                    "eT" : 0,
+                                                    "F" : 0,
+                                                    "eF" : 0,
+                                                    "HT less than575 GeV " : 
+                                                    {
+                                                      "efficiency" : 0,
+                                                      "T" : 0,
+                                                      "eT" : 0,
+                                                      "F" : 0,
+                                                      "eF" : 0,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 0,
+                                                        "T" : 0,
+                                                        "eT" : 0,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 575 GeV " : 
+                                                  {
+                                                    "efficiency" : 0,
+                                                    "T" : 0,
+                                                    "eT" : 0,
+                                                    "F" : 0,
+                                                    "eF" : 0,
+                                                    "HT less than675 GeV " : 
+                                                    {
+                                                      "efficiency" : 0,
+                                                      "T" : 0,
+                                                      "eT" : 0,
+                                                      "F" : 0,
+                                                      "eF" : 0,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 0,
+                                                        "T" : 0,
+                                                        "eT" : 0,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 675 GeV " : 
+                                                  {
+                                                    "efficiency" : 0,
+                                                    "T" : 0,
+                                                    "eT" : 0,
+                                                    "F" : 0,
+                                                    "eF" : 0,
+                                                    "HT less than775 GeV " : 
+                                                    {
+                                                      "efficiency" : 0,
+                                                      "T" : 0,
+                                                      "eT" : 0,
+                                                      "F" : 0,
+                                                      "eF" : 0,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 0,
+                                                        "T" : 0,
+                                                        "eT" : 0,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 775 GeV " : 
+                                                  {
+                                                    "efficiency" : 0,
+                                                    "T" : 0,
+                                                    "eT" : 0,
+                                                    "F" : 0,
+                                                    "eF" : 0,
+                                                    "HT less than875 GeV " : 
+                                                    {
+                                                      "efficiency" : 0,
+                                                      "T" : 0,
+                                                      "eT" : 0,
+                                                      "F" : 0,
+                                                      "eF" : 0,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 0,
+                                                        "T" : 0,
+                                                        "eT" : 0,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 875 GeV " : 
+                                                  {
+                                                    "efficiency" : 0,
+                                                    "T" : 0,
+                                                    "eT" : 0,
+                                                    "F" : 0,
+                                                    "eF" : 0,
+                                                    "HT less than975 GeV " : 
+                                                    {
+                                                      "efficiency" : 0,
+                                                      "T" : 0,
+                                                      "eT" : 0,
+                                                      "F" : 0,
+                                                      "eF" : 0,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 0,
+                                                        "T" : 0,
+                                                        "eT" : 0,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 975 GeV " : 
+                                                  {
+                                                    "efficiency" : 0,
+                                                    "T" : 0,
+                                                    "eT" : 0,
+                                                    "F" : 0,
+                                                    "eF" : 0,
+                                                    "HT less than1075 GeV " : 
+                                                    {
+                                                      "efficiency" : 0,
+                                                      "T" : 0,
+                                                      "eT" : 0,
+                                                      "F" : 0,
+                                                      "eF" : 0,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 0,
+                                                        "T" : 0,
+                                                        "eT" : 0,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 1075 GeV " : 
+                                                  {
+                                                    "efficiency" : 0,
+                                                    "T" : 0,
+                                                    "eT" : 0,
+                                                    "F" : 0,
+                                                    "eF" : 0,
+                                                    "Hadronic Common Plots (bins 1 to 20) " : 
+                                                    {
+                                                      "efficiency" : 0,
+                                                      "T" : 0,
+                                                      "eT" : 0,
+                                                      "F" : 0,
+                                                      "eF" : 0
+                                                    }
+                                                  }
+                                                },
+                                                "NumComBtagsJets Operation (num unsigned int > 3) with BTag cut 0.679 using Btag Algorithm 5" : 
+                                                {
+                                                  "efficiency" : 0,
+                                                  "T" : 0,
+                                                  "eT" : 0,
+                                                  "F" : 0.321474,
+                                                  "eF" : 0.0139639,
+                                                  "HT 375 GeV " : 
+                                                  {
+                                                    "efficiency" : 0,
+                                                    "T" : 0,
+                                                    "eT" : 0,
+                                                    "F" : 0,
+                                                    "eF" : 0,
+                                                    "HT less than475 GeV " : 
+                                                    {
+                                                      "efficiency" : 0,
+                                                      "T" : 0,
+                                                      "eT" : 0,
+                                                      "F" : 0,
+                                                      "eF" : 0,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 0,
+                                                        "T" : 0,
+                                                        "eT" : 0,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 475 GeV " : 
+                                                  {
+                                                    "efficiency" : 0,
+                                                    "T" : 0,
+                                                    "eT" : 0,
+                                                    "F" : 0,
+                                                    "eF" : 0,
+                                                    "HT less than575 GeV " : 
+                                                    {
+                                                      "efficiency" : 0,
+                                                      "T" : 0,
+                                                      "eT" : 0,
+                                                      "F" : 0,
+                                                      "eF" : 0,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 0,
+                                                        "T" : 0,
+                                                        "eT" : 0,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 575 GeV " : 
+                                                  {
+                                                    "efficiency" : 0,
+                                                    "T" : 0,
+                                                    "eT" : 0,
+                                                    "F" : 0,
+                                                    "eF" : 0,
+                                                    "HT less than675 GeV " : 
+                                                    {
+                                                      "efficiency" : 0,
+                                                      "T" : 0,
+                                                      "eT" : 0,
+                                                      "F" : 0,
+                                                      "eF" : 0,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 0,
+                                                        "T" : 0,
+                                                        "eT" : 0,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 675 GeV " : 
+                                                  {
+                                                    "efficiency" : 0,
+                                                    "T" : 0,
+                                                    "eT" : 0,
+                                                    "F" : 0,
+                                                    "eF" : 0,
+                                                    "HT less than775 GeV " : 
+                                                    {
+                                                      "efficiency" : 0,
+                                                      "T" : 0,
+                                                      "eT" : 0,
+                                                      "F" : 0,
+                                                      "eF" : 0,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 0,
+                                                        "T" : 0,
+                                                        "eT" : 0,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 775 GeV " : 
+                                                  {
+                                                    "efficiency" : 0,
+                                                    "T" : 0,
+                                                    "eT" : 0,
+                                                    "F" : 0,
+                                                    "eF" : 0,
+                                                    "HT less than875 GeV " : 
+                                                    {
+                                                      "efficiency" : 0,
+                                                      "T" : 0,
+                                                      "eT" : 0,
+                                                      "F" : 0,
+                                                      "eF" : 0,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 0,
+                                                        "T" : 0,
+                                                        "eT" : 0,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 875 GeV " : 
+                                                  {
+                                                    "efficiency" : 0,
+                                                    "T" : 0,
+                                                    "eT" : 0,
+                                                    "F" : 0,
+                                                    "eF" : 0,
+                                                    "HT less than975 GeV " : 
+                                                    {
+                                                      "efficiency" : 0,
+                                                      "T" : 0,
+                                                      "eT" : 0,
+                                                      "F" : 0,
+                                                      "eF" : 0,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 0,
+                                                        "T" : 0,
+                                                        "eT" : 0,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 975 GeV " : 
+                                                  {
+                                                    "efficiency" : 0,
+                                                    "T" : 0,
+                                                    "eT" : 0,
+                                                    "F" : 0,
+                                                    "eF" : 0,
+                                                    "HT less than1075 GeV " : 
+                                                    {
+                                                      "efficiency" : 0,
+                                                      "T" : 0,
+                                                      "eT" : 0,
+                                                      "F" : 0,
+                                                      "eF" : 0,
+                                                      "Hadronic Common Plots (bins 1 to 20) " : 
+                                                      {
+                                                        "efficiency" : 0,
+                                                        "T" : 0,
+                                                        "eT" : 0,
+                                                        "F" : 0,
+                                                        "eF" : 0
+                                                      }
+                                                    }
+                                                  },
+                                                  "HT 1075 GeV " : 
+                                                  {
+                                                    "efficiency" : 0,
+                                                    "T" : 0,
+                                                    "eT" : 0,
+                                                    "F" : 0,
+                                                    "eF" : 0,
+                                                    "Hadronic Common Plots (bins 1 to 20) " : 
+                                                    {
+                                                      "efficiency" : 0,
+                                                      "T" : 0,
+                                                      "eT" : 0,
+                                                      "F" : 0,
+                                                      "eF" : 0
+                                                    }
+                                                  }
+                                                },
+                                                "HT 375 GeV " : 
+                                                {
+                                                  "efficiency" : 0.822863,
+                                                  "T" : 0.264529,
+                                                  "eT" : 0.0126397,
+                                                  "F" : 0.056945,
+                                                  "eF" : 0.00593692,
+                                                  "HT less than475 GeV " : 
+                                                  {
+                                                    "efficiency" : 0.573532,
+                                                    "T" : 0.151716,
+                                                    "eT" : 0.00963396,
+                                                    "F" : 0.112813,
+                                                    "eF" : 0.00818431,
+                                                    "Hadronic Common Plots (bins 1 to 20) " : 
+                                                    {
+                                                      "efficiency" : 1,
+                                                      "T" : 0.151716,
+                                                      "eT" : 0.00963396,
+                                                      "F" : 0,
+                                                      "eF" : 0
+                                                    }
+                                                  }
+                                                },
+                                                "HT 475 GeV " : 
+                                                {
+                                                  "efficiency" : 0.350924,
+                                                  "T" : 0.112813,
+                                                  "eT" : 0.00818431,
+                                                  "F" : 0.208661,
+                                                  "eF" : 0.0113162,
+                                                  "HT less than575 GeV " : 
+                                                  {
+                                                    "efficiency" : 0.632032,
+                                                    "T" : 0.0713014,
+                                                    "eT" : 0.00645532,
+                                                    "F" : 0.0415115,
+                                                    "eF" : 0.00503401,
+                                                    "Hadronic Common Plots (bins 1 to 20) " : 
+                                                    {
+                                                      "efficiency" : 1,
+                                                      "T" : 0.0713014,
+                                                      "eT" : 0.00645532,
+                                                      "F" : 0,
+                                                      "eF" : 0
+                                                    }
+                                                  }
+                                                },
+                                                "HT 575 GeV " : 
+                                                {
+                                                  "efficiency" : 0.129129,
+                                                  "T" : 0.0415115,
+                                                  "eT" : 0.00503401,
+                                                  "F" : 0.279962,
+                                                  "eF" : 0.013025,
+                                                  "HT less than675 GeV " : 
+                                                  {
+                                                    "efficiency" : 0.512582,
+                                                    "T" : 0.0212781,
+                                                    "eT" : 0.00354635,
+                                                    "F" : 0.0202335,
+                                                    "eF" : 0.0035768,
+                                                    "Hadronic Common Plots (bins 1 to 20) " : 
+                                                    {
+                                                      "efficiency" : 1,
+                                                      "T" : 0.0212781,
+                                                      "eT" : 0.00354635,
+                                                      "F" : 0,
+                                                      "eF" : 0
+                                                    }
+                                                  }
+                                                },
+                                                "HT 675 GeV " : 
+                                                {
+                                                  "efficiency" : 0.0629397,
+                                                  "T" : 0.0202335,
+                                                  "eT" : 0.0035768,
+                                                  "F" : 0.30124,
+                                                  "eF" : 0.0134989,
+                                                  "HT less than775 GeV " : 
+                                                  {
+                                                    "efficiency" : 0.523649,
+                                                    "T" : 0.0105952,
+                                                    "eT" : 0.00256972,
+                                                    "F" : 0.00963823,
+                                                    "eF" : 0.00248858,
+                                                    "Hadronic Common Plots (bins 1 to 20) " : 
+                                                    {
+                                                      "efficiency" : 1,
+                                                      "T" : 0.0105952,
+                                                      "eT" : 0.00256972,
+                                                      "F" : 0,
+                                                      "eF" : 0
+                                                    }
+                                                  }
+                                                },
+                                                "HT 775 GeV " : 
+                                                {
+                                                  "efficiency" : 0.0299814,
+                                                  "T" : 0.00963823,
+                                                  "eT" : 0.00248858,
+                                                  "F" : 0.311835,
+                                                  "eF" : 0.0137411,
+                                                  "HT less than875 GeV " : 
+                                                  {
+                                                    "efficiency" : 0.401602,
+                                                    "T" : 0.00387073,
+                                                    "eT" : 0.001463,
+                                                    "F" : 0.00576749,
+                                                    "eF" : 0.00203912,
+                                                    "Hadronic Common Plots (bins 1 to 20) " : 
+                                                    {
+                                                      "efficiency" : 1,
+                                                      "T" : 0.00387073,
+                                                      "eT" : 0.001463,
+                                                      "F" : 0,
+                                                      "eF" : 0
+                                                    }
+                                                  }
+                                                },
+                                                "HT 875 GeV " : 
+                                                {
+                                                  "efficiency" : 0.0179408,
+                                                  "T" : 0.00576749,
+                                                  "eT" : 0.00203912,
+                                                  "F" : 0.315706,
+                                                  "eF" : 0.0138181,
+                                                  "HT less than975 GeV " : 
+                                                  {
+                                                    "efficiency" : 0.495946,
+                                                    "T" : 0.00286037,
+                                                    "eT" : 0.00143018,
+                                                    "F" : 0.00290713,
+                                                    "eF" : 0.00145356,
+                                                    "Hadronic Common Plots (bins 1 to 20) " : 
+                                                    {
+                                                      "efficiency" : 1,
+                                                      "T" : 0.00286037,
+                                                      "eT" : 0.00143018,
+                                                      "F" : 0,
+                                                      "eF" : 0
+                                                    }
+                                                  }
+                                                },
+                                                "HT 975 GeV " : 
+                                                {
+                                                  "efficiency" : 0.00904313,
+                                                  "T" : 0.00290713,
+                                                  "eT" : 0.00145356,
+                                                  "F" : 0.318567,
+                                                  "eF" : 0.0138902,
+                                                  "HT less than1075 GeV " : 
+                                                  {
+                                                    "efficiency" : 0.265189,
+                                                    "T" : 0.000770938,
+                                                    "eT" : 0.000770938,
+                                                    "F" : 0.00213619,
+                                                    "eF" : 0.00123333,
+                                                    "Hadronic Common Plots (bins 1 to 20) " : 
+                                                    {
+                                                      "efficiency" : 1,
+                                                      "T" : 0.000770938,
+                                                      "eT" : 0.000770938,
+                                                      "F" : 0,
+                                                      "eF" : 0
+                                                    }
+                                                  }
+                                                },
+                                                "HT 1075 GeV " : 
+                                                {
+                                                  "efficiency" : 0.00664499,
+                                                  "T" : 0.00213619,
+                                                  "eT" : 0.00123333,
+                                                  "F" : 0.319337,
+                                                  "eF" : 0.0139106,
+                                                  "Hadronic Common Plots (bins 1 to 20) " : 
+                                                  {
+                                                    "efficiency" : 1,
+                                                    "T" : 0.00213619,
+                                                    "eT" : 0.00123333,
+                                                    "F" : 0,
+                                                    "eF" : 0
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

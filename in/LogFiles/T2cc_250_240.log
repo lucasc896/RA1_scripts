@@ -1,0 +1,413 @@
+{
+  "Dataset" : "T2cc_250_240",
+  "Configuration" :
+  {
+    "Common.AlphaT.CalcWithEt" : 1,
+    "Common.ApplyXCleaning" : 1,
+    "Common.Btag.Algo" : 5,
+    "Common.Btag.Corrections" : "2013New",
+    "Common.Btag.Discrim" : 0.679,
+    "Common.Btag.RA1_matching" : 0,
+    "Common.Electrons.ApplyID" : 1,
+    "Common.Electrons.CombIsoCut" : 0.1,
+    "Common.Electrons.EtaCut" : 2.5,
+    "Common.Electrons.PtCut" : 10,
+    "Common.Electrons.RequireLooseForOdd" : 1,
+    "Common.Electrons.TightID" : 0,
+    "Common.Electrons.TrkIsoCut" : 5,
+    "Common.Jets.ApplyID" : 1,
+    "Common.Jets.EtaCut" : 3,
+    "Common.Jets.PtCut" : 50,
+    "Common.Jets.TightID" : 0,
+    "Common.Muons.ApplyID" : 1,
+    "Common.Muons.CombIsoCut" : 0.1,
+    "Common.Muons.EtaCut" : 2.5,
+    "Common.Muons.PtCut" : 10,
+    "Common.Muons.RequireLooseForOdd" : 1,
+    "Common.Muons.TightID" : 0,
+    "Common.Muons.TrkIsoCut" : 3,
+    "Common.Photons.EcalIsoCut" : 4,
+    "Common.Photons.EcalIsoRel" : 0,
+    "Common.Photons.EtCut" : 25,
+    "Common.Photons.EtaCut" : 2.5,
+    "Common.Photons.EtaEBMaxCut" : 1.479,
+    "Common.Photons.EtaEEMaxCut" : 5,
+    "Common.Photons.EtaEEMinCut" : 1.525,
+    "Common.Photons.HadOverEmCut" : 0.05,
+    "Common.Photons.HcalIsoCut" : 2,
+    "Common.Photons.HcalIsoRel" : 0,
+    "Common.Photons.IDReq" : 3,
+    "Common.Photons.R9Cut" : 0,
+    "Common.Photons.RequireLooseForOdd" : 1,
+    "Common.Photons.SigIhIhEBCut" : 0.015,
+    "Common.Photons.SigIhIhEECut" : 0.035,
+    "Common.Photons.TrackIsoCut" : 2,
+    "Common.Photons.TrackIsoRel" : 0,
+    "Common.Photons.UseID" : 1,
+    "Common.SMS.Model" : 0,
+    "Common.SMS.bJets" : [ 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 ],
+    "Common.SMS.cJets" : [ 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 ],
+    "Common.SMS.udsg_high" : [ 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 ],
+    "Common.SMS.udsg_low" : [ 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 ],
+    "Common.Taus.ApplyID" : 1,
+    "Common.Taus.ElecClean" : 0,
+    "Common.Taus.EtaCut" : 2.5,
+    "Common.Taus.JetClean" : 0,
+    "Common.Taus.MuonClean" : 0,
+    "Common.Taus.PtCut" : 20,
+    "Common.Taus.TightID" : 0,
+    "Gen.Electrons.EtaCut" : 999,
+    "Gen.Electrons.PtCut" : -1,
+    "Gen.Muons.EtaCut" : 999,
+    "Gen.Muons.PtCut" : -1,
+    "LogFileFormat" : "JSON",
+    "NT7.GenMatch.ElecPzLTReqForMatch" : 998,
+    "NT7.GenMatch.JetEtaLTReq" : 100,
+    "NT7.GenMatch.MuonPzLTReqForMatch" : 998,
+    "NT7.JetCorrType" : "MC",
+    "NT7.Smear.IsJetSmeared" : 0,
+    "NT7.Smear.SmearJetFactor" : 0,
+    "NT7.Smear.SmearJetNonGaussNorm" : 0,
+    "NT7.Smear.SmearJetRespFuncFileName" : "./Response.root",
+    "NT7.Smear.SmearJetType" : "pT",
+    "NT7.Xclean.ElecCcAssocElecReq" : 0,
+    "NT7.Xclean.JetCcAssocJetReq" : 0,
+    "NT7.Xclean.MuonCcAssocMuonReq" : 0,
+    "NT7.Xclean.PhotCcAssocPhotReq" : 0,
+    "Ntuple.Electrons.LooseID" : "EIDLoose",
+    "Ntuple.Electrons.Prefix" : "electron",
+    "Ntuple.Electrons.Suffix" : "Pat",
+    "Ntuple.Electrons.TightID" : "EIDTight",
+    "Ntuple.Jets.Prefix" : "ak5Jet",
+    "Ntuple.Jets.Suffix" : "Pat",
+    "Ntuple.Jets.Uncorrected" : 0,
+    "Ntuple.L1Particles.Prefix" : "L1",
+    "Ntuple.L1Particles.Suffix" : "",
+    "Ntuple.Muons.LooseID" : "IsGlobalMuon",
+    "Ntuple.Muons.Prefix" : "muon",
+    "Ntuple.Muons.Suffix" : "Pat",
+    "Ntuple.Muons.TightID" : "IDGlobalMuonPromptTight",
+    "Ntuple.Photons.Prefix" : "photon",
+    "Ntuple.Photons.Suffix" : "Pat",
+    "Ntuple.SecJets.Prefix" : "ak5JetPF2PAT",
+    "Ntuple.SecJets.Suffix" : "Pat",
+    "Ntuple.SecJets.Uncorrected" : 0,
+    "Ntuple.SecMuons.Prefix" : "muon",
+    "Ntuple.SecMuons.Suffix" : "PF",
+    "Ntuple.SecTaus.Prefix" : "tauHPS",
+    "Ntuple.SecTaus.Suffix" : "PF",
+    "Ntuple.Taus.Prefix" : "tau",
+    "Ntuple.Taus.Suffix" : "PF",
+    "Ntuple.TerJets.Prefix" : "ak5JetJPT",
+    "Ntuple.TerJets.Suffix" : "Pat",
+    "Ntuple.TerJets.Uncorrected" : 0,
+    "Ntuple.Weight" : "User",
+    "XCleaning.ElectronJet" : 1,
+    "XCleaning.Electrons.CombIsoCut" : 10,
+    "XCleaning.Electrons.ElectronIsoTypePtCutoff" : 30,
+    "XCleaning.Electrons.ElectronJetDeltaR" : 0.5,
+    "XCleaning.Electrons.ElectronLooseIdRequired" : 1,
+    "XCleaning.Electrons.ElectronTightIdRequired" : 0,
+    "XCleaning.Electrons.EtaCut" : 2.5,
+    "XCleaning.Electrons.PtCut" : 10,
+    "XCleaning.Electrons.RequireLooseIdForInitialFilter" : 0,
+    "XCleaning.Electrons.TrkIsoCut" : 10,
+    "XCleaning.Jets.EtaCut" : 10,
+    "XCleaning.Jets.PtCut" : 10,
+    "XCleaning.MuonJet" : 1,
+    "XCleaning.Muons.CombIsoCut" : 10,
+    "XCleaning.Muons.EtaCut" : 2.5,
+    "XCleaning.Muons.ModifyJetEnergy" : 1,
+    "XCleaning.Muons.MuonIsoTypePtCutoff" : 30,
+    "XCleaning.Muons.MuonJetDeltaR" : 0.5,
+    "XCleaning.Muons.PtCut" : 10,
+    "XCleaning.Muons.RequireLooseIdForInitialFilter" : 1,
+    "XCleaning.Muons.TrkIsoCut" : 10,
+    "XCleaning.PhotonJet" : 1,
+    "XCleaning.Photons.CaloIsoCut" : 6,
+    "XCleaning.Photons.EtCut" : 25,
+    "XCleaning.Photons.EtaCut" : 5,
+    "XCleaning.Photons.EtaEBMaxCut" : 1.479,
+    "XCleaning.Photons.EtaEEMaxCut" : 5,
+    "XCleaning.Photons.EtaEEMinCut" : 1.525,
+    "XCleaning.Photons.IDReq" : 3,
+    "XCleaning.Photons.PhotonIsoTypePtCutoff" : 30,
+    "XCleaning.Photons.PhotonJetDeltaR" : 0.5,
+    "XCleaning.Photons.TrkIsoCut" : 2,
+    "XCleaning.Photons.UseID" : 1,
+    "XCleaning.ResolveConflicts" : 1,
+    "XCleaning.TauJet" : 0,
+    "XCleaning.Verbose" : 0
+  },
+  "Dataset Configuration" :
+  {
+    "CrossSection" : 5.57596,
+    "Events" : 582630,
+    "File" : "",
+    "FileList" : [ "/vols/ssd00/cms/clucas/susy_builds/SUSYv0/hadronic/python/Mark_Tutorial_Code/skims/t2cc/Had_T2cc_250_240_skim.root" ],
+    "FirstEntry" : 0,
+    "JsonFile" : "./results_26_Apr/Had_Prompt_NoSmear_100_100_50//AK5Calo_Had_Prompt_100_100_50_T2cc_250_240.json",
+    "LastEntry" : 0,
+    "LogFile" : "./results_26_Apr/Had_Prompt_NoSmear_100_100_50//AK5Calo_Had_Prompt_100_100_50_T2cc_250_240.log",
+    "Name" : "T2cc_250_240",
+    "NtupleFormat" : "ICF",
+    "NtupleVersion" : 3,
+    "OutputFile" : "./results_26_Apr/Had_Prompt_NoSmear_100_100_50//AK5Calo_Had_Prompt_100_100_50_T2cc_250_240.root",
+    "Reweight" : -1,
+    "Weight" : -1
+  },
+  "Weighting" : "Event weights will be calculated for constant number of events: 582630. Weighted to 100pb^-1. Weight = 0.000957033.",
+  "Number of Events Processed" : 444.381,
+  "Cut Flow" :
+  {
+    "Tree Name" : "MC",
+    "CountOp (count_total) " :
+    {
+      "efficiency" : 1,
+      "T" : 444.381,
+      "eT" : 0.582183,
+      "F" : 0,
+      "eF" : 0,
+      "SMSpointCut Gluino Mass: 250 GeV and Neutralino Mass: 240" :
+      {
+        "efficiency" : 1,
+        "T" : 444.381,
+        "eT" : 0.582183,
+        "F" : 0,
+        "eF" : 0,
+        "NumComJets Operation (num unsigned int >= 2)" :
+        {
+          "efficiency" : 0.129903,
+          "T" : 57.7263,
+          "eT" : 0.209558,
+          "F" : 386.655,
+          "eF" : 0.54316,
+          "Check if an event failed 2012 8TeV MET Filters" :
+          {
+            "efficiency" : 1,
+            "T" : 57.7263,
+            "eT" : 0.209558,
+            "F" : 0,
+            "eF" : 0,
+            "Check if an event failed Good event selection" :
+            {
+              "efficiency" : 1,
+              "T" : 57.7263,
+              "eT" : 0.209558,
+              "F" : 0,
+              "eF" : 0,
+              "Check if an event failed noise filtering criteria" :
+              {
+                "efficiency" : 1,
+                "T" : 57.7263,
+                "eT" : 0.209558,
+                "F" : 0,
+                "eF" : 0,
+                "Dead ECAL cut 0.3 " :
+                {
+                  "efficiency" : 0.829242,
+                  "T" : 47.869,
+                  "eT" : 0.190926,
+                  "F" : 9.85722,
+                  "eF" : 0.0863838,
+                  "NumComElectrons Operation (num unsigned int <= 0)" :
+                  {
+                    "efficiency" : 0.999905,
+                    "T" : 47.8645,
+                    "eT" : 0.190917,
+                    "F" : 0.00454807,
+                    "eF" : 0.00185674,
+                    "Number of Common Photons unsigned int <= 0)" :
+                    {
+                      "efficiency" : 0.999479,
+                      "T" : 47.8395,
+                      "eT" : 0.190878,
+                      "F" : 0.0249549,
+                      "eF" : 0.00394571,
+                      "NumComMuons Operation (num unsigned int <= 0)" :
+                      {
+                        "efficiency" : 0.999872,
+                        "T" : 47.8334,
+                        "eT" : 0.190872,
+                        "F" : 0.00612729,
+                        "eF" : 0.0017688,
+                        "Maximum EMF of all jets <  0.1 " :
+                        {
+                          "efficiency" : 0.999979,
+                          "T" : 47.8324,
+                          "eT" : 0.190869,
+                          "F" : 0.00100134,
+                          "eF" : 0.00100134,
+                          "First jet Pt > 100 GeV: " :
+                          {
+                            "efficiency" : 0.684339,
+                            "T" : 32.7336,
+                            "eT" : 0.158004,
+                            "F" : 15.0988,
+                            "eF" : 0.107078,
+                            " first Jet Eta < 2.5 rad): " :
+                            {
+                              "efficiency" : 0.955497,
+                              "T" : 31.2769,
+                              "eT" : 0.154377,
+                              "F" : 1.45674,
+                              "eF" : 0.0336689,
+                              "Second jet Pt > 100 GeV: " :
+                              {
+                                "efficiency" : 0.328692,
+                                "T" : 10.2804,
+                                "eT" : 0.0887632,
+                                "F" : 20.9964,
+                                "eF" : 0.126308,
+                                "Check if a jet failed loose quality criteria" :
+                                {
+                                  "efficiency" : 0.976062,
+                                  "T" : 10.0344,
+                                  "eT" : 0.0877443,
+                                  "F" : 0.246094,
+                                  "eF" : 0.0134255,
+                                  "Bad muon in a Jet" :
+                                  {
+                                    "efficiency" : 0.999804,
+                                    "T" : 10.0324,
+                                    "eT" : 0.0877404,
+                                    "F" : 0.00196956,
+                                    "eF" : 0.000984779,
+                                    "Checking that  sum Vertex Pt / HT is  > 0.1 " :
+                                    {
+                                      "efficiency" : 1,
+                                      "T" : 10.0324,
+                                      "eT" : 0.0877404,
+                                      "F" : 0,
+                                      "eF" : 0,
+                                      "Veto Events with sum of cleaned rechits above 30 GeV " :
+                                      {
+                                        "efficiency" : 1,
+                                        "T" : 10.0324,
+                                        "eT" : 0.0877404,
+                                        "F" : 0,
+                                        "eF" : 0,
+                                        "IsoTrackVeto: " :
+                                        {
+                                          "efficiency" : 0.926679,
+                                          "T" : 9.2968,
+                                          "eT" : 0.0845618,
+                                          "F" : 0.735582,
+                                          "eF" : 0.0234138,
+                                          "CommonMinBiasDPhi >  0.3 " :
+                                          {
+                                            "efficiency" : 0.880018,
+                                            "T" : 8.18135,
+                                            "eT" : 0.0792069,
+                                            "F" : 1.11545,
+                                            "eF" : 0.0296219,
+                                            "Passing MHT over MET cut of: 1.25 " :
+                                            {
+                                              "efficiency" : 0.910549,
+                                              "T" : 7.44952,
+                                              "eT" : 0.0757244,
+                                              "F" : 0.731827,
+                                              "eF" : 0.0232472,
+                                              "HT 375 GeV " :
+                                              {
+                                                "efficiency" : 0.53526,
+                                                "T" : 3.98743,
+                                                "eT" : 0.0554184,
+                                                "F" : 3.46209,
+                                                "eF" : 0.0516041,
+                                                "Alpha_t  > 0.55 GeV): " :
+                                                {
+                                                  "efficiency" : 0.498408,
+                                                  "T" : 1.98737,
+                                                  "eT" : 0.038819,
+                                                  "F" : 2.00006,
+                                                  "eF" : 0.0395606,
+                                                  "Passing MHT over MET cut of: 1.25 " :
+                                                  {
+                                                    "efficiency" : 1,
+                                                    "T" : 1.98737,
+                                                    "eT" : 0.038819,
+                                                    "F" : 0,
+                                                    "eF" : 0,
+                                                    "NumComBtagsJets Operation (num unsigned int = 0) with BTag cut 0.679 using Btag Algorithm 5" : 
+                                                    {
+                                                      "efficiency" : 0.907264,
+                                                      "T" : 1.80307,
+                                                      "eT" : 0.0369981,
+                                                      "F" : 0.184301,
+                                                      "eF" : 0.0117506
+                                                    },
+                                                    "NumComBtagsJets Operation (num unsigned int > 0) with BTag cut 0.679 using Btag Algorithm 5" : 
+                                                    {
+                                                      "efficiency" : 0.0927363,
+                                                      "T" : 0.184301,
+                                                      "eT" : 0.0117506,
+                                                      "F" : 1.80307,
+                                                      "eF" : 0.0369981
+                                                    },
+                                                    "NumComBtagsJets Operation (num unsigned int = 1) with BTag cut 0.679 using Btag Algorithm 5" : 
+                                                    {
+                                                      "efficiency" : 0.0819095,
+                                                      "T" : 0.162784,
+                                                      "eT" : 0.0109999,
+                                                      "F" : 1.82458,
+                                                      "eF" : 0.0372286
+                                                    },
+                                                    "NumComBtagsJets Operation (num unsigned int > 1) with BTag cut 0.679 using Btag Algorithm 5" : 
+                                                    {
+                                                      "efficiency" : 0.0108268,
+                                                      "T" : 0.0215168,
+                                                      "eT" : 0.00414091,
+                                                      "F" : 1.96585,
+                                                      "eF" : 0.0385981
+                                                    },
+                                                    "NumComBtagsJets Operation (num unsigned int = 2) with BTag cut 0.679 using Btag Algorithm 5" : 
+                                                    {
+                                                      "efficiency" : 0.0105423,
+                                                      "T" : 0.0209514,
+                                                      "eT" : 0.0041089,
+                                                      "F" : 1.96642,
+                                                      "eF" : 0.0386017
+                                                    },
+                                                    "NumComBtagsJets Operation (num unsigned int = 3) with BTag cut 0.679 using Btag Algorithm 5" : 
+                                                    {
+                                                      "efficiency" : 0.000284518,
+                                                      "T" : 0.000565442,
+                                                      "eT" : 0.000565442,
+                                                      "F" : 1.9868,
+                                                      "eF" : 0.0388154
+                                                    },
+                                                    "NumComBtagsJets Operation (num unsigned int > 3) with BTag cut 0.679 using Btag Algorithm 5" : 
+                                                    {
+                                                      "efficiency" : 0,
+                                                      "T" : 0,
+                                                      "eT" : 0,
+                                                      "F" : 1.98737,
+                                                      "eF" : 0.038819
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
