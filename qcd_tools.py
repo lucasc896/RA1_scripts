@@ -13,6 +13,7 @@ TO-DO
 3. Verify yields from grabr are correct!
 4. Correct the erorr handling of the Yield addition/subtraction
 5. Fix bin variables when overwriting an entire dict in object instance
+6. New files will have two seperate histos to ><0.3, instead of dirs
 """
 #---------------------------------------------------------------------#
 
