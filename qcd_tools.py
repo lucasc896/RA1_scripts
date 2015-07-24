@@ -35,33 +35,6 @@ class Yield(object):
         tote = ma.sqrt( ma.pow(self.e, 2) + ma.pow(other.e, 2) )
         return Yield(totv, tote)
 
-
-######################################################################
-
-# class CatYield(object):
-#     """object to hold a bunch of yields, recursively"""
-#     def __init__(self, cats = []):
-#         self._cats = cats if cats else []
-
-
-#     def AddCat(self, cat = "", val = None):
-#         # print cat, val, self._cats
-#         if cat in self._cats:
-#             print "%s already exists." % cat
-#         setattr(self, cat, val)
-#         self._cats.append(cat)
-
-#     def __str__(self):
-#         out = "\n-CatYield object-\n"
-#         out += "Cats: " + ", ".join(self._cats) + "\n"
-        
-#         for cat in self._cats:
-#             try:
-#                 out += "%s: %s\n" % (cat, getattr(self, cat))
-#             except AttributeError:
-#                 pass
-#         return out
-
 ######################################################################
 
 def exclusiveCats(dim = ""):
@@ -77,12 +50,22 @@ def exclusiveCats(dim = ""):
 ######################################################################
 
 class AnalysisYields(object):
-    def __init__(self, selec = "", data = True):
+    def __init__(self, selec = "", fpath = "", bins = {}, data = True, zeroes = False):
         print "> Creating AnalysisYields object for %s selection in %s" % (selec,
             "data" if data else "MC")
+
+        self._defaultArgs = ["ht", "nj", "nb", "dphi"]
+        self._fpath = fpath
         self._selec = selec
         self._data = data
+        self._zeroes = zeroes
+        self._bins = bins
+        self.ValidateBins()
         self.HarvestYields()
+
+    def ValidateBins(self):
+        for arg in self._defaultArgs:
+            assert arg in self._bins.keys(), "Default bin argument %s missing." % arg
 
     def HarvestYields(self):
         if self._data:
@@ -90,17 +73,20 @@ class AnalysisYields(object):
         else:
             files = ["Had_TTbar", "Had_SingleTop", "Had_WJets", "Had_DY", "Had_Zinv", "Had_DiBoson"]
 
-        self._dict = dict.fromkeys(["lt0p3", "gt0p3"])
+        self._dict = dict.fromkeys(self._bins["dphi"])
         for dphi in ["lt0p3", "gt0p3"]:
-            self._dict[dphi] = dict.fromkeys(bins("nj"))
-            for j in bins("nj"):
-                self._dict[dphi][j] = dict.fromkeys(bins("nb"))
-                for b in bins("nb"):
-                    self._dict[dphi][j][b] = dict.fromkeys(bins("ht"))
-                    for ht in bins("ht"):
+            self._dict[dphi] = dict.fromkeys(self._bins["nj"])
+            for j in self._bins["nj"]:
+                self._dict[dphi][j] = dict.fromkeys(self._bins["nb"])
+                for b in self._bins["nb"]:
+                    self._dict[dphi][j][b] = dict.fromkeys(self._bins["ht"])
+                    for ht in self._bins["ht"]:
+                        if self._zeroes:
+                            self._dict[dphi][j][b][ht] = Yield(0., 0.)
+                            continue
                         htotal = None
                         for fname in files:
-                            hist = grabr.grab_plots(f_path = "%s/%s/%s.root" % (fpath(), dphi, fname),
+                            hist = grabr.grab_plots(f_path = "%s/%s/%s.root" % (self._fpath, dphi, fname),
                                                     sele = self._selec, h_title = "AlphaT_Signal", njet = j,
                                                     btag = b, quiet = True, ht_bins = ht)
                             if not htotal:
@@ -111,12 +97,12 @@ class AnalysisYields(object):
                         val = htotal.IntegralAndError(1, htotal.GetNbinsX()+1, err)
                         self._dict[dphi][j][b][ht] = Yield(val, err)
                     # make inclusive ht cat
-                    self._dict[dphi][j][b]['inc'] = self.MakeInclusiveYield(self._dict[dphi][j][b], "ht")
+                    self._dict[dphi][j][b]['inc'] = self.MakeInclusiveHTYield(self._dict[dphi][j][b], "ht")
         # make inclusive dphi cat
         self._dict['inc'] = dict_sum(self._dict['lt0p3'], self._dict['gt0p3'])
 
 
-    def MakeInclusiveYield(self, dic = {}, dim = ""):
+    def MakeInclusiveHTYield(self, dic = {}, dim = ""):
         exclCats = exclusiveCats(dim)
 
         assert "inc" not in dic.keys(), "This shouldn't happen!"
@@ -129,24 +115,22 @@ class AnalysisYields(object):
 
     def GetYield(self, **cats):
         
-        defaultArgs = ["ht", "nj", "nb", "dphi"]
-        
-        for dflt in defaultArgs:
+        for dflt in self._defaultArgs:
             assert cats[dflt], "%s val missing" % dflt
 
-        if all(type(cats[arg]) is str for arg in defaultArgs):
+        if all(isinstance(cats[arg], str) for arg in self._defaultArgs):
             # asking for a specific value, as all args are strings
             return self._dict[cats["dphi"]][cats["nj"]][cats["nb"]][cats["ht"]]
         
-        # get here if one or more arguements are lists (i.e. want multiple yields to be returned)
+        # get here if one or more arguments are lists (i.e. want multiple yields to be returned)
         listArgs = []
         out = {}
-        for arg in defaultArgs:
-            assert type(cats[arg]) in [str, list], "Arguement for %s must be either str or list." % a
+        for arg in self._defaultArgs:
+            assert type(cats[arg]) in [str, list], "Argument for %s must be either str or list." % a
             if type(cats[arg]) is str:
                 cats[arg] = [cats[arg]]
 
-        for h, j, b, d in product(*[cats[arg] for arg in defaultArgs]): # messy!
+        for h, j, b, d in product(*[cats[arg] for arg in self._defaultArgs]): # messy!
             key = "%s_%s_%s_%s" % (h, j, b, d)
             out[key] = self._dict[d][j][b][h]
 
@@ -174,10 +158,15 @@ def dict_sum(d1, d2):
 ######################################################################
 
 def bins(key = ""):
+    d = {   "nj":   ["le3j", "ge4j", "ge2j"],
+            "nb":   ["eq0b", "eq1b", "eq2b", "eq3b", "ge0b"],
+            "dphi": ["lt0p3", "gt0p3"],
+            "ht":   ["200_275","275_325","325_375","375_475","475_575","575_675","675_775","775_875","875_975","975_1075","1075"]}
+    
+    if not key:
+        return d
     try:
-        return {"nj": ["le3j", "ge4j", "ge2j"],
-                "nb": ["eq0b", "eq1b", "eq2b", "eq3b", "ge0b"],
-                "ht": ["200_275","275_325","325_375","375_475","475_575","575_675","675_775","775_875","875_975","975_1075","1075"][:4]}[key]
+        return d[key]
     except:
         return None
 
@@ -190,19 +179,12 @@ def fpath():
 
 if __name__ == "__main__":
 
-    had_data = AnalysisYields("HadQCD")
+    had_data = AnalysisYields(selec ="HadQCD",
+                                bins = bins(),
+                                fpath = fpath(),
+                                zeroes = True)
     print had_data
-    # had_mc = AnalysisYields("HadQCD", data = False)
-    # print had_mc
-    d = {
-    "ht": bins("ht")[0:2],
-    "nj": bins("nj"),
-    "nb": "eq0b",
-    "dphi": "lt0p3",
-    }
-
-    # y = had_data.GetYield(**d)
-    # for k in y:
-    #     print k, y[k]
-
-
+    # had_mc  = AnalysisYields(selec ="HadQCD",
+    #                             bins = bins(),
+    #                             fpath = fpath(),
+    #                             data = False)
