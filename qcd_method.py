@@ -7,7 +7,6 @@ from copy import deepcopy
 #---------------------------------------------------------------------#
 """
 TO-DO
-1. Decide on way to split the mu bkg pred
 2. Work out way to present results
     - table
     - plot
@@ -15,10 +14,10 @@ TO-DO
 #---------------------------------------------------------------------#
 
 def bins(key = ""):
-    d = {   "nj":   ["le3j", "ge4j", "ge2j"],
-            "nb":   ["eq0b", "eq1b", "eq2b", "eq3b", "ge0b"][:2],
+    d = {   "nj":   ["le3j", "ge4j", "ge2j"][:1],
+            "nb":   ["eq0b", "eq1b", "eq2b", "eq3b", "ge0b"][:1],
             "dphi": ["lt0p3", "gt0p3"],
-            "ht":   ["200_275","275_325","325_375","375_475","475_575","575_675","675_775","775_875","875_975","975_1075","1075"][:5]}
+            "ht":   ["200_275","275_325","325_375","375_475","475_575","575_675","675_775","775_875","875_975","975_1075","1075"][:1]}
     
     if not key:
         return d
@@ -35,6 +34,7 @@ def fpath():
 #---------------------------------------------------------------------#
 
 def getAllSelections():
+    """create all objects for each of the four ana selections"""
     had_data    = AnaY(selec = "HadQCD",
                         bins = bins(),
                         fpath = fpath())
@@ -49,20 +49,39 @@ def getAllSelections():
                         bins = bins(),
                         fpath = fpath(),
                         data = False)
-    had_ewk_pred = had_mc / mu_mc
-    had_ewk_pred = had_ewk_pred * mu_data
-    had_qcd_est  = had_data - had_ewk_pred
-    return had_data, had_mc, mu_data, mu_mc, had_ewk_pred, had_qcd_est
+    return had_data, had_mc, mu_data, mu_mc
+
+#---------------------------------------------------------------------#
+
+def makePrediction(hmc = None, md = None, mmc = None):
+    """make the ewk prediction for inclusive and split control sample"""
+
+    # make empty object to fill with preds for non split control region
+    had_ewk_pred = AnaY(selec = "HadQCD",
+                        bins = bins(),
+                        fpath = fpath(),
+                        zeroes = True)
+    # for each dphi region (and 'inc'), calc pred with dphi-inclusive mu
+    for dphi in bins("dphi")+["inc"]:
+        tmp = pytils.dict_mul(md._dict['inc'], hmc._dict[dphi])
+        tmp = pytils.dict_div(tmp, mmc._dict['inc'])
+        had_ewk_pred._dict[dphi] = pytils.dict_add(had_ewk_pred._dict[dphi], tmp)
+
+    # now create version with fully split backgrounds
+    had_ewk_pred_splitMu = md * hmc
+    had_ewk_pred_splitMu = had_ewk_pred_splitMu / mmc
+
+    return had_ewk_pred, had_ewk_pred_splitMu
 
 #---------------------------------------------------------------------#
 
 def main():
 
-    had_data, had_mc, mu_data, mu_mc, had_ewk_pred, had_qcd_est = getAllSelections()
+    had_data, had_mc, mu_data, mu_mc = getAllSelections()
 
-    print had_qcd_est
+    had_ewk_pred, had_ewk_pred_splitMu = makePrediction(had_mc, mu_data, mu_mc)
 
-
+    print had_ewk_pred-had_ewk_pred_splitMu
 
 
 
