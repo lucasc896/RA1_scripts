@@ -9,11 +9,9 @@ from itertools import product
 ######################################################################
 """
 TO-DO
-1. Setup automatic inclusive maker with 'inc' keyword
 2. Add an additional alphaT dimension
 3. Verify yield from grabr are correct!
 4. Correct the erorr handling of the Yield addition/subtraction
-5. Add other inclusive categories - should recursively use inclusive maker
 """
 ######################################################################
 
@@ -114,12 +112,8 @@ class AnalysisYields(object):
                         self._dict[dphi][j][b][ht] = Yield(val, err)
                     # make inclusive ht cat
                     self._dict[dphi][j][b]['inc'] = self.MakeInclusiveYield(self._dict[dphi][j][b], "ht")
-                # make inclusive nb cat
-                self._dict[dphi][j]['inc'] = self.MakeInclusiveYield(self._dict[dphi][j], "nb")
-            # make inclusive nj cat
-            self._dict[dphi]['inc'] = self.MakeInclusiveYield(self._dict[dphi], "nj")
         # make inclusive dphi cat
-        pass
+        self._dict['inc'] = dict_sum(self._dict['lt0p3'], self._dict['gt0p3'])
 
 
     def MakeInclusiveYield(self, dic = {}, dim = ""):
@@ -127,35 +121,11 @@ class AnalysisYields(object):
 
         assert "inc" not in dic.keys(), "This shouldn't happen!"
 
-        # check that we're at the individual Yield level
-        if type(dic[exclCats[0]]) is Yield:
+        if isinstance(dic[exclCats[0]], Yield):
             inclYield = Yield(0., 0.)
             for cat in exclCats:
                 inclYield = inclYield + dic[cat]
             return inclYield
-        elif type(dic[exclCats[0]]) is dict:
-            # dict_printer(dic)
-            return self.dictSummer(dic)
-
-    def dictSummer(self, dic = {}):
-        """this is the wrong way to do it...change!"""
-        keys = dic.keys()
-
-        if type(dic[keys[0]]) is dict:
-            subKeys = dic[keys[0]].keys()
-            # print type(dic[keys[0]][subKeys[0]])
-            if type(dic[keys[0]][subKeys[0]]) is Yield:
-                inclDict = dict.fromkeys(subKeys)
-                for skey in subKeys:
-                    inclDict[skey] = Yield(0., 0.)
-                    for key in keys:
-                        inclDict[skey] = inclDict[skey] + dic[key][skey]
-                return inclDict
-            elif type(dic[keys[0]][subKeys[0]]) is dict:
-                for key in keys:
-                    summed = self.dictSummer(dic[key])
-                    print key, summed
-
 
     def GetYield(self, **cats):
         
@@ -188,11 +158,26 @@ class AnalysisYields(object):
 
 ######################################################################
 
+def dict_sum(d1, d2):
+    if d1 is None: return d2
+    if d2 is None: return d1
+    try:
+        return d1 + d2
+    except TypeError:
+      # could assume they're both dicts, but lets be sure.  
+      assert type(d1) is dict
+      assert type(d2) is dict
+      # assume d1 and d2 are dictionaries
+      keys = set(d1.iterkeys()) | set(d2.iterkeys())
+      return dict((key, dict_sum(d1.get(key), d2.get(key))) for key in keys)
+
+######################################################################
+
 def bins(key = ""):
     try:
-        return {"nj": ["le3j", "ge4j"],
-                "nb": ["eq0b", "eq1b", "eq2b", "eq3b"][:2],
-                "ht": ["200_275","275_325","325_375","375_475","475_575","575_675","675_775","775_875","875_975","975_1075","1075"][:1]}[key]
+        return {"nj": ["le3j", "ge4j", "ge2j"],
+                "nb": ["eq0b", "eq1b", "eq2b", "eq3b", "ge0b"],
+                "ht": ["200_275","275_325","325_375","375_475","475_575","575_675","675_775","775_875","875_975","975_1075","1075"][:4]}[key]
     except:
         return None
 
