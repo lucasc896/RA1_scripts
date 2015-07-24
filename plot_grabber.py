@@ -44,7 +44,7 @@ def get_dirs(htbins = None, sele = "", btag = "", keyword = ""):
         this_bin = []
         if "QCD" in sele: this_bin.append("QCD")
         if btag_str: this_bin.append(btag_str)
-        if sele not in ["Had", "HadQCD"]:
+        if sele not in ["Had", "HadQCD", "OneMuonQCD"]:
             this_bin.append(sele)
         this_bin.append(ht)
         if keyword: this_bin.append(keyword)
@@ -257,12 +257,12 @@ def grab_plots(f_path = "", h_title = "", sele = "OneMuon", njet = "", btag = ""
             print "-    %s" % f_path
             print "-    %s/%s_%s" % (d, h_title, jet_string(njet))
             exit()
-        if "Data" not in f_path:
+        if "Data" not in f_path and "Bulk" not in f_path:
             # apply ht bin trig effs
             h.Scale( trig_eff(sele = sele,
-                            ht = d.split("_")[-2] if "1075" != d[-4:] else d.split("_")[-1],
-                            njet = jet_string(njet), quiet = quiet,
-                            fineJet = False) )
+                                ht = d.split("_")[-2] if "1075" != d[-4:] else d.split("_")[-1],
+                                njet = jet_string(njet), quiet = quiet,
+                                fineJet = False) )
             if "SMS" not in f_path.split("/")[-1]:
                 h.Scale( sb_corr(f_path.split("/")[-1].split("_")[1][:-5], quiet = quiet) )
             h.Scale( lumi(sele, quiet = quiet) )
