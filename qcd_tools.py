@@ -12,6 +12,7 @@ TO-DO
 2. Add an additional alphaT dimension
 3. Verify yields from grabr are correct!
 4. Correct the erorr handling of the Yield addition/subtraction
+5. Fix bin variables when overwriting an entire dict in object instance
 """
 #---------------------------------------------------------------------#
 
