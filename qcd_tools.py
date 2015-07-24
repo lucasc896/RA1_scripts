@@ -1,53 +1,47 @@
+import pytils
 import ROOT as r
 import math as ma
 import plot_grabber as grabr
 from sys import exit
 from copy import deepcopy
-from alphat_excess import dict_printer
 from itertools import product
 
-######################################################################
+#---------------------------------------------------------------------#
 """
 TO-DO
 2. Add an additional alphaT dimension
 3. Verify yield from grabr are correct!
 4. Correct the erorr handling of the Yield addition/subtraction
 """
-######################################################################
+#---------------------------------------------------------------------#
 
 class Yield(object):
-    """container for a yield and err"""
+    """container for a yield and it's error"""
+    # 1. Need to update error handling options
     def __init__(self, val, err):
         self.v = float(val)
         self.e = float(err)
-        try:
-            self.fe = float(err/val)
-        except ZeroDivisionError:
-            self.fe = 0.
+        self.fe = pytils.safe_divide(err, val)
     def __str__(self):
         return "Yield: %.3f +/- %.3f" % (self.v, self.e)
     def __add__(self, other):
-        totv = self.v + other.v
-        tote = ma.sqrt( ma.pow(self.e, 2) + ma.pow(other.e, 2) )
-        return Yield(totv, tote)
+        newv = self.v + other.v
+        newe = ma.sqrt( ma.pow(self.e, 2) + ma.pow(other.e, 2) )
+        return Yield(newv, newe)
     def __sub__(self, other):
-        totv = self.v - other.v
-        tote = ma.sqrt( ma.pow(self.e, 2) + ma.pow(other.e, 2) )
-        return Yield(totv, tote)
+        newv = self.v - other.v
+        newe = ma.sqrt( ma.pow(self.e, 2) + ma.pow(other.e, 2) )
+        return Yield(newv, newe)
+    def __mul__(self, other):
+        newv = self.v * other.v
+        newe = newv * ma.sqrt( ma.pow(pytils.safe_divide(self.e, self.v), 2) + ma.pow(pytils.safe_divide(other.e, other.v), 2) )
+        return Yield(newv, newe)
+    def __div__(self, other):
+        newv = pytils.safe_divide(self.v, other.v)
+        newe = newv * ma.sqrt( ma.pow(pytils.safe_divide(self.e, self.v), 2) + ma.pow(pytils.safe_divide(other.e, other.v), 2) )
+        return Yield(newv, newe)
 
-######################################################################
-
-def exclusiveCats(dim = ""):
-    try:
-        return {"nj": bins("nj"),
-                "nb": bins("nb"),
-                "ht": bins("ht"),
-                "at": ["all"],
-                "dphi": ["lt0p3", "gt0p3"]}[dim]
-    except KeyError:
-        return []
-
-######################################################################
+#---------------------------------------------------------------------#
 
 class AnalysisYields(object):
     def __init__(self, selec = "", fpath = "", bins = {}, data = True, zeroes = False):
@@ -99,17 +93,16 @@ class AnalysisYields(object):
                     # make inclusive ht cat
                     self._dict[dphi][j][b]['inc'] = self.MakeInclusiveHTYield(self._dict[dphi][j][b], "ht")
         # make inclusive dphi cat
-        self._dict['inc'] = dict_sum(self._dict['lt0p3'], self._dict['gt0p3'])
+        self._dict['inc'] = pytils.dict_sum(self._dict['lt0p3'], self._dict['gt0p3'])
 
 
     def MakeInclusiveHTYield(self, dic = {}, dim = ""):
-        exclCats = exclusiveCats(dim)
 
         assert "inc" not in dic.keys(), "This shouldn't happen!"
 
-        if isinstance(dic[exclCats[0]], Yield):
+        if isinstance(dic[self._bins["ht"][0]], Yield):
             inclYield = Yield(0., 0.)
-            for cat in exclCats:
+            for cat in self._bins["ht"]:
                 inclYield = inclYield + dic[cat]
             return inclYield
 
@@ -137,52 +130,21 @@ class AnalysisYields(object):
         return out
 
     def __str__(self):
-        dict_printer(self._dict)
+        pytils.dict_printer(self._dict)
         return ""
 
-######################################################################
-
-def dict_sum(d1, d2):
-    if d1 is None: return d2
-    if d2 is None: return d1
-    try:
-        return d1 + d2
-    except TypeError:
-      # could assume they're both dicts, but lets be sure.  
-      assert type(d1) is dict
-      assert type(d2) is dict
-      # assume d1 and d2 are dictionaries
-      keys = set(d1.iterkeys()) | set(d2.iterkeys())
-      return dict((key, dict_sum(d1.get(key), d2.get(key))) for key in keys)
-
-######################################################################
-
-def bins(key = ""):
-    d = {   "nj":   ["le3j", "ge4j", "ge2j"],
-            "nb":   ["eq0b", "eq1b", "eq2b", "eq3b", "ge0b"],
-            "dphi": ["lt0p3", "gt0p3"],
-            "ht":   ["200_275","275_325","325_375","375_475","475_575","575_675","675_775","775_875","875_975","975_1075","1075"]}
-    
-    if not key:
-        return d
-    try:
-        return d[key]
-    except:
-        return None
-
-######################################################################
-
-def fpath():
-    return "/Users/chrislucas/SUSY/AnalysisCode/rootfiles/QCDKiller_GOLDEN/QCDFiles/25March_withBeamHalo_newCC_v0/"
-
-######################################################################
+#---------------------------------------------------------------------#
 
 if __name__ == "__main__":
 
+    testBins = {"nj": ["le3j", "ge4j"],
+                "nb": ["eq0b", "eq1b"],
+                "ht": ["200_275", "275_325", "325_375"],
+                "dphi":["lt0p3", "gt0p3"]}
+
     had_data = AnalysisYields(selec ="HadQCD",
-                                bins = bins(),
-                                fpath = fpath(),
-                                zeroes = True)
+                                bins = testBins,
+                                fpath = "/Users/chrislucas/SUSY/AnalysisCode/rootfiles/QCDKiller_GOLDEN/QCDFiles/25March_withBeamHalo_newCC_v0/",)
     print had_data
     # had_mc  = AnalysisYields(selec ="HadQCD",
     #                             bins = bins(),
