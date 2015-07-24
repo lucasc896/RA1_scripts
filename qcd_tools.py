@@ -10,7 +10,7 @@ from itertools import product
 """
 TO-DO
 2. Add an additional alphaT dimension
-3. Verify yield from grabr are correct!
+3. Verify yields from grabr are correct!
 4. Correct the erorr handling of the Yield addition/subtraction
 """
 #---------------------------------------------------------------------#
@@ -57,6 +57,10 @@ class AnalysisYields(object):
         self.ValidateBins()
         self.HarvestYields()
 
+    def ReplaceYields(self, newDict = {}):
+        # do some checking to make sure binning all agrees, otherwise get an unstable object
+        self._dict = newDict
+
     def ValidateBins(self):
         for arg in self._defaultArgs:
             assert arg in self._bins.keys(), "Default bin argument %s missing." % arg
@@ -68,7 +72,7 @@ class AnalysisYields(object):
             files = ["Had_TTbar", "Had_SingleTop", "Had_WJets", "Had_DY", "Had_Zinv", "Had_DiBoson"]
 
         self._dict = dict.fromkeys(self._bins["dphi"])
-        for dphi in ["lt0p3", "gt0p3"]:
+        for dphi in self._bins["dphi"]:
             self._dict[dphi] = dict.fromkeys(self._bins["nj"])
             for j in self._bins["nj"]:
                 self._dict[dphi][j] = dict.fromkeys(self._bins["nb"])
@@ -89,11 +93,13 @@ class AnalysisYields(object):
                                 htotal.Add(hist)
                         err = r.Double(0.)
                         val = htotal.IntegralAndError(1, htotal.GetNbinsX()+1, err)
+                        # print htotal.GetEntries(), htotal.Integral()
                         self._dict[dphi][j][b][ht] = Yield(val, err)
                     # make inclusive ht cat
                     self._dict[dphi][j][b]['inc'] = self.MakeInclusiveHTYield(self._dict[dphi][j][b], "ht")
         # make inclusive dphi cat
-        self._dict['inc'] = pytils.dict_sum(self._dict['lt0p3'], self._dict['gt0p3'])
+        if len(self._dict.keys()) == 2:
+            self._dict['inc'] = pytils.dict_add(self._dict['lt0p3'], self._dict['gt0p3'])
 
 
     def MakeInclusiveHTYield(self, dic = {}, dim = ""):
@@ -128,6 +134,26 @@ class AnalysisYields(object):
             out[key] = self._dict[d][j][b][h]
 
         return out
+
+    def __add__(self, other):
+        new = deepcopy(self)
+        new.ReplaceYields( pytils.dict_add(self._dict, other._dict) )
+        return new
+
+    def __sub__(self, other):
+        new = deepcopy(self)
+        new.ReplaceYields( pytils.dict_sub(self._dict, other._dict) )
+        return new
+
+    def __mul__(self, other):
+        new = deepcopy(self)
+        new.ReplaceYields( pytils.dict_mul(self._dict, other._dict) )
+        return new
+
+    def __div__(self, other):
+        new = deepcopy(self)
+        new.ReplaceYields( pytils.dict_div(self._dict, other._dict) )
+        return new
 
     def __str__(self):
         pytils.dict_printer(self._dict)
