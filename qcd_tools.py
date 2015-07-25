@@ -50,7 +50,7 @@ class AnalysisYields(object):
         print "> Creating AnalysisYields object for %s selection in %s" % (selec,
             "data" if data else "MC")
 
-        self._defaultArgs = ["ht", "nj", "nb", "dphi"]
+        self._defaultArgs = ["dphi", "nj", "nb", "ht"]
         self._fpath = fpath
         self._selec = selec
         self._data = data
@@ -59,9 +59,19 @@ class AnalysisYields(object):
         self.ValidateBins()
         self.HarvestYields()
 
+    def ReplaceBinsFromDict(self, d = {}, iter = 0):
+        self._bins[self._defaultArgs[iter]] = d.keys()
+        # cheeky...
+        firstVal = d[d.keys()[0]]
+        if isinstance(firstVal, dict):
+            iter += 1
+            self.ReplaceBinsFromDict(firstVal, iter)
+
     def ReplaceYields(self, newDict = {}):
         # do some checking to make sure binning all agrees, otherwise get an unstable object
         self._dict = newDict
+        self.ReplaceBinsFromDict(newDict)
+
 
     def ValidateBins(self):
         for arg in self._defaultArgs:
@@ -105,6 +115,7 @@ class AnalysisYields(object):
             self._dict['inc'] = pytils.dict_add(self._dict['lt0p3'], self._dict['gt0p3'])
         else:
             self._dict['inc'] = deepcopy(self._dict[self._bins["dphi"][0]])
+        self._bins['dphi'].append("inc")
 
 
 
