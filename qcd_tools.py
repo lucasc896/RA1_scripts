@@ -66,6 +66,7 @@ class AnalysisYields(object):
     def ValidateBins(self):
         for arg in self._defaultArgs:
             assert arg in self._bins.keys(), "Default bin argument %s missing." % arg
+            assert self._bins[arg], "%s argument is empty" % arg
 
     def HarvestYields(self):
         if self._data:
@@ -100,8 +101,11 @@ class AnalysisYields(object):
                     # make inclusive ht cat
                     self._dict[dphi][j][b]['inc'] = self.MakeInclusiveHTYield(self._dict[dphi][j][b], "ht")
         # make inclusive dphi cat
-        if len(self._dict.keys()) == 2:
+        if len(self._bins["dphi"]) > 1:
             self._dict['inc'] = pytils.dict_add(self._dict['lt0p3'], self._dict['gt0p3'])
+        else:
+            self._dict['inc'] = deepcopy(self._dict[self._bins["dphi"][0]])
+
 
 
     def MakeInclusiveHTYield(self, dic = {}, dim = ""):
