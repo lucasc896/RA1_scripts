@@ -50,7 +50,7 @@ class AnalysisYields(object):
         print "> Creating AnalysisYields object for %s selection in %s" % (selec,
             "data" if data else "MC")
 
-        self._defaultArgs = ["dphi", "nj", "nb", "ht"]
+        self._defaultArgs = ["dphi", "nj", "nb", "ht", "at"]
         self._fpath = fpath
         self._selec = selec
         self._data = data
@@ -93,9 +93,7 @@ class AnalysisYields(object):
                 for b in self._bins["nb"]:
                     self._dict[dphi][j][b] = dict.fromkeys(self._bins["ht"])
                     for ht in self._bins["ht"]:
-                        if self._zeroes:
-                            self._dict[dphi][j][b][ht] = Yield(0., 0.)
-                            continue
+                        self._dict[dphi][j][b][ht] = {} # create empty dict for alphaT
                         htotal = None
                         if self._legacy:
                             filepath = "%s/%s" % (self._fpath, dphi)
@@ -111,12 +109,24 @@ class AnalysisYields(object):
                                 htotal = hist.Clone()
                             else:
                                 htotal.Add(hist)
-                        err = r.Double(0.)
-                        val = htotal.IntegralAndError(1, htotal.GetNbinsX()+1, err)
-                        self._dict[dphi][j][b][ht] = Yield(val, err)
+
+                        # now dice the total distribution into alphat bins
+                        self._dict[dphi][j][b][ht]['inc'] = Yield(0., 0.)
+                        for atlo, athi in zip(self._bins["at"], self._bins["at"][1:] + [None]):
+                            atstr = "%"
+                            atlobin = htotal.FindBin(float(atlo))
+                            athibin = htotal.FindBin(float(athi)) if athi != None else htotal.GetNbinsX()+1 #inclusive final bin
+
+                            err = r.Double(0.)
+                            val = htotal.IntegralAndError(atlobin, athibin, err)
+                            if self._zeroes:
+                                val = 0.
+                                err = 0.
+                            self._dict[dphi][j][b][ht][atlo] = Yield(val, err)
+                            self._dict[dphi][j][b][ht]['inc'] += Yield(val, err)
                     
                     # make inclusive ht cat
-                    self._dict[dphi][j][b]['inc'] = self.MakeInclusiveHTYield(self._dict[dphi][j][b], "ht")
+                    self._dict[dphi][j][b]['inc'] = self.MakeInclusiveHTYield(self._dict[dphi][j][b])
         
         # make inclusive dphi cat
         if len(self._bins["dphi"]) > 1:
@@ -127,15 +137,13 @@ class AnalysisYields(object):
 
 
 
-    def MakeInclusiveHTYield(self, dic = {}, dim = ""):
-
+    def MakeInclusiveHTYield(self, dic = {}):
+        # UNFINISHED!
         assert "inc" not in dic.keys(), "This shouldn't happen!"
-
-        if isinstance(dic[self._bins["ht"][0]], Yield):
-            inclYield = Yield(0., 0.)
-            for cat in self._bins["ht"]:
-                inclYield = inclYield + dic[cat]
-            return inclYield
+        new = dict.fromkeys(dic[self._bins['ht'][0]])
+        for ht in self._bins["ht"]:
+            new = pytils.dict_add(new, dic[ht])
+        return new
 
     def GetYield(self, **cats):
         
@@ -183,6 +191,28 @@ class AnalysisYields(object):
     def __str__(self):
         pytils.dict_printer(self._dict)
         return ""
+
+#---------------------------------------------------------------------#
+
+def dict_sub_thresh(d1, d2, thresh = 0.):
+    if d1 is None: return d2
+    if d2 is None: return d1
+    try:
+        sub = d1 - d2
+        # if the d2 is >X% of d1, do the subtraction
+        # note: don't use safe divide, as these objects are Yields, not numbers
+        if d2/d1 > thresh:
+            return sub 
+        else:
+            # otherwise don't do the subtraction
+            return d1
+    except TypeError:
+        # could assume they're both dicts, but lets be sure.  
+        assert type(d1) is dict
+        assert type(d2) is dict
+        # assume d1 and d2 are dictionaries
+        keys = set(d1.iterkeys()) | set(d2.iterkeys())
+        return dict((key, dict_sub_thresh(d1.get(key), d2.get(key), thresh)) for key in keys)
 
 #---------------------------------------------------------------------#
 
