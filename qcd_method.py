@@ -1,8 +1,12 @@
 #!/usr/bin/env python
 import pytils
+import ROOT as r
+import qcd_plotting as qplot
 from qcd_tools import AnalysisYields as AnaY
 from qcd_tools import Yield, dict_sub_thresh
 from copy import deepcopy
+
+r.gROOT.SetBatch(1)
 
 #---------------------------------------------------------------------#
 """
@@ -16,14 +20,16 @@ TO-DO
 
 def bins(key = ""):
     """define the binning to be used"""
-    d = {   "nj":   ["le3j", "ge4j", "ge2j"][:1],
-            "nb":   ["eq0b", "eq1b", "eq2b", "eq3b", "ge0b"][:1],
+    d = {   "nj":   ["le3j", "ge4j", "ge2j"][-1:],
+            "nb":   ["eq0b", "eq1b", "eq2b", "eq3b", "ge0b"][-1:],
             "dphi": ["lt0p3", "gt0p3"],
-            "ht":   ["200_275","275_325","325_375","375_475","475_575","575_675","675_775","775_875","875_975","975_1075","1075"][:1],
-            "at":   [i*0.05 for i in range(10)] + [0.5+0.01*i for i in range(20)] + [0.7 + 0.1*i for i in range(4)]}
+            "ht":   ["200_275","275_325","325_375","375_475","475_575","575_675","675_775","775_875","875_975","975_1075","1075"][:4],
+            "at":   [i*0.025 for i in range(40)]}# + [0.5+0.01*i for i in range(20)] + [0.7 + 0.1*i for i in range(4)]}
     
     # convert alphaT float values into strings
-    d['at'] = ["%.2f" % at for at in d['at']]
+    d['at'] = ["%.3f" % at for at in d['at']]
+
+    # d['at'] = ["0.00", "100.0"]
 
     if not key:
         return d
@@ -102,10 +108,30 @@ def main():
 
     had_ewk_pred, had_ewk_pred_splitMu = makePrediction(had_mc, mu_data, mu_mc)
 
-    print had_data
-    # print ewkSubtraction(had_data, had_ewk_pred)
+    had_qcd_pred = ewkSubtraction(had_data, had_ewk_pred)
+
+    qplot.GenericPlotter(had_data, "had_data")
+    qplot.GenericPlotter(had_qcd_pred, "had_qcd_pred")
 
 
+    # grlt0p3 = qplot.alphatGraph(had_mc._dict['lt0p3']['ge2j']['ge0b']['inc'])
+    # grgt0p3 = qplot.alphatGraph(had_mc._dict['lt0p3']['ge2j']['ge0b']['inc'])
+
+
+
+    # canv = r.TCanvas()
+
+    # grgt0p3.Draw("AP")
+    # grgt0p3.SetLineColor(r.kRed)
+    # grgt0p3.SetMarkerColor(r.kRed)
+
+    # grlt0p3.Draw("PSAME")
+    # grlt0p3.SetLineColor(r.kBlue)
+    # grlt0p3.SetMarkerColor(r.kBlue)
+
+    # canv.SetLogy(1)
+
+    # canv.Print("out.pdf")
 
 if __name__ == "__main__":
     main()
