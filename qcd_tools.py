@@ -46,7 +46,7 @@ class Yield(object):
 #---------------------------------------------------------------------#
 
 class AnalysisYields(object):
-    def __init__(self, selec = "", fpath = "", bins = {}, data = True, zeroes = False):
+    def __init__(self, selec = "", fpath = "", bins = {}, data = True, zeroes = False, legacy = False):
         print "> Creating AnalysisYields object for %s selection in %s" % (selec,
             "data" if data else "MC")
 
@@ -55,6 +55,7 @@ class AnalysisYields(object):
         self._selec = selec
         self._data = data
         self._zeroes = zeroes
+        self._legacy = legacy
         self._bins = bins
         self.ValidateBins()
         self.HarvestYields()
@@ -96,9 +97,15 @@ class AnalysisYields(object):
                             self._dict[dphi][j][b][ht] = Yield(0., 0.)
                             continue
                         htotal = None
+                        if self._legacy:
+                            filepath = "%s/%s" % (self._fpath, dphi)
+                            histname = "AlphaT_Signal"
+                        else:
+                            filepath = self._fpath
+                            histname = "AlphaT_Signal" if dphi == "lt0p3" else "AlphaT_Sideband"
                         for fname in files:
-                            hist = grabr.grab_plots(f_path = "%s/%s/%s.root" % (self._fpath, dphi, fname),
-                                                    sele = self._selec, h_title = "AlphaT_Signal", njet = j,
+                            hist = grabr.grab_plots(f_path = "%s/%s.root" % (filepath, fname),
+                                                    sele = self._selec, h_title = histname, njet = j,
                                                     btag = b, quiet = True, ht_bins = ht)
                             if not htotal:
                                 htotal = hist.Clone()
@@ -106,10 +113,11 @@ class AnalysisYields(object):
                                 htotal.Add(hist)
                         err = r.Double(0.)
                         val = htotal.IntegralAndError(1, htotal.GetNbinsX()+1, err)
-                        # print htotal.GetEntries(), htotal.Integral()
                         self._dict[dphi][j][b][ht] = Yield(val, err)
+                    
                     # make inclusive ht cat
                     self._dict[dphi][j][b]['inc'] = self.MakeInclusiveHTYield(self._dict[dphi][j][b], "ht")
+        
         # make inclusive dphi cat
         if len(self._bins["dphi"]) > 1:
             self._dict['inc'] = pytils.dict_add(self._dict['lt0p3'], self._dict['gt0p3'])
@@ -185,10 +193,18 @@ if __name__ == "__main__":
                 "ht": ["200_275", "275_325", "325_375"],
                 "dphi":["lt0p3", "gt0p3"]}
 
+    had_data_leg = AnalysisYields(selec ="HadQCD",
+                                bins = testBins,
+                                fpath = "/Users/chrislucas/SUSY/AnalysisCode/rootfiles/QCDKiller_GOLDEN/QCDFiles/25March_withBeamHalo_newCC_v0",
+                                legacy = True)
+    print had_data_leg
+
     had_data = AnalysisYields(selec ="HadQCD",
                                 bins = testBins,
-                                fpath = "/Users/chrislucas/SUSY/AnalysisCode/rootfiles/QCDKiller_GOLDEN/QCDFiles/25March_withBeamHalo_newCC_v0/",)
-    print had_data
+                                fpath = "/Users/chrislucas/SUSY/AnalysisCode/rootfiles/QCDKiller_GOLDEN/QCDFiles/25Jul_fullParked_noDPhi_MHTMETCut_v0",)
+
+    print had_data - had_data_leg
+
     # had_mc  = AnalysisYields(selec ="HadQCD",
     #                             bins = bins(),
     #                             fpath = fpath(),
