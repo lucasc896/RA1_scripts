@@ -2,10 +2,15 @@ import pytils
 import os
 import ROOT as r
 import numpy as np
-
+from itertools import product
 
 r.gROOT.SetBatch(1)
 
+#---------------------------------------------------------------------#
+"""
+TO-DO
+1. Add plot details (title, axes label etc)
+"""
 #---------------------------------------------------------------------#
 
 def alphatGraph(d = {}):
@@ -29,11 +34,28 @@ def mkDir(path = ""):
 
 #---------------------------------------------------------------------#
 
+def pdeets(title = "", xtitle = "", ytitle = "", xrange = [], xrebin = None):
+    return {"title": title,
+            "xtitle": xtitle,
+            "ytitle": ytitle,
+            "xrange": xrange,
+            "xrebin": xrebin}
+
+#---------------------------------------------------------------------#
+
+def plotDetails(plot = ""):
+    return # COMPLETE ME!
+    return {"dphiComparison": pdeets(),
+            }
+
+#---------------------------------------------------------------------#
+
 class GenericPlotter(object):
     """generic plotter class which plots all analysis cats available"""
     def __init__(self, yields, label = "", allHT = False):
         self._yields = yields._dict
-        self._outpath = "/".join([os.getcwd(), "out", label]) # have a look in os for a nicer way to do this
+        self._outpath = os.path.join(os.getcwd(), "out", label)
+        print self._outpath
         mkDir(self._outpath)
         self._cpd = self._outpath # 'current plotting directory'
         self._allHT = False # optional flag to only plot inclusive HT
@@ -61,6 +83,15 @@ class GenericPlotter(object):
         
         self.makeDPhiComparison()
         self.makeDPhiComparison(plotRatio = True)
+        self.makeAlphaTDistro(mode = "diff")
+        # self.makeAlphaTDistro(mode = "cumu")
+
+    def makeAlphaTDistro(self, mode = "diff"):
+
+        # for nj in self._bins['nj']:
+        #     for nb in self._bins['nb']:
+        #         for ht in self._bins['ht']:
+        pass
 
     def makeDPhiComparison(self, plotRatio = False):
 
