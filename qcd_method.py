@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import pytils
 from qcd_tools import AnalysisYields as AnaY
-from qcd_tools import Yield
+from qcd_tools import Yield, dict_sub_thresh
 from copy import deepcopy
 
 #---------------------------------------------------------------------#
@@ -15,11 +15,16 @@ TO-DO
 #---------------------------------------------------------------------#
 
 def bins(key = ""):
+    """define the binning to be used"""
     d = {   "nj":   ["le3j", "ge4j", "ge2j"][:1],
             "nb":   ["eq0b", "eq1b", "eq2b", "eq3b", "ge0b"][:1],
             "dphi": ["lt0p3", "gt0p3"],
-            "ht":   ["200_275","275_325","325_375","375_475","475_575","575_675","675_775","775_875","875_975","975_1075","1075"][:3]}
+            "ht":   ["200_275","275_325","325_375","375_475","475_575","575_675","675_775","775_875","875_975","975_1075","1075"][:1],
+            "at":   [i*0.05 for i in range(10)] + [0.5+0.01*i for i in range(20)] + [0.7 + 0.1*i for i in range(4)]}
     
+    # convert alphaT float values into strings
+    d['at'] = ["%.2f" % at for at in d['at']]
+
     if not key:
         return d
     try:
@@ -30,23 +35,29 @@ def bins(key = ""):
 #---------------------------------------------------------------------#
 
 def fpath():
-    return "/Users/chrislucas/SUSY/AnalysisCode/rootfiles/QCDKiller_GOLDEN/QCDFiles/25March_withBeamHalo_newCC_v0/"
+    # return "/Users/chrislucas/SUSY/AnalysisCode/rootfiles/QCDKiller_GOLDEN/QCDFiles/25March_withBeamHalo_newCC_v0/"
+    return "/Users/chrislucas/SUSY/AnalysisCode/rootfiles/QCDKiller_GOLDEN/QCDFiles/25Jul_fullParked_noDPhi_MHTMETCut_v0/"
 
 #---------------------------------------------------------------------#
 
 def getAllSelections():
     """create all objects for each of the four ana selections"""
-    had_data    = AnaY(selec = "HadQCD",
+    leg = [False, True][0]
+    had_data    = AnaY(legacy = leg,
+                        selec = "HadQCD",
                         bins = bins(),
                         fpath = fpath())
-    had_mc      = AnaY(selec = "HadQCD",
+    had_mc      = AnaY(legacy = leg,
+                        selec = "HadQCD",
                         bins = bins(),
                         fpath = fpath(),
                         data = False)
-    mu_data     = AnaY(selec = "OneMuonQCD",
+    mu_data     = AnaY(legacy = leg,
+                        selec = "OneMuonQCD",
                         bins = bins(),
                         fpath = fpath())
-    mu_mc       = AnaY(selec = "OneMuonQCD",
+    mu_mc       = AnaY(legacy = leg,
+                        selec = "OneMuonQCD",
                         bins = bins(),
                         fpath = fpath(),
                         data = False)
@@ -76,35 +87,11 @@ def makePrediction(hmc = None, md = None, mmc = None):
 
 #---------------------------------------------------------------------#
 
-def dict_sub_thresh(d1, d2, thresh = 0.):
-    if d1 is None: return d2
-    if d2 is None: return d1
-    try:
-        sub = d1 - d2
-        # if the d2 is >X% of d1, do the subtraction
-        # note: don't use safe divide, as these objects are Yields, not numbers
-        if d2/d1 > thresh:
-            return sub 
-        else:
-            # otherwise don't do the subtraction
-            return d1
-    except TypeError:
-        # could assume they're both dicts, but lets be sure.  
-        assert type(d1) is dict
-        assert type(d2) is dict
-        # assume d1 and d2 are dictionaries
-        keys = set(d1.iterkeys()) | set(d2.iterkeys())
-        return dict((key, dict_sub_thresh(d1.get(key), d2.get(key), thresh)) for key in keys)
-
-#---------------------------------------------------------------------#
-
 def ewkSubtraction(hd = None, hpred = None, thresh = 0.):
     newObj = deepcopy(hd)
     newDict = dict_sub_thresh(hd._dict, hpred._dict, thresh)
-    print newObj._bins
     newObj._dict['edballs'] = 1.
     newObj.ReplaceYields(newDict)
-    print newObj._bins
     return newObj
 
 #---------------------------------------------------------------------#
@@ -115,10 +102,12 @@ def main():
 
     had_ewk_pred, had_ewk_pred_splitMu = makePrediction(had_mc, mu_data, mu_mc)
 
-    # print had_data-had_ewk_pred
-    print ewkSubtraction(had_data, had_ewk_pred)
+    print had_data
+    # print ewkSubtraction(had_data, had_ewk_pred)
 
 
 
 if __name__ == "__main__":
     main()
+    # for at in bins("at"):
+        # print at
