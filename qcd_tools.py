@@ -6,6 +6,8 @@ from sys import exit
 from copy import deepcopy
 from itertools import product
 
+r.gROOT.SetBatch(1)
+
 #---------------------------------------------------------------------#
 """
 TO-DO
@@ -116,7 +118,7 @@ class AnalysisYields(object):
                             atstr = "%"
                             atlobin = htotal.FindBin(float(atlo))
                             athibin = htotal.FindBin(float(athi)) if athi != None else htotal.GetNbinsX()+1 #inclusive final bin
-
+                            # if atlobin == athibin: print atlo, atlobin, athi, athibin
                             err = r.Double(0.)
                             val = htotal.IntegralAndError(atlobin, athibin, err)
                             if self._zeroes:
@@ -138,11 +140,13 @@ class AnalysisYields(object):
 
 
     def MakeInclusiveHTYield(self, dic = {}):
-        # UNFINISHED!
+
         assert "inc" not in dic.keys(), "This shouldn't happen!"
+        
         new = dict.fromkeys(dic[self._bins['ht'][0]])
         for ht in self._bins["ht"]:
             new = pytils.dict_add(new, dic[ht])
+        
         return new
 
     def GetYield(self, **cats):
@@ -161,10 +165,9 @@ class AnalysisYields(object):
             assert type(cats[arg]) in [str, list], "Argument for %s must be either str or list." % a
             if type(cats[arg]) is str:
                 cats[arg] = [cats[arg]]
-
-        for h, j, b, d in product(*[cats[arg] for arg in self._defaultArgs]): # messy!
-            key = "%s_%s_%s_%s" % (h, j, b, d)
-            out[key] = self._dict[d][j][b][h]
+        for p in product(*[cats[arg] for arg in self._defaultArgs]):
+            key = "%s_%s_%s_%s_%s" % (p[0], p[1], p[2], p[3], p[4])
+            out[key] = self._dict[p[0]][p[1]][p[2]][p[3]][p[4]]
 
         return out
 
@@ -221,19 +224,20 @@ if __name__ == "__main__":
     testBins = {"nj": ["le3j", "ge4j"],
                 "nb": ["eq0b", "eq1b"],
                 "ht": ["200_275", "275_325", "325_375"],
-                "dphi":["lt0p3", "gt0p3"]}
+                "dphi":["lt0p3", "gt0p3"],
+                "at": ["0.00", "0.50", "10.00"]}
 
-    had_data_leg = AnalysisYields(selec ="HadQCD",
-                                bins = testBins,
-                                fpath = "/Users/chrislucas/SUSY/AnalysisCode/rootfiles/QCDKiller_GOLDEN/QCDFiles/25March_withBeamHalo_newCC_v0",
-                                legacy = True)
-    print had_data_leg
+    # had_data_leg = AnalysisYields(selec ="HadQCD",
+    #                             bins = testBins,
+    #                             fpath = "/Users/chrislucas/SUSY/AnalysisCode/rootfiles/QCDKiller_GOLDEN/QCDFiles/25March_withBeamHalo_newCC_v0",
+    #                             legacy = True)
+    # print had_data_leg
 
     had_data = AnalysisYields(selec ="HadQCD",
                                 bins = testBins,
                                 fpath = "/Users/chrislucas/SUSY/AnalysisCode/rootfiles/QCDKiller_GOLDEN/QCDFiles/25Jul_fullParked_noDPhi_MHTMETCut_v0",)
 
-    print had_data - had_data_leg
+    print had_data.GetYield(nj = "le3j", nb = "eq0b", ht = "200_275", dphi = "lt0p3", at = testBins['at']+['inc'])
 
     # had_mc  = AnalysisYields(selec ="HadQCD",
     #                             bins = bins(),
