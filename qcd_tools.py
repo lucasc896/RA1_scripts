@@ -11,11 +11,10 @@ r.gROOT.SetBatch(1)
 #---------------------------------------------------------------------#
 """
 TO-DO
-2. Add an additional alphaT dimension
+1. 
+2. 
 3. Verify yields from grabr are correct!
 4. Correct the erorr handling of the Yield addition/subtraction
-5. Fix bin variables when overwriting an entire dict in object instance
-6. New files will have two seperate histos to ><0.3, instead of dirs
 """
 #---------------------------------------------------------------------#
 
@@ -102,7 +101,7 @@ class AnalysisYields(object):
                             histname = "AlphaT_Signal"
                         else:
                             filepath = self._fpath
-                            histname = "AlphaT_Signal" if dphi == "lt0p3" else "AlphaT_Sideband"
+                            histname = "AlphaT_Signal" if dphi == "gt0p3" else "AlphaT_Sideband"
                         for fname in files:
                             hist = grabr.grab_plots(f_path = "%s/%s.root" % (filepath, fname),
                                                     sele = self._selec, h_title = histname, njet = j,
@@ -125,7 +124,9 @@ class AnalysisYields(object):
                                 val = 0.
                                 err = 0.
                             self._dict[dphi][j][b][ht][atlo] = Yield(val, err)
-                            self._dict[dphi][j][b][ht]['inc'] += Yield(val, err)
+                        err = r.Double(0.)
+                        val = htotal.IntegralAndError(1, htotal.GetNbinsX()+1, err)
+                        self._dict[dphi][j][b][ht]['inc'] = Yield(val, err)
                     
                     # make inclusive ht cat
                     self._dict[dphi][j][b]['inc'] = self.MakeInclusiveHTYield(self._dict[dphi][j][b])
