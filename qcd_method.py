@@ -26,7 +26,8 @@ def bins(key = ""):
             "ht":   ["200_275","275_325","325_375","375_475","475_575","575_675","675_775","775_875","875_975","975_1075","1075"],
             # "at":   [i*0.025 for i in range(40)]}# + [0.5+0.01*i for i in range(20)] + [0.7 + 0.1*i for i in range(4)]}
             # "at":   [0.5 + i*0.001 for i in range(100)],
-            "at":   [0.5 + i*0.002 for i in range(15)] + [0.53+i*0.005 for i in range(14)],
+            # "at":   [0.5 + i*0.002 for i in range(15)] + [0.53+i*0.005 for i in range(14)],
+            "at":   [0.5 + i*0.005 for i in range(100)],
             }
     
     # convert alphaT float values into strings
@@ -44,7 +45,8 @@ def bins(key = ""):
 #---------------------------------------------------------------------#
 
 def fpath():
-    return "/Users/chrislucas/SUSY/AnalysisCode/rootfiles/QCDKiller_GOLDEN/QCDFiles/28Jul_fullParked_noDPhi_MHTMETCut_v0/"
+    return "/Users/chrislucas/SUSY/AnalysisCode/rootfiles/QCDKiller_GOLDEN/QCDFiles/28Jul_fullParked_noDPhi_withMHTMETCut_v0/"
+    # return "/Users/chrislucas/SUSY/AnalysisCode/rootfiles/QCDKiller_GOLDEN/QCDFiles/29Jul_fullParked_noDPhi_MHTMETCutRemoved_v0/"
 
 #---------------------------------------------------------------------#
 
@@ -99,7 +101,6 @@ def ewkSubtraction(hd = None, hpred = None, thresh = 0.):
     """dedicated function for Data - EWKPred"""
     newObj = deepcopy(hd)
     newDict = dict_sub_thresh(hd._dict, hpred._dict, thresh)
-    newObj._dict['edballs'] = 1.
     newObj.ReplaceYields(newDict)
     return newObj
 
@@ -114,12 +115,15 @@ def main():
     had_qcd_pred = ewkSubtraction(had_data, had_ewk_pred)
     had_qcd_pred_splitMu = ewkSubtraction(had_data, had_ewk_pred_splitMu)
 
-    # qout.GenericPlotter(had_data, "had_data")
+    qout.GenericPlotter(had_data, "had_data")
+    qout.GenericPlotter(had_mc, "had_mc")
+    qout.GenericPlotter(mu_data, "mu_data")
+    qout.GenericPlotter(mu_mc, "mu_mc")
     qout.GenericPlotter(had_qcd_pred, "had_qcd_pred")
     qout.GenericPlotter(had_qcd_pred_splitMu, "had_qcd_pred_splitMu")
+    qout.GenericPlotter(had_ewk_pred_splitMu, "had_ewk_pred_splitMu")
 
     # qout.printTable(had_data._dict['lt0p3']['ge2j']['ge0b']['inc'])
 
 if __name__ == "__main__":
     main()
-    
