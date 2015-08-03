@@ -2,9 +2,15 @@ import pytils
 import os
 import ROOT as r
 import numpy as np
+import math as ma
 from itertools import product
 
 r.gROOT.SetBatch(1)
+r.gStyle.SetOptStat(0)
+if int(r.gROOT.GetVersion()[0])>5:
+    r.gStyle.SetPalette(r.kBird) #set to kBird palette colour (only works for ROOT6)
+else:
+    r.gStyle.SetPalette(51)
 
 #---------------------------------------------------------------------#
 """
@@ -25,6 +31,21 @@ def alphatGraph(d = {}):
     gr.SetMarkerSize(1)
     gr.SetLineWidth(2)
     return gr
+
+#---------------------------------------------------------------------#
+
+def alphatHist(d = {}):
+
+    avals = d.keys()
+    nvals = len(avals) if 'inc' not in avals else len(avals)-1
+    h = r.TH1D("at", "at", nvals, 0., 1.)
+    for at in avals:
+        if at == 'inc': continue
+        if np.nan in [d[at].v, d[at].e]: continue
+        abin = h.FindBin(float(at))
+        h.SetBinContent(abin, d[at].v)
+        h.SetBinError(abin, d[at].e)
+    return h
 
 #---------------------------------------------------------------------#
 
@@ -50,6 +71,21 @@ def plotDetails(plot = ""):
 
 #---------------------------------------------------------------------#
 
+def binSorter(unsorted = [], dim = ""):
+    protoBins = {   "nj":   ["le3j", "ge4j", "ge2j"],
+                    "nb":   ["eq0b", "eq1b", "eq2b", "eq3b", "ge0b"],
+                    "dphi": ["lt0p3", "gt0p3"],
+                    "ht":   ["200_275","275_325","325_375","375_475","475_575","575_675","675_775","775_875","875_975","975_1075","1075"],
+                }
+    out = []
+    for bin in protoBins[dim]:
+        if bin in unsorted:
+            out.append(bin)
+
+    return out
+
+#---------------------------------------------------------------------#
+
 class GenericPlotter(object):
     """generic plotter class which plots all analysis cats available"""
     def __init__(self, yields, label = "", allHT = False):
@@ -66,13 +102,16 @@ class GenericPlotter(object):
         """get the bins from _yields object"""
         # nice and ugly
 
-        dphi = self._yields.keys()
-        nj = self._yields[dphi[0]].keys()
-        nb = self._yields[dphi[0]][nj[0]].keys()
-        ht = self._yields[dphi[0]][nj[0]][nb[0]].keys() if self._allHT else ["inc"]
-        at = self._yields[dphi[0]][nj[0]][nb[0]][ht[0]].keys()
+        dphi = binSorter(self._yields.keys(), 'dphi')
+        nj = binSorter(self._yields[dphi[0]].keys(), 'nj')
+        nb = binSorter(self._yields[dphi[0]][nj[0]].keys(), 'nb')
+        htfull = binSorter(self._yields[dphi[0]][nj[0]][nb[0]].keys(), 'ht')
+        at = self._yields[dphi[0]][nj[0]][nb[0]][htfull[0]].keys()
+        ht = htfull if self._allHT else ['inc'] 
 
-        self._bins = {'dphi': dphi, 'nj': nj, 'nb': nb, 'ht': ht, 'at':at}
+        # sort the arrays!
+
+        self._bins = {'dphi': dphi, 'nj': nj, 'nb': nb, 'ht': ht, 'htfull': htfull, 'at':at}
 
     def binString(self, *args):
         return "_".join(args)
@@ -84,6 +123,7 @@ class GenericPlotter(object):
         # self.makeDPhiComparison(plotRatio = True)
         # self.makeAlphaTDistro(mode = "diff")
         # self.makeAlphaTDistro(mode = "cumu")
+        self.alphaTThresholdFrenchFlag()
 
     def makeAlphaTDistro(self, mode = "diff"):
 
@@ -152,6 +192,71 @@ class GenericPlotter(object):
 
         self._logy = False # flick switch back to off
 
+    def makeEmptyFrenchHist(self):
+        
+        nht = len(self._bins['htfull'])
+        ncat = len(self._bins['nj']) * len(self._bins['nb'])
+        hist = r.TH2D("french", "french",
+                nht, 0., nht,
+                ncat, 0., ncat,
+                )
+        for n, ht in enumerate(self._bins['htfull']):
+            hist.GetXaxis().SetBinLabel(n+1, ht)
+        for n, cat in enumerate(product(self._bins['nb'], self._bins['nj'])):
+            hist.GetYaxis().SetBinLabel(n+1, ", ".join(cat))
+        hist.SetContour(100)
+        return hist
+
+    def alphaTThresholdFrenchFlag(self):
+
+        self._cpd = self._outpath + "/" + "frenchDPhiRatio"
+        mkDir(self._cpd)
+        try:
+            lt = self._yields['lt0p3']
+            gt = self._yields['gt0p3']
+        except KeyError:
+            # can only make comparison if both dicts are present
+            return
+
+        french = self.makeEmptyFrenchHist()
+        french.GetZaxis().SetTitle("N(#Delta#phi_{min}* < 0.3)/N(#Delta#phi_{min}* > 0.3)")
+        french.SetTitle("#Delta#phi_{min}* ratio over #alpha_{T} threshold")
+
+        canv = r.TCanvas()
+        canv.SetRightMargin(0.13)
+        canv.SetBottomMargin(0.05)
+
+        for ncat, cat in enumerate(product(self._bins['nb'], self._bins['nj'])):
+            nb = cat[0]
+            nj = cat[1]
+            if 'inc' in [nb, nj]: continue
+            # print ncat, cat,
+            for nht, ht in enumerate(self._bins['htfull']):
+                # print nht, ht, 
+                if ht in ['200_275', '275_325']:
+                    thresh = 0.65
+                elif ht in ['325_375']:
+                    thresh = 0.6
+                else:
+                    thresh = 0.55
+                histlt = alphatHist(lt[nj][nb][ht])
+                histgt = alphatHist(gt[nj][nb][ht])
+
+                # find the point corresponding to the alphaT threshold
+                atbin = histlt.FindBin(thresh)
+                # print thresh, atbin
+
+                vallt = histlt.Integral(atbin, histlt.GetNbinsX()+1)
+                valgt = histgt.Integral(atbin, histgt.GetNbinsX()+1)
+                ratio = pytils.safe_divide(vallt, valgt)
+                print vallt, valgt, ratio, "(%s, %s, %s)" % (nb, nj, ht)
+                french.SetBinContent(nht+1, ncat+1, ratio)
+
+        french.Draw("colztext")
+        canv.Print(os.path.join(self._cpd, "dPhiRatioFF.pdf"))
+
+
+
     def comparisonGraph(self, gr1 = None, gr2 = None, label = ""):
         canv = r.TCanvas()
 
@@ -163,7 +268,7 @@ class GenericPlotter(object):
         gr1.SetTitle(label)
         gr1.SetMinimum(0.001)
         gr1.SetMaximum(100000)
-        gr1.GetXaxis().SetRangeUser(0.5, 0.6)
+        gr1.GetXaxis().SetRangeUser(0.5, 1.)
 
         gr2.Draw("PSAME")
         gr2.SetLineColor(r.kBlue)
@@ -188,6 +293,8 @@ class GenericPlotter(object):
         gr.SetMarkerColor(r.kGreen+1)
 
         gr.SetTitle(label)
+
+        gr.SetMinimum(0.)
 
         canv.SetLogy(self._logy)
 
